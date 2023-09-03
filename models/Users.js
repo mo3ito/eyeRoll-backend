@@ -30,14 +30,15 @@ const UsersShema = new Schema({
     email:{
         type:"String",
     },
+    is_verified: {
+        type : Boolean,
+        default: false
+      },
     token_email: {
         type: String,
         default: null,
       },
-      email_token_expires: {
-        type: Date,
-        default: null,
-      },
+    
 })
 
 // UsersSchema.methods.isEmailTokenExpired = function () {

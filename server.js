@@ -3,9 +3,7 @@ const express = require ("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const app = express()
-const authBusinessOwner = require("./routes/auth/auth-business-owner")
-const authUsers = require("./routes/auth/auth-users")
-
+const users = require("./routes/auth/userRoutes")
 mongoose.connect("mongodb://localhost:27017/discount")
 
 app.use(express.json())
@@ -18,5 +16,5 @@ app.get("/",(req , res)=>{
     res.send("hi I am working")
 })
 
-app.use("/auth-business-owner",authBusinessOwner)
-app.use("/auth-users",authUsers)
+// app.use("/auth-business-owner",authBusinessOwner)
+app.use("/",users)
