@@ -3,9 +3,10 @@ const jwt = require("jsonwebtoken")
 const userModel = require("../models/Users")
 const validator = require("validator")
 const crypto = require("crypto")
+const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
-    const createToken = async (_id)=>{
-    const token = await jwt.sign({_id},"kjcbscjsuiczuisjaojx9vu9e7uwihdiw",{expiresIn: "3d",});
+    const createToken = async (userInfo)=>{
+    const token = await jwt.sign({userInfo},"kjcbscjsuiczuisjaojx9vu9e7uwihdiw",{expiresIn: "3d",});
     return token
     }
 
@@ -39,11 +40,19 @@ const crypto = require("crypto")
               }
 
               const salt = await bcrypt.genSalt(10)
-              user.password = await bcrypt.hash(user.password , salt.toString() )
+              const hashedPassword = await bcrypt.hash(user.password , salt.toString() )
+              user.password = hashedPassword;
 
               await user.save()
 
-              const token = createToken(user._id)
+            //   sendVerificationMail(user)
+
+              const userObject = { id: user._id,name, last_name, phone_number, username, password : hashedPassword , email }
+              
+
+              const token =await createToken(userObject)
+
+              
 
               res.status(200).json({ _id: user._id ,name,last_name,phone_number,username,email, token})
 
