@@ -5,8 +5,9 @@ const validator = require("validator")
 const crypto = require("crypto")
 const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
+
     const createToken = async (userInfo)=>{
-    const token = await jwt.sign({userInfo},"kjcbscjsuiczuisjaojx9vu9e7uwihdiw",{expiresIn: "3d",});
+    const token = await jwt.sign(userInfo,"kjcbscjsuiczuisjaojx9vu9e7uwihdiw",{expiresIn: "3d",});
     return token
     }
 
@@ -69,15 +70,19 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
         const {email , password} = req.body;
 
         try {
-            let user = userModel.findOne({email})
+            let user = await userModel.findOne({email})
 
             if(!user) return res.status(400).json("Invalid email or password")
+          
 
-            const validPassword = await bcrypt.compare(password , user.password);
-
+            const validPassword = await bcrypt.compare(password , user.password.toString());
+            console.log(user);
             if(!validPassword) return res.status(400).json("Invalid email or password")
 
-            const token = createToken(user._id)
+            const userObject = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email }
+              
+
+            const token =await createToken(userObject)
 
             res.status(200).json({ _id: user._id ,name : user.name ,last_name: user.last_name ,phone_number: user.phone_number ,username:user.username ,email:user.email, token})
 
