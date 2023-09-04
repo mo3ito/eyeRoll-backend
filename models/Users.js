@@ -41,10 +41,7 @@ const UsersShema = new Schema({
     
 })
 
-// UsersSchema.methods.isEmailTokenExpired = function () {
-//     return this.email_token_expires <= new Date();
-//   };
-  
+
 
 
 const Users = mongoose.model("users" , UsersShema)
