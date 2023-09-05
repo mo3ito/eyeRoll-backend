@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const userModel = require("../models/Users")
+const customerModel = require("../models/Customers")
 const validator = require("validator")
 const crypto = require("crypto")
 const { sendVerificationMail } = require("../utils/sendVerificationMail")
@@ -18,13 +18,13 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
         try {
             
-            let user = await userModel.findOne({email})
+            let user = await customerModel.findOne({email})
 
             if(user) return res.status(400).json("User already exist")
 
             
 
-            user = new userModel({name,last_name,phone_number,username,password,email, token_email: crypto.randomBytes(64).toString("hex")});
+            user = new customerModel({name,last_name,phone_number,username,password,email, token_email: crypto.randomBytes(64).toString("hex")});
 
             if( !name || !last_name || !phone_number || !username || !password || !repeat_password  || !email ){
 
@@ -46,7 +46,7 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
               await user.save()
 
-            //   sendVerificationMail(user)
+              sendVerificationMail(user)
 
               const userObject = { id: user._id,name, last_name, phone_number, username, password : hashedPassword , email }
               
@@ -70,7 +70,7 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
         const {email , password} = req.body;
 
         try {
-            let user = await userModel.findOne({email})
+            let user = await customerModel.findOne({email})
 
             if(!user) return res.status(400).json("Invalid email or password")
           
@@ -99,7 +99,7 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
         const userId = req.params.userId
 
         try {
-            const user = await userModel.findById({userId})
+            const user = await customerModel.findById({userId})
             res.status(200).json(user)
         } catch (error) {
             res.status(500).json(error)
@@ -109,7 +109,7 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
     const getUsers = async ()=>{
         try {
-            const users = userModel.find({});
+            const users = customerModel.find({});
             res.status(200).json(users)
         } catch (error) {
             res.status(500).json(error)
@@ -118,19 +118,21 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
     const verifyEmail = async (req , res)=>{
         try {
-          const token_email = req.body.email_token;
+          const token_email = req.body.token_email;
         
           if(!token_email) return res.status(404).json("email token not found ...")
         
-          const user = await userModel.findOne( token_email )
+          const user = await customerModel.findOne( {token_email} )
         
           if(user){
             user.token_email = null;
             user.is_verified = true;
             
             await user.save()
+
+            const userObject = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email }
         
-            const token = createToken()
+            const token = await createToken(userObject)
         
             res.status(200).json({
               id: user._id,

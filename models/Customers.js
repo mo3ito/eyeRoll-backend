@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const {Schema} = mongoose
 
-const UsersShema = new Schema({
+const CustomersShema = new Schema({
     name:{
         type:"String",
         required: true,
@@ -44,6 +44,6 @@ const UsersShema = new Schema({
 
 
 
-const Users = mongoose.model("users" , UsersShema)
+const Customers = mongoose.model("customers" , CustomersShema)
 
-module.exports = Users;
+module.exports = Customers;
