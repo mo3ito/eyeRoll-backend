@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const {Schema} = mongoose
 
-const CustomersShema = new Schema({
+const BusinessOwnersSchema = new Schema({
     name:{
         type:"String",
         required: true,
@@ -44,6 +44,6 @@ const CustomersShema = new Schema({
 
 
 
-const Customers = mongoose.model("customers" , CustomersShema)
+const BusinessOwners = mongoose.model("business-owners" , BusinessOwnersSchema)
 
-module.exports = Customers;
+module.exports = BusinessOwners;
