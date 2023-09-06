@@ -46,16 +46,18 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
               await user.save()
 
-              sendVerificationMail(user)
+            //   sendVerificationMail(user)
 
-              const userObject = { id: user._id,name, last_name, phone_number, username, password : hashedPassword , email }
+              const userObject = { id: user._id,name, last_name, phone_number, username, email }
               
 
               const token =await createToken(userObject)
 
               
-
-              res.status(200).json({ _id: user._id ,name,last_name,phone_number,username,email, token})
+              const infos={
+                _id: user._id ,name,last_name,phone_number,username,email
+              }
+              res.status(200).json({ infos , token})
 
         } catch (error) {
             console.error(error)
