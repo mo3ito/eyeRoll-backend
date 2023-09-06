@@ -46,18 +46,14 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
               await user.save()
 
-            //   sendVerificationMail(user)
+              sendVerificationMail(user)
 
-              const userObject = { id: user._id,name, last_name, phone_number, username, email }
+              const userInfos = { id: user._id,name, last_name, phone_number, username, email }
               
 
-              const token =await createToken(userObject)
+              const token =await createToken(userInfos)
 
-              
-              const infos={
-                _id: user._id ,name,last_name,phone_number,username,email
-              }
-              res.status(200).json({ infos , token})
+              res.status(200).json({ userInfos , token})
 
         } catch (error) {
             console.error(error)
@@ -132,20 +128,13 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
             
             await user.save()
 
-            const userObject = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email , is_verified:user.is_verified }
+            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username , email:user.email , is_verified:user.is_verified }
         
-            const token = await createToken(userObject)
+            const token = await createToken(userInfos)
         
-            res.status(200).json({
-              id: user._id,
-              name: user.name,
-              last_name: user.last_name,
-              phone_number : user.phone_number ,
-              username : user.username,
-              email: user.email,
+           await res.status(200).json({
+              userInfos,
               token,
-              is_verified: user?.is_verified
-        
             })
           } else{
             res.status(404).json("Emial verification failed, invalid token")
