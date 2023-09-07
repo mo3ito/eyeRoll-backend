@@ -48,7 +48,7 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
               sendVerificationMail(user)
 
-              const userInfos = { id: user._id,name, last_name, phone_number, username, email }
+              const userInfos = { id: user._id,name, last_name, phone_number, username, email , is_verified : user.is_verified }
               
 
               const token =await createToken(userInfos)
@@ -146,11 +146,32 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
         }
         }
 
+        const getMe = async (req , res)=>{
+
+            try {
+                const token = req.header("Authorization")
+                jwt.verify(token , "kjcbscjsuiczuisjaojx9vu9e7uwihdiw" , (err , decoded)=>{
+                    if(err) {
+                        console.error(err.message)
+                        return res.status(400).json("token is empty or invalid")
+                    }else{
+                        res.json(decoded);
+                    }
+                } )
+            } catch (error) {
+                console.error(error)
+                res.status(500).json(error.message)
+            }
+        }
+
+    
+
 
     module.exports = {
         registerUser,
         loginUser,
         findeUser,
         getUsers,
-        verifyEmail
+        verifyEmail,
+        getMe
     }

@@ -4,19 +4,15 @@ require('dotenv').config();
 
 const createMailTransporter = ()=>{
     const transporter = nodemailer.createTransport({
-        service: 'hotmail',
+      host: 'smtp.gmail.com',
+      port: 465,
         auth: {
-          user: 'mo3ito.developer@outlook.com',
-          pass: process.env.PASSWORD_EMAIL
+          user: 'discountapplication30@gmail.com',
+          pass: "nytaasantbuhgpsh"
         }
       });
 
       return transporter;
 }
-
-
-
-
-
 
 module.exports = {createMailTransporter}

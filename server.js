@@ -3,7 +3,7 @@ const express = require ("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const app = express()
-const customers = require("./routes/customers/customerRoutes")
+const businessOwners = require("./routes/businessOwners/businessOwnerRoutes")
 require('dotenv').config();
 
 mongoose.connect("mongodb://localhost:27017/discount")
@@ -20,4 +20,4 @@ app.get("/",(req , res)=>{
 })
 
 
-app.use("/",customers)
+app.use("/",businessOwners)
