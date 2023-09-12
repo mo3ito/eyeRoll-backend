@@ -118,9 +118,8 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
         try {
           const token_email = req.body.token_email;
         
-        //   if(!token_email) return res.status(404).json("email token not found ...")
-          if(!token_email) return true
-        
+          if(!token_email) return res.status(404).json("email token not found ...")
+          
           const user = await BusinessOwnersModel.findOne( {token_email} )
         
           if(user){
