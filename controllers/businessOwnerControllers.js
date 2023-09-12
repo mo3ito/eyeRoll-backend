@@ -82,7 +82,7 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
 
             const token =await createToken(userObject)
 
-            res.status(200).json({ _id: user._id ,name : user.name ,last_name: user.last_name ,phone_number: user.phone_number ,username:user.username ,email:user.email, token})
+            res.status(200).json({ _id: user._id ,name : user.name ,last_name: user.last_name ,phone_number: user.phone_number ,username:user.username ,email:user.email, is_verified:user.is_verified ,token})
 
         } catch (error) {
             
@@ -118,7 +118,8 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
         try {
           const token_email = req.body.token_email;
         
-          if(!token_email) return res.status(404).json("email token not found ...")
+        //   if(!token_email) return res.status(404).json("email token not found ...")
+          if(!token_email) return true
         
           const user = await BusinessOwnersModel.findOne( {token_email} )
         
