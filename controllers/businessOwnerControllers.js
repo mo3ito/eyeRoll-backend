@@ -76,13 +76,14 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
             const validPassword = await bcrypt.compare(password , user.password.toString());
             console.log(user);
             if(!validPassword) return res.status(400).json("Invalid email or password")
+            if(!user.is_verified) return res.status(201).json("You have not verified your email")
 
-            const userObject = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email }
+            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email,is_verified:user.is_verified  }
               
 
-            const token =await createToken(userObject)
+            const token =await createToken(userInfos)
 
-            res.status(200).json({ _id: user._id ,name : user.name ,last_name: user.last_name ,phone_number: user.phone_number ,username:user.username ,email:user.email, is_verified:user.is_verified ,token})
+            res.status(200).json({ userInfos,token})
 
         } catch (error) {
             
@@ -90,6 +91,29 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
             res.status(500).json(error.message)
         }
 
+    }
+
+    const resendEmailVerification =async (req , res)=>{
+        const {email , password} = req.body;
+
+        try {
+            let user = await BusinessOwnersModel.findOne({email})
+            if(!user) return res.status(400).json("Invalid email or password")
+
+            const validPassword = await bcrypt.compare(password , user.password.toString());
+            
+            if(!validPassword) return res.status(400).json("Invalid email or password")
+
+            if(user.is_verified){
+            res.status(400).json("The user has been verified with this email")
+            }
+
+            res.status(200).json("we sent an email to you")
+            sendVerificationMail(user)
+        } catch (error) {
+            console.error(error)
+            res.status(500).json(error.message)
+        }
     }
 
     const findeUser = async (req , res)=>{
@@ -173,5 +197,6 @@ const { sendVerificationMail } = require("../utils/sendVerificationMail")
         findeUser,
         getUsers,
         verifyEmail,
-        getMe
+        getMe,
+        resendEmailVerification
     }
