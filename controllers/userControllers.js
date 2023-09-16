@@ -1,25 +1,24 @@
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const BusinessOwnersModel = require("../models/BusinessOwners")
+const UsersModel = require("../models/users")
 const validator = require("validator")
 const crypto = require("crypto")
 const { sendVerificationMail } = require("../utils/sendVerificationMail")
+require('dotenv').config();
 const keyJwt = process.env.KEY_JWT
 
-
-    const createToken = async (userInfo)=>{
-    const token = await jwt.sign(userInfo,"kjcbscjsuiczuisjaojx9vu9e7uwihdiw",{expiresIn: "3d",});
+const createToken = async (userInfo)=>{
+    const token = await jwt.sign(userInfo,keyJwt,{expiresIn: "3d",});
     return token
     }
 
-
     const registerUser = async (req , res)=>{
 
-        const { name, last_name, phone_number, username, password, repeat_password , email } =req.body;
+        const {username , password, repeat_password , email } =req.body;
 
         try {
             
-            let user = await BusinessOwnersModel.findOne({email})
+            let user = await UsersModel.findOne({email})
 
             if(user) return res.status(400).json({
                 message : "User already exist"
@@ -27,9 +26,9 @@ const keyJwt = process.env.KEY_JWT
 
             
 
-            user = new BusinessOwnersModel({name,last_name,phone_number,username,password,email, token_email: crypto.randomBytes(64).toString("hex")});
+            user = new UsersModel({username,password,email, token_email: crypto.randomBytes(64).toString("hex")});
 
-            if( !name || !last_name || !phone_number || !username || !password || !repeat_password  || !email ){
+            if(  !username || !password || !repeat_password  || !email ){
 
                 res.status(400).json({
                     message : "All fields are required"
@@ -62,7 +61,7 @@ const keyJwt = process.env.KEY_JWT
 
               sendVerificationMail(user)
 
-              const userInfos = { id: user._id,name, last_name, phone_number, username, email, is_verified : user.is_verified }
+              const userInfos = { id: user._id, username, email, is_verified : user.is_verified }
               
 
               const token =await createToken(userInfos)
@@ -76,13 +75,12 @@ const keyJwt = process.env.KEY_JWT
 
     }
 
-
     const loginUser = async (req , res)=>{
 
         const {email , password} = req.body;
 
         try {
-            let user = await BusinessOwnersModel.findOne({email})
+            let user = await UsersModel.findOne({email})
 
             if(!user) return res.status(400).json("Invalid email or password")
           
@@ -92,7 +90,7 @@ const keyJwt = process.env.KEY_JWT
             if(!validPassword) return res.status(400).json("Invalid email or password")
             if(!user.is_verified) return res.status(201).json("You have not verified your email")
 
-            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email,is_verified:user.is_verified  }
+            const userInfos = { id: user._id,username : user.username, password : user.password , email:user.email,is_verified:user.is_verified  }
               
 
             const token =await createToken(userInfos)
@@ -111,7 +109,7 @@ const keyJwt = process.env.KEY_JWT
         const {email , password} = req.body;
 
         try {
-            let user = await BusinessOwnersModel.findOne({email})
+            let user = await UsersModel.findOne({email})
             if(!user) return res.status(400).json("Invalid email or password")
 
             const validPassword = await bcrypt.compare(password , user.password.toString());
@@ -135,7 +133,7 @@ const keyJwt = process.env.KEY_JWT
         const userId = req.params.userId
 
         try {
-            const user = await BusinessOwnersModel.findById({userId})
+            const user = await UsersModel.findById({userId})
             res.status(200).json(user)
         } catch (error) {
             res.status(500).json(error)
@@ -145,7 +143,7 @@ const keyJwt = process.env.KEY_JWT
 
     const getUsers = async ()=>{
         try {
-            const users = BusinessOwnersModel.find({});
+            const users = UsersModel.find({});
             res.status(200).json(users)
         } catch (error) {
             res.status(500).json(error)
@@ -158,7 +156,7 @@ const keyJwt = process.env.KEY_JWT
         
           if(!token_email) return res.status(404).json("email token not found ...")
           
-          const user = await BusinessOwnersModel.findOne( {token_email} )
+          const user = await UsersModel.findOne( {token_email} )
         
           if(user){
             user.token_email = null;
@@ -166,7 +164,7 @@ const keyJwt = process.env.KEY_JWT
             
             await user.save()
 
-            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username , email:user.email , is_verified:user.is_verified }
+            const userInfos = { id: user._id, username : user.username , email:user.email , is_verified:user.is_verified }
         
             const token = await createToken(userInfos)
         
@@ -202,15 +200,16 @@ const keyJwt = process.env.KEY_JWT
             }
         }
 
-    
+        module.exports = {
+            registerUser,
+            loginUser,
+            findeUser,
+            getUsers,
+            verifyEmail,
+            getMe,
+            resendEmailVerification
+        }
 
 
-    module.exports = {
-        registerUser,
-        loginUser,
-        findeUser,
-        getUsers,
-        verifyEmail,
-        getMe,
-        resendEmailVerification
-    }
+
+

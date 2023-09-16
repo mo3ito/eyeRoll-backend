@@ -8,7 +8,7 @@ const createMailTransporter = ()=>{
       port: 465,
         auth: {
           user: 'discountapplication30@gmail.com',
-          pass: "nytaasantbuhgpsh"
+          pass: process.env.PASSWORD_EMAIL
         }
       });
 
