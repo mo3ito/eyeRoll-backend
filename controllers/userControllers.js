@@ -82,20 +82,20 @@ const createToken = async (userInfo)=>{
         try {
             let user = await UsersModel.findOne({email})
 
-            if(!user) return res.status(400).json("Invalid email or password")
+            if(!user) return res.status(400).json({message:"Invalid email or password"} )
           
 
             const validPassword = await bcrypt.compare(password , user.password.toString());
             console.log(user);
-            if(!validPassword) return res.status(400).json("Invalid email or password")
-            if(!user.is_verified) return res.status(201).json("You have not verified your email")
+            if(!validPassword) return res.status(400).json({message:"Invalid email or password"})
+            if(!user.is_verified) return res.status(201).json({message:"You have not verified your email"})
 
             const userInfos = { id: user._id,username : user.username, password : user.password , email:user.email,is_verified:user.is_verified  }
               
 
             const token =await createToken(userInfos)
 
-            res.status(200).json({ userInfos,token})
+            res.status(200).json({userInfos,token})
 
         } catch (error) {
             
@@ -110,17 +110,17 @@ const createToken = async (userInfo)=>{
 
         try {
             let user = await UsersModel.findOne({email})
-            if(!user) return res.status(400).json("Invalid email or password")
+            if(!user) return res.status(400).json({message:"Invalid email or password"})
 
             const validPassword = await bcrypt.compare(password , user.password.toString());
             
-            if(!validPassword) return res.status(400).json("Invalid email or password")
+            if(!validPassword) return res.status(400).json({message:"Invalid email or password"})
 
             if(user.is_verified){
-            res.status(400).json("The user has been verified with this email")
+            res.status(400).json({message:"The user has been verified with this email"})
             }
 
-            res.status(200).json("we sent an email to you")
+            res.status(200).json({message:"we sent an email to you"})
             sendVerificationMail(user)
         } catch (error) {
             console.error(error)
@@ -154,7 +154,7 @@ const createToken = async (userInfo)=>{
         try {
           const token_email = req.body.token_email;
         
-          if(!token_email) return res.status(404).json("email token not found ...")
+          if(!token_email) return res.status(404).json({message:"email token not found ..."})
           
           const user = await UsersModel.findOne( {token_email} )
         
@@ -173,7 +173,7 @@ const createToken = async (userInfo)=>{
               token,
             })
           } else{
-            res.status(404).json("Emial verification failed, invalid token")
+            res.status(404).json({message:"Emial verification failed, invalid token"})
           }
         
         } catch (error) {
@@ -186,10 +186,10 @@ const createToken = async (userInfo)=>{
 
             try {
                 const token = req.header("Authorization")
-                jwt.verify(token , "kjcbscjsuiczuisjaojx9vu9e7uwihdiw" , (err , decoded)=>{
+                jwt.verify(token , keyJwt , (err , decoded)=>{
                     if(err) {
                         console.error(err.message)
-                        return res.status(400).json("token is empty or invalid")
+                        return res.status(400).json({message:"token is empty or invalid"})
                     }else{
                         res.json(decoded);
                     }

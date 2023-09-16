@@ -189,7 +189,7 @@ const keyJwt = process.env.KEY_JWT
 
             try {
                 const token = req.header("Authorization")
-                jwt.verify(token , "kjcbscjsuiczuisjaojx9vu9e7uwihdiw" , (err , decoded)=>{
+                jwt.verify(token , keyJwt , (err , decoded)=>{
                     if(err) {
                         console.error(err.message)
                         return res.status(400).json({message: "token is empty or invalid"} )
