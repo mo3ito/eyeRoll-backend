@@ -4,11 +4,12 @@ const BusinessOwnersModel = require("../models/BusinessOwners")
 const validator = require("validator")
 const crypto = require("crypto")
 const { sendVerificationMail } = require("../utils/sendVerificationMail")
+require('dotenv').config();
 const keyJwt = process.env.KEY_JWT
 
 
     const createToken = async (userInfo)=>{
-    const token = await jwt.sign(userInfo,"kjcbscjsuiczuisjaojx9vu9e7uwihdiw",{expiresIn: "3d",});
+    const token = await jwt.sign(userInfo,keyJwt,{expiresIn: "3d",});
     return token
     }
 
