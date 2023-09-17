@@ -30,6 +30,32 @@ const BusinessOwnersSchema = new Schema({
     email:{
         type:"String",
     },
+    country_name:{
+        type:"String",
+        default: ""
+    },
+    state_name:{
+        type:"String",
+        default: ""
+    },
+    city:{
+        type:"String",
+        default: ""
+    },
+    address:{
+        type:"String",
+        default: ""
+    },
+    brand_name:{
+        type:"String",
+        default: ""
+        
+    },
+    is_additional_specifications:{
+        type:Boolean,
+        default: false
+        
+    },  
     is_verified: {
         type : Boolean,
         default: false

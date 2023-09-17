@@ -61,7 +61,7 @@ const keyJwt = process.env.KEY_JWT
 
               await user.save()
 
-              sendVerificationMail(user)
+            //   sendVerificationMail(user)
 
               const userInfos = { id: user._id,name, last_name, phone_number, username, email, is_verified : user.is_verified }
               
