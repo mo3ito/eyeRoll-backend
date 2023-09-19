@@ -61,9 +61,13 @@ const BusinessOwnersSchema = new Schema({
         default: false
       },
     token_email: {
-        type: String,
+        type: "String",
         default: null,
       },
+      is_businessOwner:{
+        type : Boolean,
+        default: true
+      }
     
 })
 
