@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken")
 const BusinessOwnersModel = require("../models/BusinessOwners")
 const validator = require("validator")
 const crypto = require("crypto")
-const { sendVerificationMail } = require("../utils/sendVerificationMail")
+const { sendVerificationMailBusinessOwner } = require("../utils/senderVerificationMail/sendVerificationMailBusinessOwner")
 require('dotenv').config();
 const keyJwt = process.env.KEY_JWT
 
@@ -61,7 +61,7 @@ const keyJwt = process.env.KEY_JWT
 
               await user.save()
 
-              sendVerificationMail(user)
+              sendVerificationMailBusinessOwner(user)
 
               const userInfos = { id: user._id,name, last_name, phone_number, username, email, is_verified : user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner }
               
@@ -124,7 +124,7 @@ const keyJwt = process.env.KEY_JWT
             }
 
             res.status(200).json({message: "we sent an email to you"} )
-            sendVerificationMail(user)
+            sendVerificationMailBusinessOwner(user)
         } catch (error) {
             console.error(error)
             res.status(500).json(error.message)

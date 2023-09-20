@@ -23,3 +23,4 @@ app.get("/",(req , res)=>{
 
 app.use("/",businessOwners)
 app.use("/",users)
+
