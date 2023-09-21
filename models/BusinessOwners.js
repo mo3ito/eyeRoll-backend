@@ -64,6 +64,10 @@ const BusinessOwnersSchema = new Schema({
         type: "String",
         default: null,
       },
+      registration_date:{
+        type : Date,
+        default: Date.now 
+      },
       is_businessOwner:{
         type : Boolean,
         default: true

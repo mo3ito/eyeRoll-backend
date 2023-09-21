@@ -23,6 +23,10 @@ const UserShema = new Schema({
     token_email: {
         type: String,
         default: null,
+      }, 
+      registration_date:{
+        type : Date,
+        default: Date.now 
       },
 })
 

@@ -8,7 +8,7 @@ const sendVerificationMailUsers = (user)=>{
         to: user.email, // list of receivers
         subject: "Verify your email...", // Subject line
         text: "Hello world?", // plain text body
-        html: `<p>Hello ${user.name || user.username} verify your email by checking this link... </p>
+        html: `<p>Hello ${user.username} verify your email by checking this link... </p>
         <a href='http://localhost:3000/users-verify-email?token_email=${user.token_email}'>Verify your email</a>` ,// html body
     }
 

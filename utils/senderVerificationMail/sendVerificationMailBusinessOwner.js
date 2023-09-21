@@ -8,7 +8,7 @@ const sendVerificationMailBusinessOwner = (user)=>{
         to: user.email, 
         subject: "Verify your email...", 
         text: "Hello world?",
-        html: `<p>Hello ${user.name || user.username} verify your email by checking this link... </p>
+        html: `<p>Hello ${user.name} verify your email by checking this link... </p>
         <a href='http://localhost:3000/verify-email?token_email=${user.token_email}'>Verify your email</a>`,
     }
 

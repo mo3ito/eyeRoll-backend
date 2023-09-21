@@ -61,7 +61,7 @@ const createToken = async (userInfo)=>{
 
               sendVerificationMailUsers(user)
 
-              const userInfos = { id: user._id, username, email, is_verified : user.is_verified }
+              const userInfos = { id: user._id, username, email, is_verified : user.is_verified , registration_date:user.registration_date }
               
 
               const token =await createToken(userInfos)
@@ -90,7 +90,7 @@ const createToken = async (userInfo)=>{
             if(!validPassword) return res.status(400).json({message:"Invalid email or password"})
             if(!user.is_verified) return res.status(201).json({message:"You have not verified your email"})
 
-            const userInfos = { id: user._id,username : user.username, password : user.password , email:user.email,is_verified:user.is_verified  }
+            const userInfos = { id: user._id,username : user.username , email:user.email,is_verified:user.is_verified , registration_date:user.registration_date }
               
 
             const token =await createToken(userInfos)
@@ -105,28 +105,32 @@ const createToken = async (userInfo)=>{
 
     }
 
+
+
     const resendEmailVerification =async (req , res)=>{
         const {email , password} = req.body;
 
         try {
             let user = await UsersModel.findOne({email})
-            if(!user) return res.status(400).json({message:"Invalid email or password"})
+            if(!user) return res.status(400).json({message: "Invalid email or password"})
 
             const validPassword = await bcrypt.compare(password , user.password.toString());
             
-            if(!validPassword) return res.status(400).json({message:"Invalid email or password"})
+            if(!validPassword) return res.status(400).json({message: "Invalid email or password"})
 
             if(user.is_verified){
-            res.status(400).json({message:"The user has been verified with this email"})
+            res.status(400).json({message: "The user has been verified with this email"} )
             }
-
-            res.status(200).json({message:"we sent an email to you"})
+            
+            res.status(200).json({message: "we sent an email to you"} )
             sendVerificationMailUsers(user)
         } catch (error) {
             console.error(error)
             res.status(500).json(error.message)
         }
     }
+
+ 
 
     const findeUser = async (req , res)=>{
 
@@ -164,7 +168,7 @@ const createToken = async (userInfo)=>{
             
             await user.save()
 
-            const userInfos = { id: user._id, username : user.username , email:user.email , is_verified:user.is_verified }
+            const userInfos = { id: user._id, username : user.username , email:user.email , is_verified:user.is_verified , registration_date:user.registration_date }
         
             const token = await createToken(userInfos)
         
