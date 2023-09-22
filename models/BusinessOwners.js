@@ -38,7 +38,7 @@ const BusinessOwnersSchema = new Schema({
         type:"String",
         default: ""
     },
-    city:{
+    city_name:{
         type:"String",
         default: ""
     },

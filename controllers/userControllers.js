@@ -24,8 +24,6 @@ const createToken = async (userInfo)=>{
                 message : "User already exist"
             })
 
-            
-
             user = new UsersModel({username,password,email, token_email: crypto.randomBytes(64).toString("hex")});
 
             if(  !username || !password || !repeat_password  || !email ){

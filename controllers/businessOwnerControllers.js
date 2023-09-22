@@ -63,7 +63,7 @@ const keyJwt = process.env.KEY_JWT
 
               sendVerificationMailBusinessOwner(user)
 
-              const userInfos = { id: user._id,name, last_name, phone_number, username, email, is_verified : user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date }
+              const userInfos = { id: user._id,name, last_name, phone_number, username, email, is_verified : user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date , password: user.password }
               
 
               const token =await createToken(userInfos)
@@ -93,7 +93,7 @@ const keyJwt = process.env.KEY_JWT
             if(!validPassword) return res.status(400).json({message: "Invalid email or password"})
             if(!user.is_verified) return res.status(201).json({message: "You have not verified your email"})
 
-            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email,is_verified:user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner,registration_date:user.registration_date }
+            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email,is_verified:user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner,registration_date:user.registration_date , password: user.password }
               
 
             const token =await createToken(userInfos)
@@ -106,6 +106,67 @@ const keyJwt = process.env.KEY_JWT
             res.status(500).json(error.message)
         }
 
+    }
+
+    const updateinformation = async (req , res)=>{
+
+        const userID = req.headers.authorization;
+        const { name, last_name, phone_number, username, password, email, country_name , state_name , city_name , address , brand_name } = req.body;
+
+        try {
+            let user = await BusinessOwnersModel.findById(userID);
+            if(!user){
+                return res.status(400).json({
+                    message: 'User not found',
+                  });
+            }
+            user.name = name;
+            user.last_name = last_name;
+            user.phone_number = phone_number;
+            user.username = username;
+            user.email = email;
+            user.country_name = country_name;
+            user.state_name = state_name;
+            user.city_name = city_name,
+            user.address = address;
+            user.brand_name = brand_name;
+            
+            let hashedPassword;
+            if(password){
+                const salt = await bcrypt.genSalt(10)
+                hashedPassword = await bcrypt.hash(password, salt);
+                user.password = hashedPassword;
+            }
+           
+
+            await user.save()
+            const userInfos = {
+                id: user._id,
+                name,
+                last_name,
+                phone_number,
+                username,
+                email,
+                password: password ? hashedPassword : user.password,
+                is_verified: user.is_verified,
+                country_name: user.country_name,
+                state_name: user.state_name,
+                city_name: user.city_name,
+                address: user.address,
+                brand_name: user.brand_name,
+                
+              };
+              
+              const token = await createToken(userInfos)
+
+            res.status(200).json({userInfos, token });
+    
+        } catch (error) {
+            console.error(error)
+            res.status(500).json(error.message)
+        }
+
+    
     }
 
     const resendEmailVerification =async (req , res)=>{
@@ -213,5 +274,6 @@ const keyJwt = process.env.KEY_JWT
         getUsers,
         verifyEmail,
         getMe,
-        resendEmailVerification
+        resendEmailVerification,
+        updateinformation
     }
