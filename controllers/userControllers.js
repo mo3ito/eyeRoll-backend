@@ -103,6 +103,50 @@ const createToken = async (userInfo)=>{
 
     }
 
+    const updateinformation = async (req , res)=>{
+
+        const userID = req.headers.authorization;
+        const {username, password, email} = req.body;
+
+        try {
+            let user = await UsersModel.findById(userID);
+            if(!user){
+                return res.status(400).json({
+                    message: 'User not found',
+                  });
+            }
+          
+            user.username = username;
+            user.email = email;
+         
+            
+            let hashedPassword;
+            if(password){
+                const salt = await bcrypt.genSalt(10)
+                hashedPassword = await bcrypt.hash(password, salt);
+                user.password = hashedPassword;
+            }
+           
+
+            await user.save()
+            const userInfos = {
+                id: user._id,
+                username,
+                email,
+                password: password ? hashedPassword : user.password,
+              };
+              
+              const token = await createToken(userInfos)
+
+            res.status(200).json({userInfos, token });
+    
+        } catch (error) {
+            console.error(error)
+            res.status(500).json(error.message)
+        }
+
+    
+    }
 
 
     const resendEmailVerification =async (req , res)=>{
@@ -202,6 +246,31 @@ const createToken = async (userInfo)=>{
             }
         }
 
+        const isPassword = async (req, res) => {
+            const { password } = req.body;
+            const userID = req.headers.authorization;
+          
+            try {
+              let user = await UsersModel.findById(userID);
+          
+              if (!user) {
+               
+                return res.status(400).json({ message: "Your password is incorrect" });
+              }
+          
+              const comparePassword = await bcrypt.compare(password, user.password);
+          
+              if (comparePassword) {
+                res.status(200).json(true);
+              } else {
+                res.status(200).json(false);
+              }
+            } catch (error) {
+              console.error(error);
+              res.status(500).json(error.message);
+            }
+          };
+
         module.exports = {
             registerUser,
             loginUser,
@@ -209,7 +278,9 @@ const createToken = async (userInfo)=>{
             getUsers,
             verifyEmail,
             getMe,
-            resendEmailVerification
+            resendEmailVerification,
+            updateinformation,
+            isPassword
         }
 
 

@@ -11,7 +11,7 @@ router.post("/verify-email",verifyEmail)
 router.get("/get-me", getMe)
 router.post("/resend-email-verification",resendEmailVerification)
 router.put("/update-information" , updateinformation)
-router.get("/is-password",isPassword)
+router.post("/is-password",isPassword)
 
 
 module.exports = router;
