@@ -264,7 +264,30 @@ const keyJwt = process.env.KEY_JWT
             }
         }
 
-    
+        const isPassword = async (req, res) => {
+            const { password } = req.body;
+            const userID = req.headers.authorization;
+          
+            try {
+              let user = await BusinessOwnersModel.findById(userID);
+          
+              if (!user) {
+               
+                return res.status(400).json({ message: "Your password is incorrect" });
+              }
+          
+              const comparePassword = await bcrypt.compare(password, user.password);
+          
+              if (comparePassword) {
+                res.status(200).json(true);
+              } else {
+                res.status(200).json(false);
+              }
+            } catch (error) {
+              console.error(error);
+              res.status(500).json(error.message);
+            }
+          };
 
 
     module.exports = {
@@ -275,5 +298,6 @@ const keyJwt = process.env.KEY_JWT
         verifyEmail,
         getMe,
         resendEmailVerification,
-        updateinformation
+        updateinformation,
+        isPassword
     }
