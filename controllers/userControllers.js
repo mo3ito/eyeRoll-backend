@@ -17,14 +17,14 @@ const createToken = async (userInfo)=>{
         const {username , password, repeat_password , email } =req.body;
 
         try {
-            
-            let user = await UsersModel.findOne({email})
+            const lowercaseEmail =await email.toLowerCase();
+            let user = await UsersModel.findOne({email : lowercaseEmail })
 
             if(user) return res.status(400).json({
                 message : "User already exist"
             })
 
-            user = new UsersModel({username,password,email, token_email: crypto.randomBytes(64).toString("hex")});
+            user = new UsersModel({username,password,email : lowercaseEmail, token_email: crypto.randomBytes(64).toString("hex")});
 
             if(  !username || !password || !repeat_password  || !email ){
 
@@ -32,7 +32,7 @@ const createToken = async (userInfo)=>{
                     message : "All fields are required"
                 })
             }
-            if(!validator.isEmail(email)){
+            if(!validator.isEmail(lowercaseEmail)){
                 
                 res.status(400).json({
                     message :"Email must be a valid email"
@@ -59,7 +59,7 @@ const createToken = async (userInfo)=>{
 
               sendVerificationMailUsers(user)
 
-              const userInfos = { id: user._id, username, email, is_verified : user.is_verified , registration_date:user.registration_date }
+              const userInfos = { id: user._id, username, email : lowercaseEmail, is_verified : user.is_verified , registration_date:user.registration_date }
               
 
               const token =await createToken(userInfos)
@@ -78,7 +78,8 @@ const createToken = async (userInfo)=>{
         const {email , password} = req.body;
 
         try {
-            let user = await UsersModel.findOne({email})
+            const lowercaseEmail = await email.toLowerCase()
+            let user = await UsersModel.findOne({email : lowercaseEmail})
 
             if(!user) return res.status(400).json({message:"Invalid email or password"} )
           
@@ -109,6 +110,7 @@ const createToken = async (userInfo)=>{
         const {username, password, email} = req.body;
 
         try {
+            const lowercaseEmail = await email.toLowerCase()
             let user = await UsersModel.findById(userID);
             if(!user){
                 return res.status(400).json({
@@ -117,7 +119,7 @@ const createToken = async (userInfo)=>{
             }
           
             user.username = username;
-            user.email = email;
+            user.email = lowercaseEmail;
          
             
             let hashedPassword;
@@ -132,7 +134,7 @@ const createToken = async (userInfo)=>{
             const userInfos = {
                 id: user._id,
                 username,
-                email,
+                email : lowercaseEmail,
                 password: password ? hashedPassword : user.password,
               };
               
@@ -153,7 +155,8 @@ const createToken = async (userInfo)=>{
         const {email , password} = req.body;
 
         try {
-            let user = await UsersModel.findOne({email})
+            const lowercaseEmail = email.toLowerCase()
+            let user = await UsersModel.findOne({email : lowercaseEmail})
             if(!user) return res.status(400).json({message: "Invalid email or password"})
 
             const validPassword = await bcrypt.compare(password , user.password.toString());
@@ -198,6 +201,7 @@ const createToken = async (userInfo)=>{
 
     const verifyEmail = async (req , res)=>{
         try {
+            
           const token_email = req.body.token_email;
         
           if(!token_email) return res.status(404).json({message:"email token not found ..."})

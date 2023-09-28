@@ -18,17 +18,20 @@ const keyJwt = process.env.KEY_JWT
 
         const { name, last_name, phone_number, username, password, repeat_password , email } =req.body;
 
+        
         try {
-            
-            let user = await BusinessOwnersModel.findOne({email})
+            const lowercaseEmail =await email.toLowerCase();
+            let user = await BusinessOwnersModel.findOne({email: lowercaseEmail})
 
             if(user) return res.status(400).json({
                 message : "User already exist"
             })
 
+         
+            
             
 
-            user = new BusinessOwnersModel({name,last_name,phone_number,username,password,email, token_email: crypto.randomBytes(64).toString("hex") ,});
+            user = new BusinessOwnersModel({name,last_name,phone_number,username,password,email:lowercaseEmail, token_email: crypto.randomBytes(64).toString("hex") ,});
 
             if( !name || !last_name || !phone_number || !username || !password || !repeat_password  || !email ){
 
@@ -36,7 +39,7 @@ const keyJwt = process.env.KEY_JWT
                     message : "All fields are required"
                 })
             }
-            if(!validator.isEmail(email)){
+            if(!validator.isEmail(lowercaseEmail)){
                 
                 res.status(400).json({
                     message :"Email must be a valid email"
@@ -63,7 +66,7 @@ const keyJwt = process.env.KEY_JWT
 
               sendVerificationMailBusinessOwner(user)
 
-              const userInfos = { id: user._id,name, last_name, phone_number, username, email, is_verified : user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date , password: user.password }
+              const userInfos = { id: user._id,name, last_name, phone_number, username, email : lowercaseEmail, is_verified : user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date , password: user.password }
               
 
               const token =await createToken(userInfos)
@@ -83,7 +86,8 @@ const keyJwt = process.env.KEY_JWT
         const {email , password} = req.body;
 
         try {
-            let user = await BusinessOwnersModel.findOne({email})
+            const lowercaseEmail = email.toLowerCase();
+            let user = await BusinessOwnersModel.findOne({email : lowercaseEmail })
 
             if(!user) return res.status(400).json({message: "Invalid email or password"})
           
@@ -120,11 +124,14 @@ const keyJwt = process.env.KEY_JWT
                     message: 'User not found',
                   });
             }
+
+            const lowercaseEmail = email.toLowerCase();
+
             user.name = name;
             user.last_name = last_name;
             user.phone_number = phone_number;
             user.username = username;
-            user.email = email;
+            user.email = lowercaseEmail;
             user.country_name = country_name;
             user.state_name = state_name;
             user.city_name = city_name,
@@ -146,7 +153,7 @@ const keyJwt = process.env.KEY_JWT
                 last_name,
                 phone_number,
                 username,
-                email,
+                email : lowercaseEmail,
                 password: password ? hashedPassword : user.password,
                 is_verified: user.is_verified,
                 country_name: user.country_name,
@@ -173,7 +180,8 @@ const keyJwt = process.env.KEY_JWT
         const {email , password} = req.body;
 
         try {
-            let user = await BusinessOwnersModel.findOne({email})
+            const lowercaseEmail = email.toLowerCase()
+            let user = await BusinessOwnersModel.findOne({email : lowercaseEmail})
             if(!user) return res.status(400).json({message: "Invalid email or password"})
 
             const validPassword = await bcrypt.compare(password , user.password.toString());
