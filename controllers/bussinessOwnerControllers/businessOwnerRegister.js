@@ -1,32 +1,39 @@
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const UsersModel = require("../models/users")
+const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersRegister")
 const validator = require("validator")
 const crypto = require("crypto")
-const { sendVerificationMailUsers } = require("../utils/senderVerificationMail/senderVerificationMailUser")
+const { sendVerificationMailBusinessOwner } = require("../../utils/senderVerificationMail/sendVerificationMailBusinessOwner")
 require('dotenv').config();
 const keyJwt = process.env.KEY_JWT
 
-const createToken = async (userInfo)=>{
+
+    const createToken = async (userInfo)=>{
     const token = await jwt.sign(userInfo,keyJwt,{expiresIn: "3d",});
     return token
     }
 
+
     const registerUser = async (req , res)=>{
 
-        const {username , password, repeat_password , email } =req.body;
+        const { name, last_name, phone_number, username, password, repeat_password , email } =req.body;
 
+        
         try {
             const lowercaseEmail =await email.toLowerCase();
-            let user = await UsersModel.findOne({email : lowercaseEmail })
+            let user = await BusinessOwnersModel.findOne({email: lowercaseEmail})
 
             if(user) return res.status(400).json({
                 message : "User already exist"
             })
 
-            user = new UsersModel({username,password,email : lowercaseEmail, token_email: crypto.randomBytes(64).toString("hex")});
+         
+            
+            
 
-            if(  !username || !password || !repeat_password  || !email ){
+            user = new BusinessOwnersModel({name,last_name,phone_number,username,password,email:lowercaseEmail, token_email: crypto.randomBytes(64).toString("hex") ,});
+
+            if( !name || !last_name || !phone_number || !username || !password || !repeat_password  || !email ){
 
                 res.status(400).json({
                     message : "All fields are required"
@@ -57,9 +64,9 @@ const createToken = async (userInfo)=>{
 
               await user.save()
 
-              sendVerificationMailUsers(user)
+              sendVerificationMailBusinessOwner(user)
 
-              const userInfos = { id: user._id, username, email : lowercaseEmail, is_verified : user.is_verified , registration_date:user.registration_date }
+              const userInfos = { id: user._id,name, last_name, phone_number, username, email : lowercaseEmail, is_verified : user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date , password: user.password }
               
 
               const token =await createToken(userInfos)
@@ -73,28 +80,29 @@ const createToken = async (userInfo)=>{
 
     }
 
+
     const loginUser = async (req , res)=>{
 
         const {email , password} = req.body;
 
         try {
-            const lowercaseEmail = await email.toLowerCase()
-            let user = await UsersModel.findOne({email : lowercaseEmail})
+            const lowercaseEmail = email.toLowerCase();
+            let user = await BusinessOwnersModel.findOne({email : lowercaseEmail })
 
-            if(!user) return res.status(400).json({message:"Invalid email or password"} )
+            if(!user) return res.status(400).json({message: "Invalid email or password"})
           
 
             const validPassword = await bcrypt.compare(password , user.password.toString());
             console.log(user);
-            if(!validPassword) return res.status(400).json({message:"Invalid email or password"})
-            if(!user.is_verified) return res.status(201).json({message:"You have not verified your email"})
+            if(!validPassword) return res.status(400).json({message: "Invalid email or password"})
+            if(!user.is_verified) return res.status(201).json({message: "You have not verified your email"})
 
-            const userInfos = { id: user._id,username : user.username , email:user.email,is_verified:user.is_verified , registration_date:user.registration_date }
+            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email,is_verified:user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner,registration_date:user.registration_date , password: user.password }
               
 
             const token =await createToken(userInfos)
 
-            res.status(200).json({userInfos,token})
+            res.status(200).json({ userInfos,token})
 
         } catch (error) {
             
@@ -107,20 +115,28 @@ const createToken = async (userInfo)=>{
     const updateinformation = async (req , res)=>{
 
         const userID = req.headers.authorization;
-        const {username, password, email} = req.body;
+        const { name, last_name, phone_number, username, password, email, country_name , state_name , city_name , address , brand_name } = req.body;
 
         try {
-            const lowercaseEmail = await email.toLowerCase()
-            let user = await UsersModel.findById(userID);
+            let user = await BusinessOwnersModel.findById(userID);
             if(!user){
                 return res.status(400).json({
                     message: 'User not found',
                   });
             }
-          
+
+            const lowercaseEmail = email.toLowerCase();
+
+            user.name = name;
+            user.last_name = last_name;
+            user.phone_number = phone_number;
             user.username = username;
             user.email = lowercaseEmail;
-         
+            user.country_name = country_name;
+            user.state_name = state_name;
+            user.city_name = city_name,
+            user.address = address;
+            user.brand_name = brand_name;
             
             let hashedPassword;
             if(password){
@@ -133,9 +149,19 @@ const createToken = async (userInfo)=>{
             await user.save()
             const userInfos = {
                 id: user._id,
+                name,
+                last_name,
+                phone_number,
                 username,
                 email : lowercaseEmail,
                 password: password ? hashedPassword : user.password,
+                is_verified: user.is_verified,
+                country_name: user.country_name,
+                state_name: user.state_name,
+                city_name: user.city_name,
+                address: user.address,
+                brand_name: user.brand_name,
+                
               };
               
               const token = await createToken(userInfos)
@@ -150,13 +176,12 @@ const createToken = async (userInfo)=>{
     
     }
 
-
     const resendEmailVerification =async (req , res)=>{
         const {email , password} = req.body;
 
         try {
             const lowercaseEmail = email.toLowerCase()
-            let user = await UsersModel.findOne({email : lowercaseEmail})
+            let user = await BusinessOwnersModel.findOne({email : lowercaseEmail})
             if(!user) return res.status(400).json({message: "Invalid email or password"})
 
             const validPassword = await bcrypt.compare(password , user.password.toString());
@@ -168,21 +193,19 @@ const createToken = async (userInfo)=>{
             }
             
             res.status(200).json({message: "we sent an email to you"} )
-            sendVerificationMailUsers(user)
+            sendVerificationMailBusinessOwner(user)
         } catch (error) {
             console.error(error)
             res.status(500).json(error.message)
         }
     }
 
- 
-
     const findeUser = async (req , res)=>{
 
         const userId = req.params.userId
 
         try {
-            const user = await UsersModel.findById({userId})
+            const user = await BusinessOwnersModel.findById({userId})
             res.status(200).json(user)
         } catch (error) {
             res.status(500).json(error)
@@ -192,7 +215,7 @@ const createToken = async (userInfo)=>{
 
     const getUsers = async ()=>{
         try {
-            const users = UsersModel.find({});
+            const users = BusinessOwnersModel.find({});
             res.status(200).json(users)
         } catch (error) {
             res.status(500).json(error)
@@ -201,12 +224,11 @@ const createToken = async (userInfo)=>{
 
     const verifyEmail = async (req , res)=>{
         try {
-            
           const token_email = req.body.token_email;
         
-          if(!token_email) return res.status(404).json({message:"email token not found ..."})
+          if(!token_email) return res.status(404).json({message:  "email token not found ..."})
           
-          const user = await UsersModel.findOne( {token_email} )
+          const user = await BusinessOwnersModel.findOne( {token_email} )
         
           if(user){
             user.token_email = null;
@@ -214,7 +236,7 @@ const createToken = async (userInfo)=>{
             
             await user.save()
 
-            const userInfos = { id: user._id, username : user.username , email:user.email , is_verified:user.is_verified , registration_date:user.registration_date }
+            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username , email:user.email , is_verified:user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date }
         
             const token = await createToken(userInfos)
         
@@ -223,7 +245,7 @@ const createToken = async (userInfo)=>{
               token,
             })
           } else{
-            res.status(404).json({message:"Emial verification failed, invalid token"})
+            res.status(404).json({message: "Emial verification failed, invalid token"} )
           }
         
         } catch (error) {
@@ -239,7 +261,7 @@ const createToken = async (userInfo)=>{
                 jwt.verify(token , keyJwt , (err , decoded)=>{
                     if(err) {
                         console.error(err.message)
-                        return res.status(400).json({message:"token is empty or invalid"})
+                        return res.status(400).json({message: "token is empty or invalid"} )
                     }else{
                         res.json(decoded);
                     }
@@ -255,7 +277,7 @@ const createToken = async (userInfo)=>{
             const userID = req.headers.authorization;
           
             try {
-              let user = await UsersModel.findById(userID);
+              let user = await BusinessOwnersModel.findById(userID);
           
               if (!user) {
                
@@ -275,18 +297,15 @@ const createToken = async (userInfo)=>{
             }
           };
 
-        module.exports = {
-            registerUser,
-            loginUser,
-            findeUser,
-            getUsers,
-            verifyEmail,
-            getMe,
-            resendEmailVerification,
-            updateinformation,
-            isPassword
-        }
 
-
-
-
+    module.exports = {
+        registerUser,
+        loginUser,
+        findeUser,
+        getUsers,
+        verifyEmail,
+        getMe,
+        resendEmailVerification,
+        updateinformation,
+        isPassword
+    }

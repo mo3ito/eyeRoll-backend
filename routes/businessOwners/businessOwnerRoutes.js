@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router();
-const {registerUser,loginUser,findeUser,getUsers,verifyEmail , getMe , resendEmailVerification ,updateinformation , isPassword} = require("../../controllers/businessOwnerControllers")
+const {registerUser,loginUser,findeUser,getUsers,verifyEmail , getMe , resendEmailVerification ,updateinformation , isPassword} = require("../../controllers/bussinessOwnerControllers/businessOwnerRegister")
 
 
 router.post("/business-owner/register", registerUser)
