@@ -71,6 +71,14 @@ const BusinessOwnersSchema = new Schema({
       is_businessOwner:{
         type : Boolean,
         default: true
+      },
+      postal_code:{
+        type: "String",
+        default:""
+      },
+      work_phone:{
+        type: "String",
+        default:""
       }
     
 })
