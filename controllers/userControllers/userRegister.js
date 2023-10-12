@@ -104,13 +104,13 @@ const createToken = async (userInfo)=>{
 
     }
 
-    const updateinformation = async (req , res)=>{
+    const updateInformation = async (req , res)=>{
 
         const userID = req.headers.authorization;
         const {username, password, email} = req.body;
 
         try {
-            const lowercaseEmail = await email.toLowerCase()
+           
             let user = await UsersModel.findById(userID);
             if(!user){
                 return res.status(400).json({
@@ -118,8 +118,11 @@ const createToken = async (userInfo)=>{
                   });
             }
           
-            user.username = username;
-            user.email = lowercaseEmail;
+           if(username) user.username = username;
+             if(email){
+                const lowercaseEmail = await email.toLowerCase()
+                user.email = lowercaseEmail;
+             } 
          
             
             let hashedPassword;
@@ -134,7 +137,7 @@ const createToken = async (userInfo)=>{
             const userInfos = {
                 id: user._id,
                 username,
-                email : lowercaseEmail,
+                email : user.email,
                 password: password ? hashedPassword : user.password,
               };
               
@@ -190,9 +193,9 @@ const createToken = async (userInfo)=>{
     }
 
 
-    const getUsers = async ()=>{
+    const getAllUser = async (req , res)=>{
         try {
-            const users = UsersModel.find({});
+            const users = await UsersModel.find({});
             res.status(200).json(users)
         } catch (error) {
             res.status(500).json(error)
@@ -279,11 +282,11 @@ const createToken = async (userInfo)=>{
             registerUser,
             loginUser,
             findeUser,
-            getUsers,
+            getAllUser,
             verifyEmail,
             getMe,
             resendEmailVerification,
-            updateinformation,
+            updateInformation,
             isPassword
         }
 

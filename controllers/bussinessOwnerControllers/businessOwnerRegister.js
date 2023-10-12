@@ -116,52 +116,50 @@ const keyJwt = process.env.KEY_JWT
 
     }
 
-    const updateinformation = async (req , res)=>{
-
+    const updateInformation = async (req, res) => {
         const userID = req.headers.authorization;
-        const { name, last_name, phone_number, username, password, email, country_name , state_name , city_name , address , brand_name ,  postal_code , work_phone } = req.body;
-
+    
         try {
             let user = await BusinessOwnersModel.findById(userID);
-            if(!user){
+            if (!user) {
                 return res.status(400).json({
                     message: 'User not found',
-                  });
+                });
             }
-
-            const lowercaseEmail = email.toLowerCase();
-
-            user.name = name;
-            user.last_name = last_name;
-            user.phone_number = phone_number;
-            user.username = username;
-            user.email = lowercaseEmail;
-            user.country_name = country_name;
-            user.state_name = state_name;
-            user.city_name = city_name,
-            user.address = address;
-            user.brand_name = brand_name;
-            user.postal_code = postal_code;
-            user.work_phone = work_phone
+    
+            const { name, last_name, phone_number, username, email, country_name, state_name, city_name, address, brand_name, postal_code, work_phone, password } = req.body;
+    
+            if (name) user.name = name;
+            if (last_name) user.last_name = last_name;
+            if (phone_number) user.phone_number = phone_number;
+            if (username) user.username = username;
+            if (email) {
+                const lowercaseEmail = email.toLowerCase();
+                user.email = lowercaseEmail;
+            }
+            if (country_name) user.country_name = country_name;
+            if (state_name) user.state_name = state_name;
+            if (city_name) user.city_name = city_name;
+            if (address) user.address = address;
+            if (brand_name) user.brand_name = brand_name;
+            if (postal_code) user.postal_code = postal_code;
+            if (work_phone) user.work_phone = work_phone;
             
-            let hashedPassword;
-            if(password){
-                const salt = await bcrypt.genSalt(10)
-                hashedPassword = await bcrypt.hash(password, salt);
+            if (password) {
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(password, salt);
                 user.password = hashedPassword;
             }
-           
-
-            await user.save()
+    
+            await user.save();
+    
             const userInfos = {
                 id: user._id,
-                name,
-                last_name,
-                phone_number,
-                username,
-                email : lowercaseEmail,
-                password: password ? hashedPassword : user.password,
-                is_verified: user.is_verified,
+                name: user.name,
+                last_name: user.last_name,
+                phone_number: user.phone_number,
+                username: user.username,
+                email: user.email,
                 country_name: user.country_name,
                 state_name: user.state_name,
                 city_name: user.city_name,
@@ -169,19 +167,13 @@ const keyJwt = process.env.KEY_JWT
                 brand_name: user.brand_name,
                 work_phone: user.work_phone,
                 postal_code: user.postal_code
-                
-              };
-              
-              const token = await createToken(userInfos)
-
-            res.status(200).json({userInfos, token });
+            };
     
+            res.status(200).json({ userInfos });
         } catch (error) {
-            console.error(error)
-            res.status(500).json(error.message)
+            console.error(error);
+            res.status(500).json(error.message);
         }
-
-    
     }
 
     const resendEmailVerification =async (req , res)=>{
@@ -221,9 +213,9 @@ const keyJwt = process.env.KEY_JWT
     }
 
 
-    const getUsers = async ()=>{
+    const getAllBusinessOwner = async (req , res)=>{
         try {
-            const users = BusinessOwnersModel.find({});
+            const users =await BusinessOwnersModel.find({});
             res.status(200).json(users)
         } catch (error) {
             res.status(500).json(error)
@@ -310,10 +302,10 @@ const keyJwt = process.env.KEY_JWT
         registerUser,
         loginUser,
         findeUser,
-        getUsers,
+        getAllBusinessOwner,
         verifyEmail,
         getMe,
         resendEmailVerification,
-        updateinformation,
+        updateInformation,
         isPassword
     }
