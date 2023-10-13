@@ -51,7 +51,7 @@ const BusinessOwnersSchema = new Schema({
         default: ""
         
     },
-    is_additional_specifications:{
+    is_furtherـinformation:{
         type:Boolean,
         default: false
         

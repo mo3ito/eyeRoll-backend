@@ -67,7 +67,7 @@ const keyJwt = process.env.KEY_JWT
 
               sendVerificationMailBusinessOwner(user)
 
-              const userInfos = { id: user._id,name, last_name, phone_number, username, email : lowercaseEmail, is_verified : user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date , password: user.password,
+              const userInfos = { id: user._id,name, last_name, phone_number, username, email : lowercaseEmail, is_verified : user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_furtherـinformation:user.is_furtherـinformation , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date , password: user.password,
                 postal_code: user.postal_code , work_phone: user.work_phone
             }
               
@@ -100,7 +100,7 @@ const keyJwt = process.env.KEY_JWT
             if(!validPassword) return res.status(400).json({message: "Invalid email or password"})
             if(!user.is_verified) return res.status(201).json({message: "You have not verified your email"})
 
-            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email,is_verified:user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner,registration_date:user.registration_date , password: user.password,
+            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username, password : user.password , email:user.email,is_verified:user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_furtherـinformation:user.is_furtherـinformation , is_businessOwner:user.is_businessOwner,registration_date:user.registration_date , password: user.password,
                 postal_code: user.postal_code , work_phone: user.work_phone
             }
               
@@ -237,7 +237,7 @@ const keyJwt = process.env.KEY_JWT
             
             await user.save()
 
-            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username , email:user.email , is_verified:user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_additional_specifications:user.is_additional_specifications , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date }
+            const userInfos = { id: user._id,name:user.name, last_name:user.last_name, phone_number: user.phone_number, username : user.username , email:user.email , is_verified:user.is_verified , country_name:user.country_name , state_name:user.state_name , city_name: user.city_name , address:user.address , brand_name: user.brand_name , is_furtherـinformation:user.is_furtherـinformation , is_businessOwner:user.is_businessOwner , registration_date:user.registration_date }
         
             const token = await createToken(userInfos)
         
