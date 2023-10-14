@@ -15,7 +15,11 @@ const addProduct = async (req, res) => {
     req.body;
 
   try {
-    if (!productAssortment || !productName || !productPrice) {
+    if (
+      (!productAssortment || productAssortment.trim() === "") ||
+      (!productName || productName.trim() === "") ||
+      (!productPrice || productPrice.trim() === "")
+    )  {
       return res.status(400).json({
         message: "Please fill all required fields.",
       });
