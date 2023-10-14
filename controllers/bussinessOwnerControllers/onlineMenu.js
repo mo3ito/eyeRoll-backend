@@ -59,7 +59,11 @@ const updateProduct = async (req, res) => {
     const { productAssortment, productName, productPrice, productDescription } =
       req.body;
 
-    if (!productAssortment && !productName && !productPrice) {
+    if (
+      (!productAssortment || productAssortment.trim() === "") ||
+      (!productName || productName.trim() === "") ||
+      (!productPrice || productPrice.trim() === "")
+    ) {
       return res.status(400).json({
         message: "At least one field to update is required.",
       });
