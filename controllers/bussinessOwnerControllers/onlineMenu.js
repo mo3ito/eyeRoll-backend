@@ -21,6 +21,14 @@ const addProduct = async (req, res) => {
       });
     }
 
+    const existingProduct = await OnlineMenuModel.findOne({ productName });
+
+    if (existingProduct) {
+      return res.status(400).json({
+        message: "A product with the same name already exists in the online menu.",
+      });
+    }
+
     const productInformation = {
       assortment,
       productName,
