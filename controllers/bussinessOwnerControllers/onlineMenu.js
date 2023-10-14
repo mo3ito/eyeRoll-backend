@@ -1,15 +1,146 @@
+const OnlineMenuModel = require("../../models/BusinessOwners/OnlineMenu");
 
+const getAllProduct = async (req, res) => {
+  try {
+    const products = await OnlineMenuModel.find({});
+    res.status(200).json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+};
 
+const addProduct = async (req, res) => {
+  const { assortment, productName, productPrice, productDescription } =
+    req.body;
 
+  try {
+    if (!assortment || !productName || !productPrice) {
+      return res.status(400).json({
+        message: "Please fill all required fields.",
+      });
+    }
 
+    const productInformation = {
+      assortment,
+      productName,
+      productPrice,
+      productDescription,
+    };
+    const onlineMenu = new OnlineMenuModel(productInformation);
 
-const getMenu = async (req , res)=>{
+    await onlineMenu.save();
 
-    const {assortment , productName , productPrice , productDescription } = req.body
+    res.status(200).json({
+      message: "Product added to the online menu successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+};
 
-try {
-    
-} catch (error) {
-    
-}
-}
+const updateProduct = async (req, res) => {
+  const productID = req.headers.authorization;
+
+  try {
+    const { assortment, productName, productPrice, productDescription } =
+      req.body;
+
+    if (!assortment && !productName && !productPrice) {
+      return res.status(400).json({
+        message: "At least one field to update is required.",
+      });
+    }
+
+    const product = await OnlineMenuModel.findById(productID);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found.",
+      });
+    }
+
+    if (assortment) {
+      product.assortment = assortment;
+    }
+
+    if (productName) {
+      product.productName = productName;
+    }
+
+    if (productPrice) {
+      product.productPrice = productPrice;
+    }
+
+    if (productDescription) {
+      product.productDescription = productDescription;
+    }
+
+    await product.save();
+    res.status(200).json({
+      message: "Your product has been edited successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+};
+
+const deleteProduct = async (req, res) => {
+  const productID = req.headers.authorization;
+
+  try {
+    if (!productID) {
+      return res.status(400).json({
+        message: "Product ID is required for deletion.",
+      });
+    }
+
+    const product = await OnlineMenuModel.findById(productID);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found.",
+      });
+    }
+
+    await OnlineMenuModel.findByIdAndDelete(productID);
+
+    res.status(200).json({
+      message: "Product deleted successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+};
+
+const findProduct = async (req, res) => {
+  const productID = req.headers.authorization;
+  try {
+    if (!productID) {
+      return res.status(400).json({
+        message: "Product ID is required for finding a product.",
+      });
+    }
+    const targetProduct = await OnlineMenuModel.findById(productID);
+    if (!targetProduct) {
+      return res.status(404).json({
+        message: "Product not found.",
+      });
+    }
+    res.status(200).json(targetProduct);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+};
+
+module.exports = {
+  getAllProduct,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  findProduct,
+};

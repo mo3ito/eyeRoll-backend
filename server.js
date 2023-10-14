@@ -5,6 +5,7 @@ const cors = require("cors")
 const app = express()
 const businessOwners = require("./routes/businessOwners/businessOwnerRoutes")
 const users = require("./routes/users/usersRoutes")
+const businessOwnersOnlineMenu = require("./routes/businessOwners/onlineMenu")
 require('dotenv').config();
 
 mongoose.connect("mongodb://localhost:27017/discount")
@@ -22,5 +23,6 @@ app.get("/",(req , res)=>{
 
 
 app.use("/",businessOwners)
+app.use("/",businessOwnersOnlineMenu)
 app.use("/",users)
 

@@ -21,6 +21,6 @@ const OnlineMenuSchema = new Schema({
 
 })
 
-const onlineMenuModel = new mongoose.model("online-menu" , OnlineMenuSchema)
+const OnlineMenu = new mongoose.model("online-menu" , OnlineMenuSchema)
 
-module.exports = onlineMenuModel
+module.exports = OnlineMenu;
