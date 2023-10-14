@@ -3,8 +3,8 @@ const express = require ("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const app = express()
-const businessOwners = require("./routes/businessOwners/businessOwnerRoutes")
-const users = require("./routes/users/usersRoutes")
+const businessOwnersRegisteration = require("./routes/businessOwners/registeration")
+const usersRegisteration  = require("./routes/users/registeration")
 const businessOwnersOnlineMenu = require("./routes/businessOwners/onlineMenu")
 require('dotenv').config();
 
@@ -22,7 +22,7 @@ app.get("/",(req , res)=>{
 })
 
 
-app.use("/",businessOwners)
+app.use("/",businessOwnersRegisteration)
 app.use("/",businessOwnersOnlineMenu)
-app.use("/",users)
+app.use("/",usersRegisteration)
 
