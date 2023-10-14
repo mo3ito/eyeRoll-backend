@@ -11,11 +11,11 @@ const getAllProduct = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-  const { assortment, productName, productPrice, productDescription } =
+  const { productAssortment, productName, productPrice, productDescription } =
     req.body;
 
   try {
-    if (!assortment || !productName || !productPrice) {
+    if (!productAssortment || !productName || !productPrice) {
       return res.status(400).json({
         message: "Please fill all required fields.",
       });
@@ -30,7 +30,7 @@ const addProduct = async (req, res) => {
     }
 
     const productInformation = {
-      assortment,
+      productAssortment,
       productName,
       productPrice,
       productDescription,
@@ -52,10 +52,10 @@ const updateProduct = async (req, res) => {
   const productID = req.headers.authorization;
 
   try {
-    const { assortment, productName, productPrice, productDescription } =
+    const { productAssortment, productName, productPrice, productDescription } =
       req.body;
 
-    if (!assortment && !productName && !productPrice) {
+    if (!productAssortment && !productName && !productPrice) {
       return res.status(400).json({
         message: "At least one field to update is required.",
       });
@@ -69,8 +69,8 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    if (assortment) {
-      product.assortment = assortment;
+    if (productAssortment) {
+      product.productAssortment = productAssortment;
     }
 
     if (productName) {

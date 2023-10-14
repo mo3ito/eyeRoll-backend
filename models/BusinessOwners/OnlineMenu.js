@@ -7,7 +7,7 @@ const OnlineMenuSchema = new Schema({
         type:"String",
         required: true,
     },
-    assortment:{
+    productAssortment:{
         type:"String",
         required: true,
     },
