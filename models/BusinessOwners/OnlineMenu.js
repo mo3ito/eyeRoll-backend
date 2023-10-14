@@ -3,6 +3,10 @@ const {Schema} = mongoose;
 
 const OnlineMenuSchema = new Schema({
 
+    businessOwnerId:{
+        type: "String",
+        default:""
+    },
     productName:{
         type:"String",
         required: true,

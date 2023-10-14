@@ -11,7 +11,7 @@ const getAllProduct = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-  const { productAssortment, productName, productPrice, productDescription } =
+  const { productAssortment, productName, productPrice, productDescription , businessOwnerId } =
     req.body;
 
   try {
@@ -34,6 +34,7 @@ const addProduct = async (req, res) => {
     }
 
     const productInformation = {
+      businessOwnerId,
       productAssortment,
       productName,
       productPrice,
