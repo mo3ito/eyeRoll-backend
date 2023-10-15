@@ -137,14 +137,14 @@ const deleteProduct = async (req, res) => {
 };
 
 const findProduct = async (req, res) => {
-  const productID = req.headers.authorization;
+  const businessOwnerId = req.headers.authorization;
   try {
-    if (!productID) {
+    if (!businessOwnerId) {
       return res.status(400).json({
-        message: "Product ID is required for finding a product.",
+        message: "No business owner was found with this profile",
       });
     }
-    const targetProduct = await OnlineMenuModel.findById(productID);
+    const targetProduct = await OnlineMenuModel.find({businessOwnerId});
     if (!targetProduct) {
       return res.status(404).json({
         message: "Product not found.",
