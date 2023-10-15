@@ -25,7 +25,10 @@ const addProduct = async (req, res) => {
       });
     }
 
-    const existingProduct = await OnlineMenuModel.findOne({ productName });
+    const existingProduct = await OnlineMenuModel.findOne({
+      productName,
+      businessOwnerId,
+    });
 
     if (existingProduct) {
       return res.status(400).json({
