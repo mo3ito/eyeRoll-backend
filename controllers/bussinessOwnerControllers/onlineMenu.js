@@ -25,6 +25,12 @@ const addProduct = async (req, res) => {
       });
     }
 
+   if(!businessOwnerId){
+    return res.status(400).json({
+      message: "The ID of the business owner was not found",
+    });
+   }
+
     const existingProduct = await OnlineMenuModel.findOne({
       productName,
       businessOwnerId,
