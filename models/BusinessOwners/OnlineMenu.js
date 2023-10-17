@@ -19,6 +19,9 @@ const OnlineMenuSchema = new Schema({
         type:"String",
         required: true
     },
+    productPricePetty:{
+        type:"String",
+    },
     productDescription:{
         type:"String",
     }

@@ -42,12 +42,13 @@ const addProduct = async (req, res) => {
       });
     }
 
-    const finallyProductPrice = productPricePetty ? `${productPrice}.${productPricePetty}` : productPrice
+    let finallyProductPricePetty = productPricePetty !== 0 ? productPricePetty : ""
     const productInformation = {
       businessOwnerId,
       productAssortment,
       productName,
-      productPrice: finallyProductPrice,
+      productPrice,
+      productPricePetty : finallyProductPricePetty,
       productDescription,
     };
     const onlineMenu = new OnlineMenuModel(productInformation);
@@ -67,7 +68,7 @@ const updateProduct = async (req, res) => {
   const productID = req.headers.authorization;
 
   try {
-    const { productAssortment, productName, productPrice, productDescription } =
+    const { productAssortment, productName, productPrice, productDescription , productPricePetty} =
       req.body;
 
     if (
@@ -98,6 +99,12 @@ const updateProduct = async (req, res) => {
 
     if (productPrice) {
       product.productPrice = productPrice;
+    }
+
+    if (productPricePetty === "" || +productPricePetty === 0) {
+      product.productPricePetty = "";
+    } else {
+      product.productPricePetty = productPricePetty;
     }
 
     if (productDescription) {
