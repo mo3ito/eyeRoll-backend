@@ -11,7 +11,7 @@ const getAllProduct = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
-  const { productAssortment, productName, productPrice, productDescription , businessOwnerId } =
+  const { productAssortment, productName, productPrice, productDescription , businessOwnerId , productPricePetty } =
     req.body;
 
   try {
@@ -42,11 +42,12 @@ const addProduct = async (req, res) => {
       });
     }
 
+    const finallyProductPrice = productPricePetty ? `${productPrice}.${productPricePetty}` : productPrice
     const productInformation = {
       businessOwnerId,
       productAssortment,
       productName,
-      productPrice,
+      productPrice: finallyProductPrice,
       productDescription,
     };
     const onlineMenu = new OnlineMenuModel(productInformation);
