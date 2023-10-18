@@ -164,7 +164,8 @@ const findProduct = async (req, res) => {
         message: "Product not found.",
       });
     }
-    res.status(200).json(targetProduct);
+    const reversedTargetProduct = await targetProduct.reverse();
+    res.status(200).json(reversedTargetProduct);
   } catch (error) {
     console.error(error);
     res.status(500).json(error.message);
