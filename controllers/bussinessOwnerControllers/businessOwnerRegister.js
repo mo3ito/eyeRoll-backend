@@ -151,6 +151,14 @@ const keyJwt = process.env.KEY_JWT
                 const hashedPassword = await bcrypt.hash(password, salt);
                 user.password = hashedPassword;
             }
+
+            if(country_name && state_name && city_name && address && brand_name && name && last_name && phone_number && username && email ){
+                user.is_furtherـinformation = true
+            } else{
+                user.is_furtherـinformation = false
+            }
+                
+                
     
             await user.save();
     
@@ -167,7 +175,8 @@ const keyJwt = process.env.KEY_JWT
                 address: user.address,
                 brand_name: user.brand_name,
                 work_phone: user.work_phone,
-                postal_code: user.postal_code
+                postal_code: user.postal_code,
+                is_furtherـinformation: user.is_furtherـinformation
             };
     
             res.status(200).json({ userInfos });
