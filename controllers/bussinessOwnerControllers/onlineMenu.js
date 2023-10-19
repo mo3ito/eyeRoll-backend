@@ -107,7 +107,7 @@ const updateProduct = async (req, res) => {
       product.productPricePetty = productPricePetty;
     }
 
-    if (productDescription) {
+    if (productDescription || productDescription === "" ) {
       product.productDescription = productDescription;
     }
 

@@ -253,6 +253,7 @@ const updateInformation = async (req, res) => {
       work_phone: user.work_phone,
       postal_code: user.postal_code,
       is_further_information: user.is_further_information,
+      is_businessOwner: user.is_businessOwner
     };
 
     const token = await createToken(userInfos);
