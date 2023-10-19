@@ -229,11 +229,12 @@ const updateInformation = async (req, res) => {
       last_name &&
       phone_number &&
       username &&
-      email
+      email&&
+      postal_code
     ) {
-      user.is_further_information = true;
+      user.is_furtherـinformation = true;
     } else {
-      user.is_further_information = false;
+      user.is_furtherـinformation = false;
     }
 
     await user.save();
@@ -250,12 +251,12 @@ const updateInformation = async (req, res) => {
       city_name: user.city_name,
       address: user.address,
       brand_name: user.brand_name,
-      is_further_information: user.is_further_information,
+      is_further_information: user.is_furtherـinformation,
       is_businessOwner: user.is_businessOwner,
       is_verified:user.is_verified,
       work_phone: user.work_phone,
       postal_code: user.postal_code,
-      registration_date: user.registration_date
+      registration_date: user.registration_date,
     };
 
     const token = await createToken(userInfos);
