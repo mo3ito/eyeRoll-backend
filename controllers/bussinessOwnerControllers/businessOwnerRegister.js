@@ -250,10 +250,12 @@ const updateInformation = async (req, res) => {
       city_name: user.city_name,
       address: user.address,
       brand_name: user.brand_name,
+      is_further_information: user.is_further_information,
+      is_businessOwner: user.is_businessOwner,
+      is_verified:user.is_verified,
       work_phone: user.work_phone,
       postal_code: user.postal_code,
-      is_further_information: user.is_further_information,
-      is_businessOwner: user.is_businessOwner
+      registration_date: user.registration_date
     };
 
     const token = await createToken(userInfos);
