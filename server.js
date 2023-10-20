@@ -6,6 +6,7 @@ const app = express()
 const businessOwnersRegisteration = require("./routes/businessOwners/registeration")
 const usersRegisteration  = require("./routes/users/registeration")
 const businessOwnersOnlineMenu = require("./routes/businessOwners/onlineMenu")
+const rollSetting = require("./routes/businessOwners/rolls")
 require('dotenv').config();
 
 mongoose.connect("mongodb://localhost:27017/discount")
@@ -25,4 +26,5 @@ app.get("/",(req , res)=>{
 app.use("/",businessOwnersRegisteration)
 app.use("/",businessOwnersOnlineMenu)
 app.use("/",usersRegisteration)
+app.use("/",rollSetting)
 
