@@ -44,8 +44,8 @@ const BORollSettingSchema = new Schema({
         default:""
     },
     special_product_discount: {
-        type: Object,
-        default: {},
+        type: Array,
+        default: [],
     },
     gift:{
         type:"String",
