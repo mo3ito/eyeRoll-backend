@@ -1,25 +1,37 @@
-const BoRollSettingModel = require("../../models/BusinessOwners/BORollSetting")
+const RollSettingModel = require("../../models/BusinessOwners/Roll")
 
 
 
 
 const getAllAlgoritm = async (req , res)=>{
 
+    const businessOwnerId = req.headers.authorization;
+
     const {businessOwner_name,
         businessOwner_last_name,
         businessOwner_id,
-        firstـpercentageـrange,
-        secondـpercentageـrange,
-        first_time_discount,
-        last_time_discount,
-        gift,
-        peak_time_discount,
-        special_product_discount,
+        firstـpercentage,
+        lastـpercentage,
         first_date,
-        last_date } = req.body
+        last_date,
+        first_date_peak,
+        last_date_peak,
+        first_percentage_peak,
+        last_percentage_peak,
+        special_product_discount,
+        gift
+     } = req.body
 
     try {
-        if(!firstـpercentageـrange && !first_time_discount && !last_time_discount && !first_date  ){
+
+       
+
+        if (!businessOwnerId) {
+            return res.status(400).json({
+              message: "No business owner was found with this profile",
+            })}
+
+        if((!firstـpercentage && !first_date) || (!first_date && !special_product_discount) ){
 
             return res.status(400).json({
                 message: "Please fill all required fields.",
@@ -30,21 +42,25 @@ const getAllAlgoritm = async (req , res)=>{
                 message: "The ID of the business owner was not found",
               });
         }
+        
 
+        
         const informationRoll = {businessOwner_name,
             businessOwner_last_name,
             businessOwner_id,
-            firstـpercentageـrange,
-            first_time_discount,
-            secondـpercentageـrange,
-            gift,
-            last_time_discount,
-            peak_time_discount,
-            special_product_discount,
+            firstـpercentage,
+            lastـpercentage,
             first_date,
-            last_date }
+            last_date,
+            first_date_peak,
+            last_date_peak,
+            first_percentage_peak,
+            last_percentage_peak,
+            special_product_discount,
+            gift
+         }
 
-            const newRollSetting = await new BoRollSettingModel(informationRoll)
+            const newRollSetting = await new RollSettingModel(informationRoll)
 
             newRollSetting.save()
 
