@@ -24,7 +24,7 @@ const BORollSettingSchema = new Schema({
         default: null,
     },
     last_date:{
-        type : "String",
+        type : Date,
         default: null,
     },
     first_date_peak:{
