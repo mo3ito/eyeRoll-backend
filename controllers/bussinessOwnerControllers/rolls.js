@@ -7,16 +7,17 @@ const getAllAlgoritm = async (req, res) => {
     businessOwner_name,
     businessOwner_last_name,
     businessOwner_id,
-    firstـpercentage,
-    lastـpercentage,
+    minـpercentage,
+    maxـpercentage,
     first_date,
     last_date,
     first_date_peak,
     last_date_peak,
-    first_percentage_peak,
-    last_percentage_peak,
+    min_percentage_peak,
+    max_percentage_peak,
     special_product_discount,
     gift,
+    number_Purchase_gift,
   } = req.body;
 
   try {
@@ -31,22 +32,23 @@ const getAllAlgoritm = async (req, res) => {
     });
 
     if (
-      (first_date && firstـpercentage) ||
+      (first_date && minـpercentage) ||
       (first_date && special_product_discount)
     ) {
       if (existingSetting) {
         existingSetting.businessOwner_name = businessOwner_name;
         existingSetting.businessOwner_last_name = businessOwner_last_name;
-        existingSetting.firstـpercentage = firstـpercentage;
-        existingSetting.lastـpercentage = lastـpercentage;
+        existingSetting.minـpercentage = minـpercentage;
+        existingSetting.max_percentage = maxـpercentage;
         existingSetting.first_date = first_date;
         existingSetting.last_date = last_date;
         existingSetting.first_date_peak = first_date_peak;
         existingSetting.last_date_peak = last_date_peak;
-        existingSetting.first_percentage_peak = first_percentage_peak;
-        existingSetting.last_percentage_peak = last_percentage_peak;
+        existingSetting.min_percentage_peak = min_percentage_peak;
+        existingSetting.max_percentage_peak = max_percentage_peak;
         existingSetting.special_product_discount = special_product_discount;
         existingSetting.gift = gift;
+        existingSetting.number_Purchase_gift= number_Purchase_gift
 
         await existingSetting.save();
 
@@ -57,16 +59,17 @@ const getAllAlgoritm = async (req, res) => {
           businessOwner_name,
           businessOwner_last_name,
           businessOwner_id,
-          firstـpercentage,
-          lastـpercentage,
+          minـpercentage,
+          maxـpercentage,
           first_date,
           last_date,
           first_date_peak,
           last_date_peak,
-          first_percentage_peak,
-          last_percentage_peak,
+          min_percentage_peak,
+          max_percentage_peak,
           special_product_discount,
           gift,
+          number_Purchase_gift
         });
 
         await newRollSetting.save();
@@ -84,6 +87,9 @@ const getAllAlgoritm = async (req, res) => {
   }
 };
 
-const getDiscount = async (req, res) => {};
+const getDiscount = async (req, res) => {
+
+
+};
 
 module.exports = { getAllAlgoritm };

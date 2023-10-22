@@ -11,11 +11,11 @@ const BORollSettingSchema = new Schema({
     businessOwner_id:{
         type:"String",
     },
-    firstـpercentage:{
+    minـpercentage:{
         type:"String",
         default:""
     },
-    lastـpercentage:{
+    maxـpercentage:{
         type:"String",
         default:""
     },
@@ -35,11 +35,11 @@ const BORollSettingSchema = new Schema({
         type : Date,
         default: null,
     },
-    first_percentage_peak:{
+    min_percentage_peak:{
         type:"String",
         default:""
     },
-    last_percentage_peak:{
+    max_percentage_peak:{
         type:"String",
         default:""
     },
@@ -50,6 +50,9 @@ const BORollSettingSchema = new Schema({
     gift:{
         type:"String",
     },
+    number_Purchase_gift:{
+        type:"String",
+    }
    
 })
 

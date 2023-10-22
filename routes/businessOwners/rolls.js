@@ -5,7 +5,7 @@ const {getAllAlgoritm} = require("../../controllers/bussinessOwnerControllers/ro
 
 
 
-router.post("/roll-setting/getAll", getAllAlgoritm)
+router.post("/roll/getAll", getAllAlgoritm)
 
 
 
