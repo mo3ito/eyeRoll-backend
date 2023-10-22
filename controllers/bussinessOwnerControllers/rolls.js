@@ -39,7 +39,7 @@ const getAllAlgoritm = async (req, res) => {
         existingSetting.businessOwner_name = businessOwner_name;
         existingSetting.businessOwner_last_name = businessOwner_last_name;
         existingSetting.minـpercentage = minـpercentage;
-        existingSetting.max_percentage = maxـpercentage;
+        existingSetting.maxـpercentage = maxـpercentage;
         existingSetting.first_date = first_date;
         existingSetting.last_date = last_date;
         existingSetting.first_date_peak = first_date_peak;
