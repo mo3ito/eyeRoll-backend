@@ -87,9 +87,25 @@ const getAllAlgoritm = async (req, res) => {
   }
 };
 
-const getDiscount = async (req, res) => {
+const informationDiscount = async (req, res) => {
 
+  const {user_id , businessOwner_id } = req.body;
+
+  if(!user_id){
+    res.status(400).json({
+      message : "User ID not found."
+    })
+  }
+  if(!businessOwner_id){
+    res.status(400).json({
+      message : "business owner ID not found."
+    })
+  }
+
+  const businessOwnerDiscountInfo = await RollSettingModel.findOne({businessOwner_id})
+
+  console.log(businessOwnerDiscountInfo);
 
 };
 
-module.exports = { getAllAlgoritm };
+module.exports = { getAllAlgoritm , informationDiscount};

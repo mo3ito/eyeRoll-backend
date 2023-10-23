@@ -1,11 +1,12 @@
 const express = require("express")
 const router = express.Router()
-const {getAllAlgoritm} = require("../../controllers/bussinessOwnerControllers/rolls")
+const {getAllAlgoritm , informationDiscount} = require("../../controllers/bussinessOwnerControllers/rolls")
 
 
 
 
 router.post("/roll/getAll", getAllAlgoritm)
+router.post("information-discount" , informationDiscount )
 
 
 
