@@ -1,4 +1,8 @@
 const RollSettingModel = require("../../models/BusinessOwners/Roll");
+const UsersModel = require("../../models/Users/UsersRegister")
+const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersRegister") 
+require("dotenv").config();
+
 
 const getAllAlgoritm = async (req, res) => {
   const businessOwnerId = req.headers.authorization;
@@ -91,20 +95,36 @@ const informationDiscount = async (req, res) => {
 
   const {user_id , businessOwner_id } = req.body;
 
-  if(!user_id){
+  const userId = await UsersModel.findById(user_id)
+  const businessOwnerId = await BusinessOwnersModel.findById(businessOwner_id)
+  console.log('userId',userId);
+  console.log('business owner id',  businessOwnerId);
+
+  if(!userId){
     res.status(400).json({
-      message : "User ID not found."
+      message : "User not found."
     })
   }
-  if(!businessOwner_id){
+  if(!businessOwnerId){
     res.status(400).json({
-      message : "business owner ID not found."
+      message : "business owner not found."
     })
   }
 
-  const businessOwnerDiscountInfo = await RollSettingModel.findOne({businessOwner_id})
 
-  console.log(businessOwnerDiscountInfo);
+
+  try {
+    const businessOwnerDiscountInfo = await RollSettingModel.findOne({ businessOwner_id: businessOwnerId });
+    if (!businessOwnerDiscountInfo) {
+      res.status(400).json({
+        message : "business owner not found."
+      })
+    }
+    res.status(200).json(businessOwnerDiscountInfo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred while fetching data" });
+  }
 
 };
 

@@ -94,7 +94,7 @@ const registerUser = async (req, res) => {
       city_name: user.city_name,
       address: user.address,
       brand_name: user.brand_name,
-      is_furtherـinformation: user.is_furtherـinformation,
+      is_complete_information: user.is_complete_information,
       is_businessOwner: user.is_businessOwner,
       registration_date: user.registration_date,
       password: user.password,
@@ -147,7 +147,7 @@ const loginUser = async (req, res) => {
       city_name: user.city_name,
       address: user.address,
       brand_name: user.brand_name,
-      is_furtherـinformation: user.is_furtherـinformation,
+      is_complete_information: user.is_complete_information,
       is_businessOwner: user.is_businessOwner,
       registration_date: user.registration_date,
       password: user.password,
@@ -232,9 +232,9 @@ const updateInformation = async (req, res) => {
       email&&
       postal_code
     ) {
-      user.is_furtherـinformation = true;
+      user.is_complete_information = true;
     } else {
-      user.is_furtherـinformation = false;
+      user.is_complete_information = false;
     }
 
     await user.save();
@@ -251,7 +251,7 @@ const updateInformation = async (req, res) => {
       city_name: user.city_name,
       address: user.address,
       brand_name: user.brand_name,
-      is_further_information: user.is_furtherـinformation,
+      is_complete_information: user.is_complete_information,
       is_businessOwner: user.is_businessOwner,
       is_verified:user.is_verified,
       work_phone: user.work_phone,
@@ -347,7 +347,7 @@ const verifyEmail = async (req, res) => {
         city_name: user.city_name,
         address: user.address,
         brand_name: user.brand_name,
-        is_furtherـinformation: user.is_furtherـinformation,
+        is_complete_information: user.is_complete_information,
         is_businessOwner: user.is_businessOwner,
         registration_date: user.registration_date,
       };
