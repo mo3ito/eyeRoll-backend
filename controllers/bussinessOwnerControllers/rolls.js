@@ -91,26 +91,7 @@ const getAllAlgoritm = async (req, res) => {
   }
 };
 
-// const informationDiscount = async (req, res) => {
-//   const { user_id, businessOwner_id } = req.body;
 
-//   const user = await UsersModel.findById({user_id});
-//   const businessOwner = await BusinessOwnersModel.findById({businessOwner_id});
-
-//   // if (user === null) {
-//   //   return res.status(400).json({
-//   //     message: "user not found",
-//   //   });
-//   // }
-
-//   // if (businessOwner === null) {
-//   //   return res.status(400).json({
-//   //     message: "business owner not found",
-//   //   });
-//   // }
-
-//   res.status(200).json(businessOwner);
-// };
 
 const discountInformation = async (req, res) => {
   const { user_id, businessOwner_id } = req.body;
@@ -130,9 +111,39 @@ const discountInformation = async (req, res) => {
   //   });
   // }
 
-  const RollOptionBusinessOwner =await RollOptionModel.findOne({businessOwner_id})
+  const rollOptionBusinessOwner = await RollOptionModel.findOne({businessOwner_id})
+
+  const currentDate = new Date();
+
+  let selectedData;
+
+  if (
+    currentDate >= new Date(rollOptionBusinessOwner.first_date) &&
+    currentDate <= new Date(rollOptionBusinessOwner.last_date)
+  ) {
+    selectedData = {
+      min_percentage: rollOptionBusinessOwner.minـpercentage,
+      max_percentage: rollOptionBusinessOwner.maxـpercentage
+    };
+  } else if (
+    currentDate >= new Date(rollOptionBusinessOwner.first_date_peak) &&
+    currentDate <= new Date(rollOptionBusinessOwner.last_date_peak)
+  ) {
+    selectedData = {
+      min_percentage: rollOptionBusinessOwner.min_percentage_peak,
+      max_percentage: rollOptionBusinessOwner.max_percentage_peak
+    };
+  } else {
+    // اگر تاریخ فعلی بین هیچ یک از دو دوره نبود
+    return res.status(400).json({
+      message: "No applicable discount information for the current date"
+    });
+  }
+
+  res.status(200).json(selectedData);
+
   
-  res.status(200).json(RollOptionBusinessOwner)
+ 
   
 }
 
