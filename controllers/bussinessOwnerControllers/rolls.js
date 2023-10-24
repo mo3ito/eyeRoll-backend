@@ -1,4 +1,4 @@
-const RollSettingModel = require("../../models/BusinessOwners/Roll");
+const RollOptionModel = require("../../models/BusinessOwners/Roll");
 const UsersModel = require("../../models/Users/UsersRegister")
 const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersRegister") 
 require("dotenv").config();
@@ -31,7 +31,7 @@ const getAllAlgoritm = async (req, res) => {
       });
     }
 
-    const existingSetting = await RollSettingModel.findOne({
+    const existingSetting = await RollOptionModel.findOne({
       businessOwner_id: businessOwnerId,
     });
 
@@ -59,7 +59,7 @@ const getAllAlgoritm = async (req, res) => {
         res.status(200).json({ message: "Information updated successfully" });
       } else {
         // اگر اطلاعات وجود نداشت، یک مدل جدید ایجاد کنید و اطلاعات را ذخیره کنید
-        const newRollSetting = new RollSettingModel({
+        const newRollSetting = new RollOptionModel({
           businessOwner_name,
           businessOwner_last_name,
           businessOwner_id,
@@ -91,41 +91,49 @@ const getAllAlgoritm = async (req, res) => {
   }
 };
 
-const informationDiscount = async (req, res) => {
+// const informationDiscount = async (req, res) => {
+//   const { user_id, businessOwner_id } = req.body;
 
-  const {user_id , businessOwner_id } = req.body;
+//   const user = await UsersModel.findById({user_id});
+//   const businessOwner = await BusinessOwnersModel.findById({businessOwner_id});
 
-  const userId = await UsersModel.findById(user_id)
-  const businessOwnerId = await BusinessOwnersModel.findById(businessOwner_id)
-  console.log('userId',userId);
-  console.log('business owner id',  businessOwnerId);
+//   // if (user === null) {
+//   //   return res.status(400).json({
+//   //     message: "user not found",
+//   //   });
+//   // }
 
-  if(!userId){
-    res.status(400).json({
-      message : "User not found."
-    })
-  }
-  if(!businessOwnerId){
-    res.status(400).json({
-      message : "business owner not found."
-    })
-  }
+//   // if (businessOwner === null) {
+//   //   return res.status(400).json({
+//   //     message: "business owner not found",
+//   //   });
+//   // }
 
+//   res.status(200).json(businessOwner);
+// };
 
+const discountInformation = async (req, res) => {
+  const { user_id, businessOwner_id } = req.body;
 
-  try {
-    const businessOwnerDiscountInfo = await RollSettingModel.findOne({ businessOwner_id: businessOwnerId });
-    if (!businessOwnerDiscountInfo) {
-      res.status(400).json({
-        message : "business owner not found."
-      })
-    }
-    res.status(200).json(businessOwnerDiscountInfo);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "An error occurred while fetching data" });
-  }
+  const user = await UsersModel.findOne({_id : user_id });
+  const businessOwner = await BusinessOwnersModel.findById(businessOwner_id);
 
-};
+  // if (!user) {
+  //   res.status(400).json({
+  //     message: "user not found"
+  //   });
+  // } 
 
-module.exports = { getAllAlgoritm , informationDiscount};
+  // if (!businessOwner) {
+  //   return res.status(400).json({
+  //     message: "business owner not found"
+  //   });
+  // }
+
+  const RollOptionBusinessOwner =await RollOptionModel.findOne({businessOwner_id})
+  
+  res.status(200).json(RollOptionBusinessOwner)
+  
+}
+
+module.exports = { getAllAlgoritm , discountInformation};
