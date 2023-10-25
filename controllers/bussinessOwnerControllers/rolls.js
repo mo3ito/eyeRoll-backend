@@ -2,6 +2,7 @@ const RollOptionModel = require("../../models/BusinessOwners/Roll");
 const UsersModel = require("../../models/Users/UsersRegister")
 const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersRegister") 
 require("dotenv").config();
+const moment = require("moment");
 
 
 const getAllAlgoritm = async (req, res) => {
@@ -11,8 +12,8 @@ const getAllAlgoritm = async (req, res) => {
     businessOwner_name,
     businessOwner_last_name,
     businessOwner_id,
-    minـpercentage,
-    maxـpercentage,
+    min_percentage,
+    max_percentage,
     first_date,
     last_date,
     first_date_peak,
@@ -36,14 +37,14 @@ const getAllAlgoritm = async (req, res) => {
     });
 
     if (
-      (first_date && minـpercentage) ||
+      (first_date && min_percentage) ||
       (first_date && special_product_discount)
     ) {
       if (existingSetting) {
         existingSetting.businessOwner_name = businessOwner_name;
         existingSetting.businessOwner_last_name = businessOwner_last_name;
-        existingSetting.minـpercentage = minـpercentage;
-        existingSetting.maxـpercentage = maxـpercentage;
+        existingSetting.min_percentage = min_percentage;
+        existingSetting.max_percentage = max_percentage;
         existingSetting.first_date = first_date;
         existingSetting.last_date = last_date;
         existingSetting.first_date_peak = first_date_peak;
@@ -63,8 +64,8 @@ const getAllAlgoritm = async (req, res) => {
           businessOwner_name,
           businessOwner_last_name,
           businessOwner_id,
-          minـpercentage,
-          maxـpercentage,
+          min_percentage,
+          max_percentage,
           first_date,
           last_date,
           first_date_peak,
@@ -99,64 +100,6 @@ const getAllRollsList = async (req , res) =>{
 
 }
 
-
-// const getRoll = async (req, res) => {
-//   const { user_id, businessOwner_id } = req.body;
-
-//   const user = await UsersModel.findOne({_id : user_id });
-//   const businessOwner = await BusinessOwnersModel.findById(businessOwner_id);
-
-//   // if (!user) {
-//   //   res.status(400).json({
-//   //     message: "user not found"
-//   //   });
-//   // } 
-
-//   // if (!businessOwner) {
-//   //   return res.status(400).json({
-//   //     message: "business owner not found"
-//   //   });
-//   // }
-
-//   const rollOptionBusinessOwner = await RollOptionModel.findOne({businessOwner_id})
-
-//   const currentDate = new Date();
-
-//    let selectedData;
-
-//   // اگر تاریخ فعلی در دوره "پیک" باشد و دوره "پیک" تعریف شده باشد
-//   if (
-//     rollOptionBusinessOwner.first_date_peak &&
-//     rollOptionBusinessOwner.last_date_peak &&
-//     currentDate >= new Date(rollOptionBusinessOwner.first_date_peak) &&
-//     currentDate <= new Date(rollOptionBusinessOwner.last_date_peak)
-//   ) {
-//     // اگر تاریخ فعلی در بازه "پیک" باشد
-//     selectedData = {
-//       min_percentage: rollOptionBusinessOwner.min_percentage_peak,
-//       max_percentage: rollOptionBusinessOwner.max_percentage_peak
-//     };
-//   } else if (
-//     currentDate >= new Date(rollOptionBusinessOwner.first_date) &&
-//     currentDate <= new Date(rollOptionBusinessOwner.last_date)
-//   ) {
-//     // اگر تاریخ فعلی در دوره "عادی" باشد و تاریخ‌های مشترک نباشند
-//     selectedData = {
-//       min_percentage: rollOptionBusinessOwner.minـpercentage,
-//       max_percentage: rollOptionBusinessOwner.maxـpercentage
-//     };
-//   }
-
-//   if (selectedData) {
-//     res.status(200).json(selectedData);
-//   } else {
-//     // اگر تاریخ فعلی بین هیچ یک از دوره‌ها نبود
-//     res.status(400).json({
-//       message: "No applicable discount information for the current date"
-//     });
-//   }
-// };
-
 const getRoll = async (req, res) => {
   const { user_id, businessOwner_id } = req.body;
 
@@ -165,6 +108,7 @@ const getRoll = async (req, res) => {
 
 
   const rollOptionBusinessOwner = await RollOptionModel.findOne({ businessOwner_id });
+  console.log(rollOptionBusinessOwner);
 
   let selectedData;
 
@@ -191,21 +135,21 @@ const getRoll = async (req, res) => {
       min_percentage: rollOptionBusinessOwner.min_percentage_peak,
       max_percentage: rollOptionBusinessOwner.max_percentage_peak
     };
-  } else {
-    // در سایر موارد
+  }else if(currentDate >= normalStartTime && currentDate <= normalEndTime){
     selectedData = {
-      min_percentage: rollOptionBusinessOwner.minـpercentage,
-      max_percentage: rollOptionBusinessOwner.maxـpercentage
+      min_percentage: rollOptionBusinessOwner.min_percentage,
+      max_percentage: rollOptionBusinessOwner.max_percentage
     };
+  } else {
+    selectedData = null;
   }
 
-  if (selectedData) {
     res.status(200).json(selectedData);
-  } else {
-    res.status(400).json({
-      message: "No applicable discount information for the current date"
-    });
-  }
+  
+  
 };
+
+
+
 
 module.exports = { getAllAlgoritm , getRoll , getAllRollsList};

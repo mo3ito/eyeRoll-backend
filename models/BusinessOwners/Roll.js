@@ -11,11 +11,11 @@ const BORollSettingSchema = new Schema({
     businessOwner_id:{
         type:"String",
     },
-    minـpercentage:{
+    min_percentage:{
         type:"String",
         default:""
     },
-    maxـpercentage:{
+    max_percentage:{
         type:"String",
         default:""
     },
