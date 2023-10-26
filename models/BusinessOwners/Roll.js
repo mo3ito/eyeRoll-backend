@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const {Schema} = mongoose
 
+
 const BORollSettingSchema = new Schema({
     businessOwner_name:{
         type:"String",
@@ -19,21 +20,29 @@ const BORollSettingSchema = new Schema({
         type:"String",
         default:""
     },
-    first_date:{
+    start_day:{
         type : Date,
         default: null,
     },
-    last_date:{
+    finish_day:{
         type : Date,
         default: null,
     },
-    first_date_peak:{
-        type : Date,
-        default: null,
+    start_day_time:{
+        type:"String",
+        default:""
     },
-    last_date_peak:{
-        type : Date,
-        default: null,
+    end_day_time:{
+        type:"String",
+        default:""
+    },
+    start_day_peak_time:{
+        type:"String",
+        default:""
+    },
+    end_day_peak_time:{
+        type:"String",
+        default:""
     },
     min_percentage_peak:{
         type:"String",

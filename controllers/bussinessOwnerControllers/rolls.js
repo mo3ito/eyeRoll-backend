@@ -5,6 +5,7 @@ require("dotenv").config();
 const moment = require("moment");
 
 
+
 const getAllAlgoritm = async (req, res) => {
   const businessOwnerId = req.headers.authorization;
 
@@ -14,10 +15,12 @@ const getAllAlgoritm = async (req, res) => {
     businessOwner_id,
     min_percentage,
     max_percentage,
-    first_date,
-    last_date,
-    first_date_peak,
-    last_date_peak,
+    start_day,
+    finish_day,
+    start_day_time,
+    end_day_time,
+    start_day_peak_time,
+    end_day_peak_time,
     min_percentage_peak,
     max_percentage_peak,
     special_product_discount,
@@ -32,52 +35,58 @@ const getAllAlgoritm = async (req, res) => {
       });
     }
 
-    const existingSetting = await RollOptionModel.findOne({
+    let existingSetting = await RollOptionModel.findOne({
       businessOwner_id: businessOwnerId,
     });
 
     if (
-      (first_date && min_percentage) ||
-      (first_date && special_product_discount)
+      (start_day && min_percentage ) ||
+      (start_day && special_product_discount)
     ) {
+
       if (existingSetting) {
         existingSetting.businessOwner_name = businessOwner_name;
         existingSetting.businessOwner_last_name = businessOwner_last_name;
+        existingSetting.businessOwner_id = businessOwner_id;
         existingSetting.min_percentage = min_percentage;
         existingSetting.max_percentage = max_percentage;
-        existingSetting.first_date = first_date;
-        existingSetting.last_date = last_date;
-        existingSetting.first_date_peak = first_date_peak;
-        existingSetting.last_date_peak = last_date_peak;
+        existingSetting.start_day = start_day;
+        existingSetting.finish_day = finish_day;
+        existingSetting.start_day_time = start_day_time;
+        existingSetting.end_day_time = end_day_time;
+        existingSetting.start_day_peak_time = start_day_peak_time;
+        existingSetting.end_day_peak_time = end_day_peak_time;
         existingSetting.min_percentage_peak = min_percentage_peak;
         existingSetting.max_percentage_peak = max_percentage_peak;
         existingSetting.special_product_discount = special_product_discount;
         existingSetting.gift = gift;
-        existingSetting.number_Purchase_gift= number_Purchase_gift
+        existingSetting.number_Purchase_gift = number_Purchase_gift;
 
         await existingSetting.save();
 
         res.status(200).json({ message: "Information updated successfully" });
       } else {
-        // اگر اطلاعات وجود نداشت، یک مدل جدید ایجاد کنید و اطلاعات را ذخیره کنید
-        const newRollSetting = new RollOptionModel({
+       
+        existingSetting = new RollOptionModel({
           businessOwner_name,
           businessOwner_last_name,
           businessOwner_id,
           min_percentage,
           max_percentage,
-          first_date,
-          last_date,
-          first_date_peak,
-          last_date_peak,
+          start_day,
+          finish_day,
+          start_day_time,
+          end_day_time,
+          start_day_peak_time,
+          end_day_peak_time,
           min_percentage_peak,
           max_percentage_peak,
           special_product_discount,
           gift,
-          number_Purchase_gift
+          number_Purchase_gift,
         });
 
-        await newRollSetting.save();
+        await existingSetting.save();
 
         res.status(200).json({ message: "Information created successfully" });
       }
@@ -92,7 +101,6 @@ const getAllAlgoritm = async (req, res) => {
   }
 };
 
-
 const getAllRollsList = async (req , res) =>{
 
   const allRolls = await RollOptionModel.find({})
@@ -100,55 +108,48 @@ const getAllRollsList = async (req , res) =>{
 
 }
 
+
+
 const getRoll = async (req, res) => {
   const { user_id, businessOwner_id } = req.body;
 
   const user = await UsersModel.findOne({ _id: user_id });
   const businessOwner = await BusinessOwnersModel.findById(businessOwner_id);
-
-
   const rollOptionBusinessOwner = await RollOptionModel.findOne({ businessOwner_id });
-  console.log(rollOptionBusinessOwner);
 
+  console.log(rollOptionBusinessOwner);
   let selectedData;
 
-  const currentDate = new Date();
+  const currentDate = moment();
+  const startDay = moment(rollOptionBusinessOwner.start_day);
+  const finishDay = moment(rollOptionBusinessOwner.finish_day);
+  const startDayTime = rollOptionBusinessOwner.start_day_time
+  const endDayTime = rollOptionBusinessOwner.end_day_time
+  const startDayPeakTime = rollOptionBusinessOwner.start_day_peak_time
+  const endDayPeakTime = rollOptionBusinessOwner.end_day_peak_time
 
-  const peakStartTime = new Date(rollOptionBusinessOwner.first_date_peak);
-  const peakEndTime = new Date(rollOptionBusinessOwner.last_date_peak);
-  const normalStartTime = new Date(rollOptionBusinessOwner.first_date);
-  const normalEndTime = new Date(rollOptionBusinessOwner.last_date);
+  console.log(startDayTime);
+  console.log(endDayTime);
+  console.log(startDayPeakTime);
+  console.log(endDayPeakTime);
 
-  if (
-    (currentDate >= peakStartTime && currentDate <= peakEndTime) &&
-    (peakStartTime.getHours() == normalStartTime.getHours() && peakStartTime.getMinutes() == normalStartTime.getMinutes()) &&
-    (peakEndTime.getHours() == normalEndTime.getHours() && peakEndTime.getMinutes() == normalEndTime.getMinutes())
-  ) {
-    // اگر تاریخ فعلی در تایم پیک و تایم عادی با هم مشترک باشد
-    selectedData = {
-      min_percentage: rollOptionBusinessOwner.min_percentage_peak,
-      max_percentage: rollOptionBusinessOwner.max_percentage_peak
-    };
-  } else if (currentDate >= peakStartTime && currentDate <= peakEndTime) {
-    // اگر تاریخ فعلی در تایم پیک باشد
-    selectedData = {
-      min_percentage: rollOptionBusinessOwner.min_percentage_peak,
-      max_percentage: rollOptionBusinessOwner.max_percentage_peak
-    };
-  }else if(currentDate >= normalStartTime && currentDate <= normalEndTime){
-    selectedData = {
-      min_percentage: rollOptionBusinessOwner.min_percentage,
-      max_percentage: rollOptionBusinessOwner.max_percentage
-    };
-  } else {
-    selectedData = null;
-  }
-
-    res.status(200).json(selectedData);
+  if (currentDate.isBetween(startDay, finishDay)) {
+    const currentTime = currentDate.format("HH:mm");
   
+    if ((currentTime >= startDayTime && currentTime <= endDayTime) && (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime)) {
+      console.log("peak");
+    } else if (currentTime >= startDayTime && currentTime <= endDayTime) {
+      console.log("normal");
+    } else if (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime) {
+      console.log("peak");
+    } else {
+      console.log("null");
+    }
+  } else{
+    console.log("out of date");
+  }
   
 };
-
 
 
 
