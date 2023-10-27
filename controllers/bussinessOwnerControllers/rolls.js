@@ -117,38 +117,65 @@ const getRoll = async (req, res) => {
   const businessOwner = await BusinessOwnersModel.findById(businessOwner_id);
   const rollOptionBusinessOwner = await RollOptionModel.findOne({ businessOwner_id });
 
+  console.log(user);
   console.log(rollOptionBusinessOwner);
-  let selectedData;
 
-  const currentDate = moment();
-  const startDay = moment(rollOptionBusinessOwner.start_day);
-  const finishDay = moment(rollOptionBusinessOwner.finish_day);
-  const startDayTime = rollOptionBusinessOwner.start_day_time
-  const endDayTime = rollOptionBusinessOwner.end_day_time
-  const startDayPeakTime = rollOptionBusinessOwner.start_day_peak_time
-  const endDayPeakTime = rollOptionBusinessOwner.end_day_peak_time
-
-  console.log(startDayTime);
-  console.log(endDayTime);
-  console.log(startDayPeakTime);
-  console.log(endDayPeakTime);
-
-  if (currentDate.isBetween(startDay, finishDay)) {
-    const currentTime = currentDate.format("HH:mm");
+  try {
+    let selectedPercentage;
+    const currentDate = moment();
+    const startDay = moment(rollOptionBusinessOwner.start_day);
+    const finishDay = moment(rollOptionBusinessOwner.finish_day);
+    const startDayTime = rollOptionBusinessOwner.start_day_time
+    const endDayTime = rollOptionBusinessOwner.end_day_time
+    const startDayPeakTime = rollOptionBusinessOwner.start_day_peak_time
+    const endDayPeakTime = rollOptionBusinessOwner.end_day_peak_time
   
-    if ((currentTime >= startDayTime && currentTime <= endDayTime) && (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime)) {
-      console.log("peak");
-    } else if (currentTime >= startDayTime && currentTime <= endDayTime) {
-      console.log("normal");
-    } else if (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime) {
-      console.log("peak");
-    } else {
-      console.log("null");
+    console.log(startDayTime);
+    console.log(endDayTime);
+    console.log(startDayPeakTime);
+    console.log(endDayPeakTime);
+  
+    if (currentDate.isBetween(startDay, finishDay)) {
+      const currentTime = currentDate.format("HH:mm");
+    
+      if ((currentTime >= startDayTime && currentTime <= endDayTime) && (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime)) {
+        console.log("peak");
+        selectedPercentage = {
+          minPercentage: rollOptionBusinessOwner.min_percentage_peak,
+          maxPercentage: rollOptionBusinessOwner.max_percentage_peak
+        };
+      } else if (currentTime >= startDayTime && currentTime <= endDayTime) {
+        console.log("normal");
+        selectedPercentage = {
+          minPercentage: rollOptionBusinessOwner.min_percentage,
+          maxPercentage: rollOptionBusinessOwner.max_percentage
+        };
+      } else if (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime) {
+        console.log("peak");
+        selectedPercentage = {
+          minPercentage: rollOptionBusinessOwner.min_percentage_peak,
+          maxPercentage: rollOptionBusinessOwner.max_percentage_peak
+        };
+      } else {
+        console.log("null");
+        selectedPercentage = null;
+      }
+    } else{
+      console.log("out of date");
     }
-  } else{
-    console.log("out of date");
-  }
   
+    const informationRoll = {
+      minPercentageDiscount:selectedPercentage.minPercentage,
+      maxPercentageDiscount:selectedPercentage.maxPercentage,
+      special_product_discount:rollOptionBusinessOwner.special_product_discount,
+      gift:rollOptionBusinessOwner.gift,
+      number_Purchase_gift:rollOptionBusinessOwner.number_Purchase_gift
+    }
+    res.status(200).json(informationRoll)
+  } catch (error) {
+    res.status(500).json(error.message)
+  }
+
 };
 
 
