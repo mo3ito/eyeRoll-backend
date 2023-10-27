@@ -1,6 +1,7 @@
-const RollOptionModel = require("../../models/BusinessOwners/Roll");
+const RollOptionModel = require("../../models/Roll/Roll");
 const UsersModel = require("../../models/Users/UsersRegister")
 const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersRegister") 
+const RollAdjustedModel = require("../../models/Roll/RollAdjusted")
 require("dotenv").config();
 const moment = require("moment");
 
@@ -109,6 +110,216 @@ const getAllRollsList = async (req , res) =>{
 }
 
 
+// const rollAdjusted = async (req, res) => {
+//   const businessOwnerId = await req.headers.authorization;
+//   const businessOwner = await BusinessOwnersModel.findById(businessOwnerId);
+//   const rollAdjusted = await RollOptionModel.findOne({ businessOwner_id: businessOwnerId });
+//   const {
+// minPercentageAllProducts,
+// maxPercentageAllProducts,
+// minPercentagePeak,
+// maxPercentagePeak,
+// giftValue,
+// numberPurchaseGift,
+// startDateWithoutTime,
+// endDateWithoutTime,
+// firstHour,
+// firstMins,
+// lastHour,
+// lastMins,
+// startDate,
+// firstHourPeak,
+// firstMinsPeak,
+// lastHourPeak,
+// lastMinsPeak,
+//   } = req.body
+
+
+//   try {
+//     if (!businessOwnerId) {
+//       return res.status(400).json({
+//         message: "No business owner was found with this profile",
+//       });
+//     }
+
+//     let existingAdjustedRoll = await RollOptionModel.findOne({
+     
+
+//       if(existingAdjustedRoll){
+//         existingAdjustedRoll.minPercentageAllProducts = minPercentageAllProducts;
+//         existingAdjustedRoll.maxPercentageAllProducts = maxPercentageAllProducts;
+//         existingAdjustedRoll.minPercentagePeak = minPercentagePeak;
+//         existingAdjustedRoll.maxPercentagePeak = maxPercentagePeak;
+//         existingAdjustedRoll.giftValue = giftValue;
+//         existingAdjustedRoll.numberPurchaseGift = numberPurchaseGift;
+//         existingAdjustedRoll.startDateWithoutTime = startDateWithoutTime;
+//         existingAdjustedRoll.endDateWithoutTime = endDateWithoutTime;
+//         existingAdjustedRoll.firstHour = firstHour,
+//         existingAdjustedRoll.firstMins =firstMins;
+//         existingAdjustedRoll.lastHour =lastHour;
+//         existingAdjustedRoll.lastMins =lastMins;
+//         existingAdjustedRoll.startDate =startDate;
+//         existingAdjustedRoll.firstHourPeak =firstHourPeak;
+//         existingAdjustedRoll.firstMinsPeak =firstMinsPeak;
+//         existingAdjustedRoll.lastHourPeak =lastHourPeak;
+//         existingAdjustedRoll.lastMinsPeak =lastMinsPeak;
+
+//         await existingAdjustedRoll.save();
+
+        
+//       } else {
+//         existingAdjustedRoll = new RollOptionModel({
+//           minPercentageAllProducts,
+//           maxPercentageAllProducts,
+//           minPercentagePeak,
+//           maxPercentagePeak,
+//           giftValue,
+//           numberPurchaseGift,
+//           startDateWithoutTime,
+//           endDateWithoutTime,
+//           firstHour,
+//           firstMins,
+//           lastHour,
+//           lastMins,
+//           startDate,
+//           firstHourPeak,
+//           firstMinsPeak,
+//           lastHourPeak,
+//           lastMinsPeak,
+//         });
+  
+//         await existingAdjustedRoll.save();
+//       }
+  
+
+       
+   
+
+//     });
+   
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       message: "Internal server error"
+//     });
+//   }
+// }
+
+const rollAdjustedSend = async (req, res) => {
+  const businessOwnerId = await req.headers.authorization;
+  const businessOwner = await BusinessOwnersModel.findById(businessOwnerId);
+
+  const {
+    businessOwner_id,
+    minPercentageAllProducts,
+    maxPercentageAllProducts,
+    minPercentagePeak,
+    maxPercentagePeak,
+    giftValue,
+    numberPurchaseGift,
+    startDateWithoutTime,
+    endDateWithoutTime,
+    firstHour,
+    firstMins,
+    lastHour,
+    lastMins,
+    startDate,
+    firstHourPeak,
+    firstMinsPeak,
+    lastHourPeak,
+    lastMinsPeak,
+  } = req.body;
+
+  try {
+    if (!businessOwnerId) {
+      return res.status(400).json({
+        message: "No business owner was found with this profile",
+      });
+    }
+
+    let existingAdjustedRoll = await RollAdjustedModel.findOne({businessOwner_id : businessOwnerId});
+
+    if (existingAdjustedRoll) {
+        existingAdjustedRoll.businessOwner_id = businessOwner_id,
+        existingAdjustedRoll.minPercentageAllProducts = minPercentageAllProducts;
+        existingAdjustedRoll.maxPercentageAllProducts = maxPercentageAllProducts;
+        existingAdjustedRoll.minPercentagePeak = minPercentagePeak;
+        existingAdjustedRoll.maxPercentagePeak = maxPercentagePeak;
+        existingAdjustedRoll.giftValue = giftValue;
+        existingAdjustedRoll.numberPurchaseGift = numberPurchaseGift;
+        existingAdjustedRoll.startDateWithoutTime = startDateWithoutTime;
+        existingAdjustedRoll.endDateWithoutTime = endDateWithoutTime;
+        existingAdjustedRoll.firstHour = firstHour,
+        existingAdjustedRoll.firstMins =firstMins;
+        existingAdjustedRoll.lastHour =lastHour;
+        existingAdjustedRoll.lastMins =lastMins;
+        existingAdjustedRoll.startDate =startDate;
+        existingAdjustedRoll.firstHourPeak =firstHourPeak;
+        existingAdjustedRoll.firstMinsPeak =firstMinsPeak;
+        existingAdjustedRoll.lastHourPeak =lastHourPeak;
+        existingAdjustedRoll.lastMinsPeak =lastMinsPeak;
+
+      await existingAdjustedRoll.save();
+      res.status(200).json({
+        message: "Roll option has been adjusted successfully",
+      });
+    } else {
+      existingAdjustedRoll = new RollAdjustedModel({
+        businessOwner_id,
+        minPercentageAllProducts,
+        maxPercentageAllProducts,
+        minPercentagePeak,
+        maxPercentagePeak,
+        giftValue,
+        numberPurchaseGift,
+        startDateWithoutTime,
+        endDateWithoutTime,
+        firstHour,
+        firstMins,
+        lastHour,
+        lastMins,
+        startDate,
+        firstHourPeak,
+        firstMinsPeak,
+        lastHourPeak,
+        lastMinsPeak,
+      });
+
+      await existingAdjustedRoll.save();
+    }
+
+    res.status(200).json({
+      message: "Roll option has been adjusted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+const rollAdjustGet = async (req , res)=>{
+
+  const businessOwnerId = req.headers.authorization;
+
+  if(!businessOwnerId){
+    res.status(400).json({
+      "message":"business owner not found"
+    })
+  }
+
+  try {
+    const RollAdjusted = await RollAdjustedModel.findOne({ businessOwner_id: businessOwnerId });
+    res.status(200).json(RollAdjusted);
+  } catch (error) {
+    console.error(error); // چاپ پیام خطا در کنسول
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
+
 
 const getRoll = async (req, res) => {
   const { user_id, businessOwner_id } = req.body;
@@ -158,7 +369,10 @@ const getRoll = async (req, res) => {
         };
       } else {
         console.log("null");
-        selectedPercentage = null;
+        selectedPercentage = {
+          minPercentage : null,
+          maxPercentage : null
+        }
       }
     } else{
       console.log("out of date");
@@ -180,4 +394,4 @@ const getRoll = async (req, res) => {
 
 
 
-module.exports = { getAllAlgoritm , getRoll , getAllRollsList};
+module.exports = { getAllAlgoritm , getRoll , getAllRollsList , rollAdjustedSend , rollAdjustGet};
