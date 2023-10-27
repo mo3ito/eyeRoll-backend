@@ -303,6 +303,7 @@ const rollAdjustGet = async (req , res)=>{
 
   const businessOwnerId = req.headers.authorization;
 
+  
   if(!businessOwnerId){
     res.status(400).json({
       "message":"business owner not found"
