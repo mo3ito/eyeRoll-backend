@@ -4,7 +4,7 @@ const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersR
 const RollAdjustedModel = require("../../models/Roll/RollAdjusted")
 require("dotenv").config();
 const moment = require("moment");
-
+const ObjectID = require('mongodb').ObjectID;   
 
 
 const getAllAlgoritm = async (req, res) => {
@@ -109,105 +109,15 @@ const getAllRollsList = async (req , res) =>{
 
 }
 
-
-// const rollAdjusted = async (req, res) => {
-//   const businessOwnerId = await req.headers.authorization;
-//   const businessOwner = await BusinessOwnersModel.findById(businessOwnerId);
-//   const rollAdjusted = await RollOptionModel.findOne({ businessOwner_id: businessOwnerId });
-//   const {
-// minPercentageAllProducts,
-// maxPercentageAllProducts,
-// minPercentagePeak,
-// maxPercentagePeak,
-// giftValue,
-// numberPurchaseGift,
-// startDateWithoutTime,
-// endDateWithoutTime,
-// firstHour,
-// firstMins,
-// lastHour,
-// lastMins,
-// startDate,
-// firstHourPeak,
-// firstMinsPeak,
-// lastHourPeak,
-// lastMinsPeak,
-//   } = req.body
-
-
-//   try {
-//     if (!businessOwnerId) {
-//       return res.status(400).json({
-//         message: "No business owner was found with this profile",
-//       });
-//     }
-
-//     let existingAdjustedRoll = await RollOptionModel.findOne({
-     
-
-//       if(existingAdjustedRoll){
-//         existingAdjustedRoll.minPercentageAllProducts = minPercentageAllProducts;
-//         existingAdjustedRoll.maxPercentageAllProducts = maxPercentageAllProducts;
-//         existingAdjustedRoll.minPercentagePeak = minPercentagePeak;
-//         existingAdjustedRoll.maxPercentagePeak = maxPercentagePeak;
-//         existingAdjustedRoll.giftValue = giftValue;
-//         existingAdjustedRoll.numberPurchaseGift = numberPurchaseGift;
-//         existingAdjustedRoll.startDateWithoutTime = startDateWithoutTime;
-//         existingAdjustedRoll.endDateWithoutTime = endDateWithoutTime;
-//         existingAdjustedRoll.firstHour = firstHour,
-//         existingAdjustedRoll.firstMins =firstMins;
-//         existingAdjustedRoll.lastHour =lastHour;
-//         existingAdjustedRoll.lastMins =lastMins;
-//         existingAdjustedRoll.startDate =startDate;
-//         existingAdjustedRoll.firstHourPeak =firstHourPeak;
-//         existingAdjustedRoll.firstMinsPeak =firstMinsPeak;
-//         existingAdjustedRoll.lastHourPeak =lastHourPeak;
-//         existingAdjustedRoll.lastMinsPeak =lastMinsPeak;
-
-//         await existingAdjustedRoll.save();
-
-        
-//       } else {
-//         existingAdjustedRoll = new RollOptionModel({
-//           minPercentageAllProducts,
-//           maxPercentageAllProducts,
-//           minPercentagePeak,
-//           maxPercentagePeak,
-//           giftValue,
-//           numberPurchaseGift,
-//           startDateWithoutTime,
-//           endDateWithoutTime,
-//           firstHour,
-//           firstMins,
-//           lastHour,
-//           lastMins,
-//           startDate,
-//           firstHourPeak,
-//           firstMinsPeak,
-//           lastHourPeak,
-//           lastMinsPeak,
-//         });
-  
-//         await existingAdjustedRoll.save();
-//       }
-  
-
-       
-   
-
-//     });
-   
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       message: "Internal server error"
-//     });
-//   }
-// }
-
 const rollAdjustedSend = async (req, res) => {
   const businessOwnerId = await req.headers.authorization;
   const businessOwner = await BusinessOwnersModel.findById(businessOwnerId);
+
+  if(!businessOwnerId){
+    return res.status(400).json({
+      message : "businessOwnerId not found"
+    })
+  }
 
   const {
     businessOwner_id,
@@ -323,14 +233,42 @@ const rollAdjustGet = async (req, res) => {
 const getRoll = async (req, res) => {
   const { user_id, businessOwner_id } = req.body;
 
-  const user = await UsersModel.findOne({ _id: user_id });
-  const businessOwner = await BusinessOwnersModel.findById(businessOwner_id);
-  const rollOptionBusinessOwner = await RollOptionModel.findOne({ businessOwner_id });
+ 
 
-  console.log(user);
-  console.log(rollOptionBusinessOwner);
+  // console.log(user);
+  // console.log(rollOptionBusinessOwner);
+
+  if(!user_id){
+    return res.status(400).json({
+      message: 'user id not found'
+    })
+  }
+
+  if(!businessOwner_id){
+    return res.status(400).json({
+      message: 'business owner id not found '
+    })
+  }
+
 
   try {
+    const businessOwner = await BusinessOwnersModel.findOne({ _id : businessOwner_id});
+
+    const user = await UsersModel.find({ "_id": user_id });
+    const rollOptionBusinessOwner = await RollOptionModel.findOne({ businessOwner_id });
+
+    if(!businessOwner){
+      return res.status(400).json({
+        message: 'business owner not found'
+      })
+    }
+
+    if(!user){
+      return res.status(400).json({
+        message: 'user not found'
+      })
+    }
+
     let selectedPercentage;
     const currentDate = moment();
     const startDay = moment(rollOptionBusinessOwner.start_day);
