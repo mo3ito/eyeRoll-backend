@@ -217,17 +217,17 @@ const rollAdjustedSend = async (req, res) => {
     maxPercentagePeak,
     giftValue,
     numberPurchaseGift,
-    startDateWithoutTime,
-    endDateWithoutTime,
+    startDate,
+    endDate,
     firstHour,
     firstMins,
     lastHour,
     lastMins,
-    startDate,
     firstHourPeak,
     firstMinsPeak,
     lastHourPeak,
     lastMinsPeak,
+    specialProducts
   } = req.body;
 
   try {
@@ -247,20 +247,20 @@ const rollAdjustedSend = async (req, res) => {
         existingAdjustedRoll.maxPercentagePeak = maxPercentagePeak;
         existingAdjustedRoll.giftValue = giftValue;
         existingAdjustedRoll.numberPurchaseGift = numberPurchaseGift;
-        existingAdjustedRoll.startDateWithoutTime = startDateWithoutTime;
-        existingAdjustedRoll.endDateWithoutTime = endDateWithoutTime;
+        existingAdjustedRoll.startDate = startDate;
+        existingAdjustedRoll.endDate = endDate;
         existingAdjustedRoll.firstHour = firstHour,
         existingAdjustedRoll.firstMins =firstMins;
         existingAdjustedRoll.lastHour =lastHour;
         existingAdjustedRoll.lastMins =lastMins;
-        existingAdjustedRoll.startDate =startDate;
         existingAdjustedRoll.firstHourPeak =firstHourPeak;
         existingAdjustedRoll.firstMinsPeak =firstMinsPeak;
         existingAdjustedRoll.lastHourPeak =lastHourPeak;
         existingAdjustedRoll.lastMinsPeak =lastMinsPeak;
+        existingAdjustedRoll.specialProducts = specialProducts
 
       await existingAdjustedRoll.save();
-      res.status(200).json({
+     return res.status(200).json({
         message: "Roll option has been adjusted successfully",
       });
     } else {
@@ -272,23 +272,24 @@ const rollAdjustedSend = async (req, res) => {
         maxPercentagePeak,
         giftValue,
         numberPurchaseGift,
-        startDateWithoutTime,
-        endDateWithoutTime,
+        startDate,
+        endDate,
         firstHour,
         firstMins,
         lastHour,
         lastMins,
-        startDate,
         firstHourPeak,
         firstMinsPeak,
         lastHourPeak,
         lastMinsPeak,
+        specialProducts
+        
       });
 
       await existingAdjustedRoll.save();
     }
 
-    res.status(200).json({
+   return res.status(200).json({
       message: "Roll option has been adjusted successfully",
     });
   } catch (error) {
@@ -299,25 +300,22 @@ const rollAdjustedSend = async (req, res) => {
   }
 };
 
-const rollAdjustGet = async (req , res)=>{
-
+const rollAdjustGet = async (req, res) => {
   const businessOwnerId = req.headers.authorization;
-
-  
-  if(!businessOwnerId){
-    res.status(400).json({
-      "message":"business owner not found"
-    })
-  }
 
   try {
     const RollAdjusted = await RollAdjustedModel.findOne({ businessOwner_id: businessOwnerId });
-    res.status(200).json(RollAdjusted);
+
+    if (!RollAdjusted) {
+     return res.status(400).json({
+        message: "roll adjusted not found"
+      });
+    } else {
+    return res.status(200).json(RollAdjusted);
+    }
   } catch (error) {
     console.error(error); // چاپ پیام خطا در کنسول
-    res.status(500).json({
-      message: "Internal server error",
-    });
+    res.status(500).json(error.message)
   }
 }
 
@@ -346,10 +344,13 @@ const getRoll = async (req, res) => {
     console.log(endDayTime);
     console.log(startDayPeakTime);
     console.log(endDayPeakTime);
+    console.log(rollOptionBusinessOwner.min_percentage);
+    console.log(startDay);
+    console.log(finishDay);
   
     if (currentDate.isBetween(startDay, finishDay)) {
       const currentTime = currentDate.format("HH:mm");
-    
+      console.log(rollOptionBusinessOwner.min_percentage);
       if ((currentTime >= startDayTime && currentTime <= endDayTime) && (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime)) {
         console.log("peak");
         selectedPercentage = {
@@ -392,6 +393,7 @@ const getRoll = async (req, res) => {
   }
 
 };
+
 
 
 

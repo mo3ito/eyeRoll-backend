@@ -23,10 +23,10 @@ const RollAdjustedSchema = new Schema({
   numberPurchaseGift: {
     type: "String",
   },
-  startDateWithoutTime: {
+  startDate: {
     type: "String",
   },
-  endDateWithoutTime: {
+  endDate: {
     type: "String",
    
   },
@@ -57,6 +57,10 @@ const RollAdjustedSchema = new Schema({
   lastMinsPeak: {
     type: "String",
   },
+  specialProducts:{
+    type: Array,
+    default: [],
+  }
 });
 
 const RollAdjusted = mongoose.model("roll-adjusted", RollAdjustedSchema);
