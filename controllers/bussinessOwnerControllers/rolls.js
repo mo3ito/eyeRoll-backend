@@ -8,9 +8,11 @@ const ObjectID = require('mongodb').ObjectID;
 
 
 const getAllAlgoritm = async (req, res) => {
+  
   const businessOwnerId = req.headers.authorization;
 
   const {
+    isRollUse,
     businessOwner_name,
     businessOwner_last_name,
     businessOwner_id,
@@ -46,6 +48,7 @@ const getAllAlgoritm = async (req, res) => {
     ) {
 
       if (existingSetting) {
+        existingSetting.isRollUse = isRollUse;
         existingSetting.businessOwner_name = businessOwner_name;
         existingSetting.businessOwner_last_name = businessOwner_last_name;
         existingSetting.businessOwner_id = businessOwner_id;
@@ -69,6 +72,7 @@ const getAllAlgoritm = async (req, res) => {
       } else {
        
         existingSetting = new RollOptionModel({
+          isRollUse,
           businessOwner_name,
           businessOwner_last_name,
           businessOwner_id,
@@ -150,6 +154,7 @@ const rollAdjustedSend = async (req, res) => {
     let existingAdjustedRoll = await RollAdjustedModel.findOne({businessOwner_id : businessOwnerId});
 
     if (existingAdjustedRoll) {
+        
         existingAdjustedRoll.businessOwner_id = businessOwner_id,
         existingAdjustedRoll.minPercentageAllProducts = minPercentageAllProducts;
         existingAdjustedRoll.maxPercentageAllProducts = maxPercentageAllProducts;
@@ -232,11 +237,6 @@ const rollAdjustGet = async (req, res) => {
 
 const getRoll = async (req, res) => {
   const { user_id, businessOwner_id } = req.body;
-
- 
-
-  // console.log(user);
-  // console.log(rollOptionBusinessOwner);
 
   if(!user_id){
     return res.status(400).json({

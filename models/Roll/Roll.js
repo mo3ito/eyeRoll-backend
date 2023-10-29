@@ -3,6 +3,10 @@ const {Schema} = mongoose
 
 
 const BORollSettingSchema = new Schema({
+    isRollUse:{
+        type : Boolean,
+        default: false
+    },
     businessOwner_name:{
         type:"String",
     },
