@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router();
-const {registerUser,loginUser,findeUser,getAllBusinessOwner,verifyEmail , getMe , resendEmailVerification ,updateInformation , isPassword} = require("../../controllers/bussinessOwnerControllers/businessOwnerRegister")
+const {registerUser,loginUser,findeUser,getAllBusinessOwner,verifyEmail , getMe , resendEmailVerification ,updateInformation , isPassword , businessOwnerImage , upload} = require("../../controllers/bussinessOwnerControllers/businessOwnerRegister")
 
 
 router.post("/business-owner/register", registerUser)
@@ -12,6 +12,7 @@ router.get("/business-owner/get-me", getMe)
 router.post("/business-owner/resend-email-verification",resendEmailVerification)
 router.patch("/business-owner/update-information" , updateInformation)
 router.post("/business-owner/is-password",isPassword)
+router.post("/business-owner/upload-image", upload.single("profileImage") , businessOwnerImage)
 
 
 module.exports = router;

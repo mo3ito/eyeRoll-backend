@@ -8,11 +8,48 @@ const {
 } = require("../../utils/senderVerificationMail/sendVerificationMailBusinessOwner");
 require("dotenv").config();
 const keyJwt = process.env.KEY_JWT;
+const path = require ("path")
+const multer  = require("multer")
+
 
 const createToken = async (userInfo) => {
   const token = await jwt.sign(userInfo, keyJwt, { expiresIn: "3d" });
   return token;
 };
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/images/profileBusinessOwner'); // مسیر ذخیره فایل‌ها
+  },
+  filename: (req, file, cb) => {
+    console.log(file);
+    const uniqueSuffix = Date.now() + file.originalname
+    //  path.extname(file.originalname)
+    cb(null, uniqueSuffix); // نام فایل به عنوان نام اصلی
+  },
+});
+
+ const upload = multer({ storage });
+
+const businessOwnerImage = async (req , res)=>{
+
+  const businessOwnerId = req.headers.authorization;
+
+  if(businessOwnerId){
+    console.log(req.body);
+    res.status(200).json({
+      message: "image resived succesfully"
+    })
+  } else{
+    res.status(400).json({
+      message: "business owner id not found"
+    })
+  }
+
+
+
+
+}
 
 const registerUser = async (req, res) => {
   const {
@@ -420,4 +457,6 @@ module.exports = {
   resendEmailVerification,
   updateInformation,
   isPassword,
+  businessOwnerImage,
+  upload
 };
