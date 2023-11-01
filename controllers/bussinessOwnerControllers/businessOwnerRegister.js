@@ -8,8 +8,8 @@ const {
 } = require("../../utils/senderVerificationMail/sendVerificationMailBusinessOwner");
 require("dotenv").config();
 const keyJwt = process.env.KEY_JWT;
-const path = require ("path")
 const multer  = require("multer")
+const fs = require("fs")
 
 
 const createToken = async (userInfo) => {
@@ -22,33 +22,79 @@ const storage = multer.diskStorage({
     cb(null, 'public/images/profileBusinessOwner'); // مسیر ذخیره فایل‌ها
   },
   filename: (req, file, cb) => {
-    console.log(file);
+    // console.log(file);
     const uniqueSuffix = Date.now() + file.originalname
-    //  path.extname(file.originalname)
-    cb(null, uniqueSuffix); // نام فایل به عنوان نام اصلی
+
+    cb(null, uniqueSuffix); 
   },
 });
 
  const upload = multer({ storage });
 
 const businessOwnerImage = async (req , res)=>{
-
+  
   const businessOwnerId = req.headers.authorization;
+  const uploadedFileName = req.file.filename;
 
-  if(businessOwnerId){
-    console.log(req.body);
-    res.status(200).json({
-      message: "image resived succesfully"
-    })
-  } else{
-    res.status(400).json({
+ 
+  if (!businessOwnerId) {
+    return res.status(400).json({
       message: "business owner id not found"
-    })
+    });
   }
 
+  try {
+    const businessOwner = await BusinessOwnersModel.findOne({ _id: businessOwnerId });
+    if (!businessOwner) {
+      return res.status(404).json({
+        message: "business owner not found"
+      });
+    }
+    
+    if (businessOwner.profile_image_path) {
+      const previousImagePath = businessOwner.profile_image_path;
+    
+      try {
+        fs.unlinkSync(previousImagePath);
+      } catch (err) {
+        console.error(`Error deleting previous image: ${err}`);
+      }
+    }
 
+    businessOwner.profile_image_path = `public/images/profileBusinessOwner/${uploadedFileName}`;
+    await businessOwner.save();
 
+    await businessOwner.save();
+    const userInfos = {
+      id: businessOwner.id,
+      profile_image_path: businessOwner.profile_image_path,
+      name: businessOwner.name,
+      last_name : businessOwner.last_name,
+      phone_number: businessOwner.phone_number,
+      username: businessOwner.username,
+      email: businessOwner.email,
+      is_verified: businessOwner.is_verified,
+      country_name: businessOwner.country_name,
+      state_name: businessOwner.state_name,
+      city_name: businessOwner.city_name,
+      address: businessOwner.address,
+      brand_name: businessOwner.brand_name,
+      is_complete_information: businessOwner.is_complete_information,
+      is_businessOwner: businessOwner.is_businessOwner,
+      registration_date: businessOwner.registration_date,
+      password: businessOwner.password,
+      postal_code: businessOwner.postal_code,
+      work_phone: businessOwner.work_phone,
+    } 
 
+    const token = await createToken(userInfos)
+
+    return res.status(200).json({userInfos , token})
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
 }
 
 const registerUser = async (req, res) => {
@@ -137,6 +183,7 @@ const registerUser = async (req, res) => {
       password: user.password,
       postal_code: user.postal_code,
       work_phone: user.work_phone,
+      profile_image_path: user.profile_image_path,
     };
 
     const token = await createToken(userInfos);
@@ -190,6 +237,7 @@ const loginUser = async (req, res) => {
       password: user.password,
       postal_code: user.postal_code,
       work_phone: user.work_phone,
+      profile_image_path: user.profile_image_path,
     };
 
     const token = await createToken(userInfos);
@@ -294,6 +342,7 @@ const updateInformation = async (req, res) => {
       work_phone: user.work_phone,
       postal_code: user.postal_code,
       registration_date: user.registration_date,
+      profile_image_path: user.profile_image_path,
     };
 
     const token = await createToken(userInfos);
@@ -387,6 +436,7 @@ const verifyEmail = async (req, res) => {
         is_complete_information: user.is_complete_information,
         is_businessOwner: user.is_businessOwner,
         registration_date: user.registration_date,
+        profile_image_path: user.profile_image_path,
       };
 
       const token = await createToken(userInfos);

@@ -2,6 +2,10 @@ const mongoose = require("mongoose")
 const {Schema} = mongoose
 
 const BusinessOwnersSchema = new Schema({
+    profile_image_path:{
+        type:"String",
+        default: ""
+    },
     name:{
         type:"String",
         required: true,
