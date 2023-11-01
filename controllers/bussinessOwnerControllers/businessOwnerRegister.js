@@ -10,6 +10,7 @@ require("dotenv").config();
 const keyJwt = process.env.KEY_JWT;
 const multer = require("multer");
 const fs = require("fs");
+const profileImageFormater = require("../../middleware/profile-image-formater")
 
 const createToken = async (userInfo) => {
   const token = await jwt.sign(userInfo, keyJwt, { expiresIn: "3d" });
@@ -18,7 +19,7 @@ const createToken = async (userInfo) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/images/profileBusinessOwner"); // مسیر ذخیره فایل‌ها
+    cb(null, "public/images/profileBusinessOwner"); 
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + file.originalname;
@@ -26,7 +27,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage , fileFilter : profileImageFormater });
 
 
 
