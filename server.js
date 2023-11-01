@@ -27,4 +27,5 @@ app.use("/",businessOwnersRegisteration)
 app.use("/",businessOwnersOnlineMenu)
 app.use("/",usersRegisteration)
 app.use("/",rollSetting)
+app.use('/public', express.static('public'));
 

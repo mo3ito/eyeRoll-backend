@@ -4,7 +4,7 @@ const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersR
 const RollAdjustedModel = require("../../models/Roll/RollAdjusted")
 require("dotenv").config();
 const moment = require("moment");
-const ObjectID = require('mongodb').ObjectID;   
+
 
 
 const getAllAlgoritm = async (req, res) => {
@@ -229,7 +229,7 @@ const rollAdjustGet = async (req, res) => {
     return res.status(200).json(RollAdjusted);
     }
   } catch (error) {
-    console.error(error); // چاپ پیام خطا در کنسول
+    console.error(error); 
     res.status(500).json(error.message)
   }
 }

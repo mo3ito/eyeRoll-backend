@@ -9,7 +9,7 @@ const sendVerificationMailUsers = (user)=>{
         subject: "Verify your email...", // Subject line
         text: "Hello world?", // plain text body
         html: `<p>Hello ${user.username} verify your email by checking this link... </p>
-        <a href='http://localhost:3000/users-verify-email?token_email=${user.token_email}'>Verify your email</a>` ,// html body
+        <a href='${process.env.BASE_URL}/users-verify-email?token_email=${user.token_email}'>Verify your email</a>` ,// html body
     }
 
     transporter.sendMail(mailOptions , (err , info)=>{
