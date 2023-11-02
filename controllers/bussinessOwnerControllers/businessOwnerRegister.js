@@ -257,7 +257,7 @@ const registerUser = async (req, res) => {
       password: user.password,
       postal_code: user.postal_code,
       work_phone: user.work_phone,
-      profile_image_path:`${process.env.BASE_URL_SERVER}/${user.profile_image_path}`,
+      profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
     };
  
     const token = await createToken(userInfos);
@@ -311,7 +311,7 @@ const loginUser = async (req, res) => {
       password: user.password,
       postal_code: user.postal_code,
       work_phone: user.work_phone,
-      profile_image_path: `${process.env.BASE_URL_SERVER}/${user.profile_image_path}`,
+      profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
     };
 
     const token = await createToken(userInfos);
@@ -416,7 +416,7 @@ const updateInformation = async (req, res) => {
       work_phone: user.work_phone,
       postal_code: user.postal_code,
       registration_date: user.registration_date,
-      profile_image_path: `${process.env.BASE_URL_SERVER}/${user.profile_image_path}`,
+      profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
     };
 
     const token = await createToken(userInfos);
@@ -510,7 +510,7 @@ const verifyEmail = async (req, res) => {
         is_complete_information: user.is_complete_information,
         is_businessOwner: user.is_businessOwner,
         registration_date: user.registration_date,
-        profile_image_path: `${process.env.BASE_URL_SERVER}/${user.profile_image_path}`,
+        profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
       };
 
       const token = await createToken(userInfos);
