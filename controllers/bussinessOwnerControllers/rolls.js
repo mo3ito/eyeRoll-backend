@@ -222,9 +222,7 @@ const rollAdjustGet = async (req, res) => {
     const RollAdjusted = await RollAdjustedModel.findOne({ businessOwner_id: businessOwnerId });
 
     if (!RollAdjusted) {
-     return res.status(400).json({
-        message: "roll adjusted not found"
-      });
+     return res.status(200).json({});
     } else {
     return res.status(200).json(RollAdjusted);
     }
