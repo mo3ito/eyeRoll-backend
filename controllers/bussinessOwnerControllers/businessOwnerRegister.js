@@ -167,10 +167,6 @@ const deleteBusinessOwnerProfileImage = async (req , res)=>{
 }
 
 
-
-
-
-
 const registerUser = async (req, res) => {
   const {
     name,
