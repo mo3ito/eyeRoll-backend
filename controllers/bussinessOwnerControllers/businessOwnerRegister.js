@@ -567,6 +567,50 @@ const isPassword = async (req, res) => {
   }
 };
 
+const validatorPassword = async (req , res)=>{
+
+  const businessOwnerId = req.headers.authorization;
+  const {password} = req.body;
+
+  try {
+    if(!businessOwnerId){
+      return res.status(400).json({
+        message:"businessOwner id not found"
+      })
+    }
+    const businessOwner = await BusinessOwnersModel.findById(businessOwnerId);
+
+    if (!businessOwner) {
+      return res.status(401).json({
+        success: false,
+        message: "Business owner not found",
+      });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, businessOwner.password);
+
+  
+   if(isPasswordMatch){
+  return  res.status(200).json({
+      message:"Password is valid.",
+      value: true
+    })
+   }else{
+    return  res.status(200).json({
+      message:"Password is not valid.",
+      value: false
+    })
+   }
+  
+  } catch (error) {
+    console.error(error)
+    res.status(500).json(error.message);
+  }
+
+ 
+
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -579,5 +623,6 @@ module.exports = {
   isPassword,
   businessOwnerImage,
   upload,
-  deleteBusinessOwnerProfileImage
+  deleteBusinessOwnerProfileImage,
+  validatorPassword
 };

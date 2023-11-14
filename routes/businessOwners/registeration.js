@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router();
-const {registerUser,loginUser,findeUser,getAllBusinessOwner,verifyEmail , getMe , resendEmailVerification ,updateInformation , isPassword , businessOwnerImage , upload , deleteBusinessOwnerProfileImage } = require("../../controllers/bussinessOwnerControllers/businessOwnerRegister")
+const {registerUser,loginUser,findeUser,getAllBusinessOwner,verifyEmail , getMe , resendEmailVerification ,updateInformation , isPassword , businessOwnerImage ,
+ upload , deleteBusinessOwnerProfileImage , validatorPassword } = require("../../controllers/bussinessOwnerControllers/businessOwnerRegister")
 
 
 router.post("/business-owner/register", registerUser)
@@ -14,6 +15,7 @@ router.patch("/business-owner/update-information" , updateInformation)
 router.post("/business-owner/is-password",isPassword)
 router.post("/business-owner/upload-image", upload.single("profileImage") , businessOwnerImage)
 router.delete("/business-owner/delete-profile-image", deleteBusinessOwnerProfileImage)
+router.get("/business-owner/validator-password",validatorPassword)
 
 
 module.exports = router;
