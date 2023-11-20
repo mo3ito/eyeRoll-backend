@@ -7,6 +7,10 @@ const OnlineMenuSchema = new Schema({
         type: "String",
         default:""
     },
+    product_image_path:{
+        type:"String",
+        default: ""
+    },
     productName:{
         type:"String",
         required: true,

@@ -15,7 +15,7 @@ router.patch("/business-owner/update-information" , updateInformation)
 router.post("/business-owner/is-password",isPassword)
 router.post("/business-owner/upload-image", upload.single("profileImage") , businessOwnerImage)
 router.delete("/business-owner/delete-profile-image", deleteBusinessOwnerProfileImage)
-router.get("/business-owner/validator-password",validatorPassword)
+router.post("/business-owner/validator-password",validatorPassword)
 
 
 module.exports = router;
