@@ -127,66 +127,6 @@ const updateProduct = async (req, res) => {
 };
 
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     const businessOwnerId = req.headers.authorization;
-//     const businessOwner = BusinessOwnersModel.findById(businessOwnerId)
-//     cb(null, `public/images/onlineMemu/${businessOwner.username}`); 
-//   },
-//   filename: (req, file, cb) => {
-//     const uniqueSuffix = Date.now() + file.originalname;
-//     cb(null, uniqueSuffix);
-//   },
-// });
-
-// const uploadProductImage = multer({ storage , fileFilter : profileImageFormater });
-
-// const productImage = async (req , res )=>{
-
-//   const businessOwnerId = req.headers.authorization;
-//   const uploadedFileName = req.file.filename;
-
-//   if (!businessOwnerId) {
-//     return res.status(400).json({
-//       message: "business owner id not found",
-//     });
-//   }
-
-//   try {
-//     const businessOwner = await BusinessOwnersModel.findOne({
-//       _id: businessOwnerId,
-//     });
-//     if (!businessOwner) {
-//       return res.status(404).json({
-//         message: "business owner not found",
-//       });
-//     }
-
-//     if (businessOwner.profile_image_path) {
-//       const previousImagePath = businessOwner.profile_image_path;
-
-//       try {
-//         fs.unlinkSync(previousImagePath);
-//       } catch (err) {
-//         console.error(`Error deleting previous image: ${err}`);
-//       }
-//     }
-
-//     businessOwner.profile_image_path = `public/images/onlineMenu/${uploadedFileName}`;
-
-//     await businessOwner.save();
-
-
-    
-
-//     return res.status(200).json({ userInfos, token });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json(error.message);
-//   }
-
-// }
-
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     const businessOwnerId = req.headers.authorization;
