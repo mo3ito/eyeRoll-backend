@@ -59,9 +59,10 @@ const addProduct = async (req, res) => {
     const onlineMenu = new OnlineMenuModel(productInformation);
 
     await onlineMenu.save();
-
+    
     res.status(200).json({
       message: "Product added to the online menu successfully.",
+      product:onlineMenu
     });
   } catch (error) {
     console.error(error);
@@ -213,6 +214,10 @@ const productImage = async (req, res) => {
   }
 };
 
+const editImage = async (req , res)=>{
+  
+}
+
 
 const deleteProduct = async (req, res) => {
   const productID = req.headers.authorization;
@@ -252,12 +257,19 @@ const findProduct = async (req, res) => {
       });
     }
     const targetProduct = await OnlineMenuModel.find({businessOwnerId});
+    console.log(targetProduct);
+    
     if (!targetProduct) {
       return res.status(404).json({
         message: "Product not found.",
       });
     }
-    const reversedTargetProduct = await targetProduct.reverse();
+    const baseUrl = process.env.BASE_URL_SERVER;
+    const productsWithFullImagePath =  targetProduct.map(product=>({
+      ...product.toObject(),
+      product_image_path: product.product_image_path ? `${baseUrl}/${product.product_image_path}` : ""
+    }))
+    const reversedTargetProduct = await productsWithFullImagePath.reverse();
     res.status(200).json(reversedTargetProduct);
   } catch (error) {
     console.error(error);
