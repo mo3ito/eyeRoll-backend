@@ -214,8 +214,51 @@ const productImage = async (req, res) => {
   }
 };
 
-const editImage = async (req , res)=>{
-  
+const deleteProductImage = async (req , res)=>{
+  const businessOwnerId = req.headers.authorization;
+  const productId = req.query.productId;
+
+  if (!businessOwnerId) {
+    return res.status(400).json({
+      message: "Business owner id not found",
+    });
+  }
+
+  try {
+
+    const targetProduct = await OnlineMenuModel.findOne({
+      businessOwnerId,
+      _id: productId, 
+    });
+    const businessOwner = await BusinessOwnersModel.findById(businessOwnerId)
+    if (!targetProduct) {
+      return res.status(404).json({
+        message: "target product not found",
+      });
+    }
+    if(!businessOwner){
+      return res.status(404).json({
+        message: "business owner not found",
+      });
+    }
+    const imagePath =  targetProduct.product_image_path;
+    if(!imagePath){
+      return res.status(400).json({
+        message: "No profile image to delete"
+      });
+    }
+    await fs.promises.unlink(imagePath);
+    targetProduct.product_image_path = ""
+   await targetProduct.save()
+
+   return res.status(200).json({
+    message: "product image deleted successfully"
+   })
+
+  } catch (error) {
+    console.log(error);
+  return  res.status(500).json(error.message)
+  }
 }
 
 
@@ -286,5 +329,6 @@ module.exports = {
   deleteProduct,
   findProduct,
   uploadProductImage,
-  productImage
+  productImage,
+  deleteProductImage
 };
