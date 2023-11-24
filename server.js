@@ -30,7 +30,7 @@ app.use(bodyParser.json())
 app.use(cors())
 
 
-app.listen(ServerPort , ()=>console.log("server has run on port 5000"))
+app.listen(5000 , ()=>console.log("server has run on port 5000"))
 app.get("/",(req , res)=>{
     res.send("hi I am working")
     
