@@ -8,6 +8,7 @@ const {
 } = require("../../utils/senderVerificationMail/sendVerificationMailBusinessOwner");
 require("dotenv").config();
 const keyJwt = process.env.KEY_JWT;
+const storageMulter = require("../../utils/multer/storageMulter")
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path")
@@ -22,111 +23,11 @@ const createToken = async (userInfo) => {
   return token;
 };
 
-const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    const businessOwnerId = req.headers.authorization;
-
-    try {
-      const businessOwner = await BusinessOwnersModel.findById(businessOwnerId);
-      if (!businessOwner) {
-        return cb(new Error('Business owner not found'), null);
-      }
-
-      const businessOwnerPath = path.join('public/images/businessOwner', businessOwner.username);
-      
-      if (!fs.existsSync(businessOwnerPath)) {
-        fs.mkdirSync(businessOwnerPath, { recursive: true });
-      }
-
-      cb(null, businessOwnerPath);
-    } catch (error) {
-      cb(error, null);
-    }
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + file.originalname;
-    cb(null, uniqueSuffix);
-  },
-});
-
-const upload = multer({ storage , fileFilter : profileImageFormater });
 
 
+const storageProfileImage = storageMulter('public/images/businessOwner'  , BusinessOwnersModel)
+const uploadProfileImage = multer({ storage: storageProfileImage , fileFilter : profileImageFormater });
 
-// const businessOwnerImage = async (req, res) => {
-//   const businessOwnerId = req.headers.authorization;
-//   const uploadedFileName = req.file.filename;
-
-//   if (!businessOwnerId) {
-//     return res.status(400).json({
-//       message: "business owner id not found",
-//     });
-//   }
-
-//   try {
-//     const businessOwner = await BusinessOwnersModel.findOne({
-//       _id: businessOwnerId,
-//     });
-//     if (!businessOwner) {
-//       return res.status(404).json({
-//         message: "business owner not found",
-//       });
-//     }
-
-//     if (businessOwner.profile_image_path) {
-//       const previousImagePath = businessOwner.profile_image_path;
-
-//       try {
-//         fs.unlinkSync(previousImagePath);
-
-//       } catch (err) {
-//         console.error(`Error deleting previous image: ${err}`);
-//       }
-//     }
-
-//     const businessOwnerDirectory = `public/images/businessOwner/${businessOwner.name}`;
-//     const uploadedFilePath = path.join(businessOwnerDirectory, uploadedFileName);
-
-//     try {
-//       await fs.mkdir(businessOwnerDirectory, { recursive: true });
-//     } catch (error) {
-//       console.error(`Error creating directory: ${error}`);
-//     }
-
-//     businessOwner.profile_image_path = uploadedFilePath;
-
-//     await businessOwner.save();
-
-//     const userInfos = {
-//       id: businessOwner.id,
-//       profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
-//       name: businessOwner.name,
-//       last_name: businessOwner.last_name,
-//       phone_number: businessOwner.phone_number,
-//       username: businessOwner.username,
-//       email: businessOwner.email,
-//       is_verified: businessOwner.is_verified,
-//       country_name: businessOwner.country_name,
-//       state_name: businessOwner.state_name,
-//       city_name: businessOwner.city_name,
-//       address: businessOwner.address,
-//       brand_name: businessOwner.brand_name,
-//       is_complete_information: businessOwner.is_complete_information,
-//       is_businessOwner: businessOwner.is_businessOwner,
-//       registration_date: businessOwner.registration_date,
-//       password: businessOwner.password,
-//       postal_code: businessOwner.postal_code,
-//       work_phone: businessOwner.work_phone,
-//     };
-
-//     const token = await createToken(userInfos);
-
-//     return res.status(200).json({ userInfos, token });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json(error.message);
-//   }
-// };
 
 const businessOwnerImage = async (req, res) => {
   const businessOwnerId = req.headers.authorization;
@@ -782,7 +683,7 @@ module.exports = {
   updateInformation,
   isPassword,
   businessOwnerImage,
-  upload,
+  uploadProfileImage,
   deleteBusinessOwnerProfileImage,
   validatorPassword
 };
