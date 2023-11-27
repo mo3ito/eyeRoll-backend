@@ -10,6 +10,10 @@ const BusinessOwnersSchema = new Schema({
         type:"String",
         default: ""
     },
+    logo_image_path:{
+        type:"String",
+        default: ""
+    },
     name:{
         type:"String",
         required: true,

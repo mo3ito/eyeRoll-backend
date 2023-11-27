@@ -13,7 +13,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path")
 const profileImageFormater = require("../../middleware/profile-image-formater")
-const fsPromises = require('fs').promises;
+
 
 
 
@@ -68,6 +68,7 @@ const businessOwnerImage = async (req, res) => {
       id: businessOwner.id,
       profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
       work_place_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` ,
+      log_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` ,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -134,6 +135,7 @@ const deleteBusinessOwnerProfileImage = async (req , res)=>{
       id: businessOwner.id,
       profile_image_path: businessOwner.profile_image_path ,
       work_place_image_path: businessOwner.work_place_image_path,
+      logo_image_path: businessOwner.logo_image_path,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -253,6 +255,7 @@ const registerUser = async (req, res) => {
       work_phone: user.work_phone,
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
       work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
+      logo_image_path: user.logo_image_path ? `${process.env.BASE_URL_SERVER}/${user.logo_image_path}` : "",
 
     };
  
@@ -309,6 +312,7 @@ const loginUser = async (req, res) => {
       work_phone: user.work_phone,
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
       work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
+      logo_image_path: user.logo_image_path ? `${process.env.BASE_URL_SERVER}/${user.logo_image_path}` : "",
     };
 
     const token = await createToken(userInfos);
@@ -415,6 +419,7 @@ const updateInformation = async (req, res) => {
       registration_date: user.registration_date,
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
       work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
+      logo_image_path: user.logo_image_path ? `${process.env.BASE_URL_SERVER}/${user.logo_image_path}` : "",
     };
 
     const token = await createToken(userInfos);
@@ -510,6 +515,7 @@ const verifyEmail = async (req, res) => {
         registration_date: user.registration_date,
         profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
         work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
+        logo_image_path: user.logo_image_path ? `${process.env.BASE_URL_SERVER}/${user.logo_image_path}` : "",
       };
 
       const token = await createToken(userInfos);
@@ -639,7 +645,7 @@ const workPlaceImage = async (req, res) => {
 
     if (businessOwner.work_place_image_path) {
       const previousImagePath = businessOwner.work_place_image_path;
-      console.log('Previous Image Path:', previousImagePath);
+      
 
       try {
         fs.unlinkSync(previousImagePath);
@@ -656,6 +662,7 @@ const workPlaceImage = async (req, res) => {
       id: businessOwner.id,
       profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
       work_place_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}`,
+      logo_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}`,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -684,6 +691,214 @@ const workPlaceImage = async (req, res) => {
   }
 };
 
+const deleteWorkPlaceImage = async (req , res)=>{
+
+  const businessOwnerId = req.headers.authorization;
+
+  if(!businessOwnerId){
+   return res.status(400).json({
+    message : "business owner id not find"
+   })
+  }
+
+  try {
+    const businessOwner = await BusinessOwnersModel.findById(businessOwnerId)
+
+    if(!businessOwner){
+      return res.status(400).json({
+        message : "business owner not find"
+       })
+    }
+
+    const imagePath = businessOwner.work_place_image_path;
+
+    if(!imagePath){
+      return res.status(400).json({
+        message: "No profile image to delete"
+      });
+    }
+
+    await fs.promises.unlink(imagePath);
+   
+    businessOwner.work_place_image_path = ""
+
+    await businessOwner.save()
+
+    const userInfos = {
+      id: businessOwner.id,
+      profile_image_path: businessOwner.profile_image_path ,
+      work_place_image_path: businessOwner.work_place_image_path,
+      logo_image_path: businessOwner.logo_image_path,
+      name: businessOwner.name,
+      last_name: businessOwner.last_name,
+      phone_number: businessOwner.phone_number,
+      username: businessOwner.username,
+      email: businessOwner.email,
+      is_verified: businessOwner.is_verified,
+      country_name: businessOwner.country_name,
+      state_name: businessOwner.state_name,
+      city_name: businessOwner.city_name,
+      address: businessOwner.address,
+      brand_name: businessOwner.brand_name,
+      is_complete_information: businessOwner.is_complete_information,
+      is_businessOwner: businessOwner.is_businessOwner,
+      registration_date: businessOwner.registration_date,
+      password: businessOwner.password,
+      postal_code: businessOwner.postal_code,
+      work_phone: businessOwner.work_phone,
+    };
+
+    const token = await createToken(userInfos)
+
+   return res.status(200).json({userInfos , token})
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json(error.message)
+  }
+
+}
+
+
+const storageLogoImage = storageMulter('public/images/businessOwner'  , BusinessOwnersModel , "logoImage")
+const uploadLogoImage = multer({ storage: storageLogoImage , fileFilter : profileImageFormater });
+
+const logoImage = async (req, res) => {
+  const businessOwnerId = req.headers.authorization;
+  const uploadedFileName = req.file.filename;
+
+  if (!businessOwnerId) {
+    return res.status(400).json({
+      message: "business owner id not found",
+    });
+  }
+
+  try {
+    const businessOwner = await BusinessOwnersModel.findOne({
+      _id: businessOwnerId,
+    });
+    if (!businessOwner) {
+      return res.status(404).json({
+        message: "business owner not found",
+      });
+    }
+
+    if (businessOwner.logo_image_path) {
+      const previousImagePath = businessOwner.logo_image_path;
+     
+
+      try {
+        fs.unlinkSync(previousImagePath);
+      } catch (err) {
+        console.error(`Error deleting previous image: ${err}`);
+      }
+    }
+    
+    businessOwner.logo_image_path = `public/images/businessOwner/${businessOwner.username}/logoImage/${uploadedFileName}`;
+
+    await businessOwner.save();
+
+    const userInfos = {
+      id: businessOwner.id,
+      profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
+      work_place_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}`,
+      logo_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}`,
+      name: businessOwner.name,
+      last_name: businessOwner.last_name,
+      phone_number: businessOwner.phone_number,
+      username: businessOwner.username,
+      email: businessOwner.email,
+      is_verified: businessOwner.is_verified,
+      country_name: businessOwner.country_name,
+      state_name: businessOwner.state_name,
+      city_name: businessOwner.city_name,
+      address: businessOwner.address,
+      brand_name: businessOwner.brand_name,
+      is_complete_information: businessOwner.is_complete_information,
+      is_businessOwner: businessOwner.is_businessOwner,
+      registration_date: businessOwner.registration_date,
+      password: businessOwner.password,
+      postal_code: businessOwner.postal_code,
+      work_phone: businessOwner.work_phone,
+    };
+
+    const token = await createToken(userInfos);
+
+    return res.status(200).json({ userInfos, token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+};
+
+const deleteLogoImage = async (req , res)=>{
+
+  const businessOwnerId = req.headers.authorization;
+
+  if(!businessOwnerId){
+   return res.status(400).json({
+    message : "business owner id not find"
+   })
+  }
+
+  try {
+    const businessOwner = await BusinessOwnersModel.findById(businessOwnerId)
+
+    if(!businessOwner){
+      return res.status(400).json({
+        message : "business owner not find"
+       })
+    }
+
+    const imagePath = businessOwner.logo_image_path;
+
+    if(!imagePath){
+      return res.status(400).json({
+        message: "No profile image to delete"
+      });
+    }
+
+    await fs.promises.unlink(imagePath);
+   
+    businessOwner.logo_image_path = ""
+
+    await businessOwner.save()
+
+    const userInfos = {
+      id: businessOwner.id,
+      profile_image_path: businessOwner.profile_image_path ,
+      work_place_image_path: businessOwner.work_place_image_path,
+      logo_image_path: businessOwner.logo_image_path,
+      name: businessOwner.name,
+      last_name: businessOwner.last_name,
+      phone_number: businessOwner.phone_number,
+      username: businessOwner.username,
+      email: businessOwner.email,
+      is_verified: businessOwner.is_verified,
+      country_name: businessOwner.country_name,
+      state_name: businessOwner.state_name,
+      city_name: businessOwner.city_name,
+      address: businessOwner.address,
+      brand_name: businessOwner.brand_name,
+      is_complete_information: businessOwner.is_complete_information,
+      is_businessOwner: businessOwner.is_businessOwner,
+      registration_date: businessOwner.registration_date,
+      password: businessOwner.password,
+      postal_code: businessOwner.postal_code,
+      work_phone: businessOwner.work_phone,
+    };
+
+    const token = await createToken(userInfos)
+
+   return res.status(200).json({userInfos , token})
+
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json(error.message)
+  }
+
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -699,5 +914,10 @@ module.exports = {
   deleteBusinessOwnerProfileImage,
   validatorPassword,
   uploadWorkPlaceImage,
-  workPlaceImage
+  workPlaceImage,
+  logoImage,
+  uploadLogoImage,
+  deleteWorkPlaceImage,
+  deleteLogoImage
+
 };
