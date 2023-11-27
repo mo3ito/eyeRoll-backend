@@ -6,6 +6,10 @@ const BusinessOwnersSchema = new Schema({
         type:"String",
         default: ""
     },
+      work_place_image_path:{
+        type:"String",
+        default: ""
+    },
     name:{
         type:"String",
         required: true,

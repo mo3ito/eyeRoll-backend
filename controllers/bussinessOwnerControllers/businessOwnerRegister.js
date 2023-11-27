@@ -13,6 +13,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path")
 const profileImageFormater = require("../../middleware/profile-image-formater")
+const fsPromises = require('fs').promises;
 
 
 
@@ -25,7 +26,7 @@ const createToken = async (userInfo) => {
 
 
 
-const storageProfileImage = storageMulter('public/images/businessOwner'  , BusinessOwnersModel)
+const storageProfileImage = storageMulter('public/images/businessOwner'  , BusinessOwnersModel , "profileImage")
 const uploadProfileImage = multer({ storage: storageProfileImage , fileFilter : profileImageFormater });
 
 
@@ -59,13 +60,14 @@ const businessOwnerImage = async (req, res) => {
       }
     }
 
-    businessOwner.profile_image_path = `public/images/businessOwner/${businessOwner.username}/${uploadedFileName}`;
+    businessOwner.profile_image_path = `public/images/businessOwner/${businessOwner.username}/profileImage/${uploadedFileName}`;
 
     await businessOwner.save();
 
     const userInfos = {
       id: businessOwner.id,
       profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
+      work_place_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` ,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -131,6 +133,7 @@ const deleteBusinessOwnerProfileImage = async (req , res)=>{
     const userInfos = {
       id: businessOwner.id,
       profile_image_path: businessOwner.profile_image_path ,
+      work_place_image_path: businessOwner.work_place_image_path,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -249,6 +252,8 @@ const registerUser = async (req, res) => {
       postal_code: user.postal_code,
       work_phone: user.work_phone,
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
+      work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
+
     };
  
     const token = await createToken(userInfos);
@@ -303,6 +308,7 @@ const loginUser = async (req, res) => {
       postal_code: user.postal_code,
       work_phone: user.work_phone,
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
+      work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
     };
 
     const token = await createToken(userInfos);
@@ -408,6 +414,7 @@ const updateInformation = async (req, res) => {
       postal_code: user.postal_code,
       registration_date: user.registration_date,
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
+      work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
     };
 
     const token = await createToken(userInfos);
@@ -502,6 +509,7 @@ const verifyEmail = async (req, res) => {
         is_businessOwner: user.is_businessOwner,
         registration_date: user.registration_date,
         profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
+        work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
       };
 
       const token = await createToken(userInfos);
@@ -606,8 +614,10 @@ const validatorPassword = async (req , res)=>{
 
 }
 
+const storageWorkPlaceImage = storageMulter('public/images/businessOwner'  , BusinessOwnersModel , "workPlaceImage")
+const uploadWorkPlaceImage = multer({ storage: storageWorkPlaceImage , fileFilter : profileImageFormater });
 
-const businessInformation = async (req, res) => {
+const workPlaceImage = async (req, res) => {
   const businessOwnerId = req.headers.authorization;
   const uploadedFileName = req.file.filename;
 
@@ -627,8 +637,9 @@ const businessInformation = async (req, res) => {
       });
     }
 
-    if (businessOwner.workPlace_image_path) {
-      const previousImagePath = businessOwner.workPlace_image_path;
+    if (businessOwner.work_place_image_path) {
+      const previousImagePath = businessOwner.work_place_image_path;
+      console.log('Previous Image Path:', previousImagePath);
 
       try {
         fs.unlinkSync(previousImagePath);
@@ -636,14 +647,15 @@ const businessInformation = async (req, res) => {
         console.error(`Error deleting previous image: ${err}`);
       }
     }
-
-    businessOwner.workPlace_image_path = `public/images/profileBusinessOwner/${uploadedFileName}`;
+    
+    businessOwner.work_place_image_path = `public/images/businessOwner/${businessOwner.username}/workPlaceImage/${uploadedFileName}`;
 
     await businessOwner.save();
 
     const userInfos = {
       id: businessOwner.id,
       profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
+      work_place_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}`,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -685,5 +697,7 @@ module.exports = {
   businessOwnerImage,
   uploadProfileImage,
   deleteBusinessOwnerProfileImage,
-  validatorPassword
+  validatorPassword,
+  uploadWorkPlaceImage,
+  workPlaceImage
 };
