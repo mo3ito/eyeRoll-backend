@@ -4,6 +4,7 @@ const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersR
 const multer = require("multer")
 const path = require("path")
 const fs = require("fs")
+require("dotenv").config();
 
 const getAllProduct = async (req, res) => {
   try {
@@ -320,7 +321,54 @@ const findProduct = async (req, res) => {
   }
 };
 
+ const getOnlineMenuInfo = async (req , res)=>{
 
+  const businessOwnerId = req.headers.authorization;
+
+  try {
+    
+    if (!businessOwnerId) {
+      return res.status(400).json({
+        message: "No business owner was found with this profile",
+      });
+    }
+
+    const businessOwner = await BusinessOwnersModel.findById(businessOwnerId)
+
+    const targetProduct = await OnlineMenuModel.find({businessOwnerId});
+    console.log(targetProduct);
+    
+    if (!targetProduct) {
+      return res.status(404).json({
+        message: "Product not found.",
+      });
+    }
+    const baseUrl = process.env.BASE_URL_SERVER;
+    const targetProductUpdated = targetProduct.map(product=>({
+      ...product.toObject(),
+       product_image_path: product.product_image_path ? `${baseUrl}/${product.product_image_path}` : ""
+    }))
+
+    const informationBusiness = {
+      work_place_image:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}`,
+      work_phone:businessOwner.work_phone,
+      phone_number: businessOwner.phone_number,
+      logo_image: `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` 
+    }
+
+    const onlineMenu={
+      informationBusiness,
+      products: targetProductUpdated
+    }
+
+   return res.status(200).json(onlineMenu)
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+
+ }
 
 module.exports = {
   getAllProduct,
@@ -330,5 +378,6 @@ module.exports = {
   findProduct,
   uploadProductImage,
   productImage,
-  deleteProductImage
+  deleteProductImage,
+  getOnlineMenuInfo
 };
