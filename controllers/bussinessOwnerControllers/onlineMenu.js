@@ -353,7 +353,9 @@ const findProduct = async (req, res) => {
       work_place_image:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}`,
       work_phone:businessOwner.work_phone,
       phone_number: businessOwner.phone_number,
-      logo_image: `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` 
+      logo_image: `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}`,
+      address:businessOwner.address,
+      brand_name:businessOwner.brand_name
     }
 
     const onlineMenu={
