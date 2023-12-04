@@ -66,9 +66,9 @@ const businessOwnerImage = async (req, res) => {
 
     const userInfos = {
       id: businessOwner.id,
-      profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
-      work_place_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` ,
-      log_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` ,
+      profile_image_path: businessOwner.profile_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` : "" ,
+      work_place_image_path:businessOwner.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` : "" ,
+      logo_image_path: businessOwner.logo_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` : "" ,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -133,9 +133,9 @@ const deleteBusinessOwnerProfileImage = async (req , res)=>{
 
     const userInfos = {
       id: businessOwner.id,
-      profile_image_path: businessOwner.profile_image_path ,
-      work_place_image_path: businessOwner.work_place_image_path,
-      logo_image_path: businessOwner.logo_image_path,
+      profile_image_path: businessOwner.profile_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` : "" ,
+      work_place_image_path:businessOwner.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` : "" ,
+      log_image_path: businessOwner.logo_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` : "" ,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -660,9 +660,9 @@ const workPlaceImage = async (req, res) => {
 
     const userInfos = {
       id: businessOwner.id,
-      profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
-      work_place_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}`,
-      logo_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}`,
+      profile_image_path: businessOwner.profile_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` : "" ,
+      work_place_image_path: businessOwner.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` : "",
+      logo_image_path: businessOwner.logo_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}`:"",
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -726,9 +726,9 @@ const deleteWorkPlaceImage = async (req , res)=>{
 
     const userInfos = {
       id: businessOwner.id,
-      profile_image_path: businessOwner.profile_image_path ,
-      work_place_image_path: businessOwner.work_place_image_path,
-      logo_image_path: businessOwner.logo_image_path,
+      profile_image_path: businessOwner.profile_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` : "",
+      work_place_image_path:businessOwner.work_place_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` : "",
+      logo_image_path: businessOwner.logo_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` : "",
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -800,9 +800,9 @@ const logoImage = async (req, res) => {
 
     const userInfos = {
       id: businessOwner.id,
-      profile_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` ,
-      work_place_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}`,
-      logo_image_path:`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}`,
+      profile_image_path: businessOwner.profile_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` : "" ,
+      work_place_image_path: businessOwner.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` : "",
+      logo_image_path: businessOwner.logo_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` : "",
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
@@ -821,6 +821,8 @@ const logoImage = async (req, res) => {
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
     };
+
+   
 
     const token = await createToken(userInfos);
 
@@ -866,9 +868,9 @@ const deleteLogoImage = async (req , res)=>{
 
     const userInfos = {
       id: businessOwner.id,
-      profile_image_path: businessOwner.profile_image_path ,
-      work_place_image_path: businessOwner.work_place_image_path,
-      logo_image_path: businessOwner.logo_image_path,
+      profile_image_path: businessOwner.profile_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` : "",
+      work_place_image_path:businessOwner.work_place_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` : "",
+      logo_image_path: businessOwner.logo_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` : "",
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
