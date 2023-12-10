@@ -19,10 +19,17 @@ const createToken = async (userInfo)=>{
         try {
             const lowercaseEmail =await email.toLowerCase();
             let user = await UsersModel.findOne({email : lowercaseEmail })
+            let isUsername = await UsersModel.findOne({username})
 
             if(user) return res.status(400).json({
                 message : "User already exist"
             })
+
+            if(isUsername){
+                return res.status(400).json({
+                  message: "Username already exist"
+                })
+              }
 
             user = new UsersModel({username,password,email : lowercaseEmail, token_email: crypto.randomBytes(64).toString("hex")});
 
