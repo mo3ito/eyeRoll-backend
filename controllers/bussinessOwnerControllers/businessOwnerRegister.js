@@ -181,14 +181,14 @@ const registerUser = async (req, res) => {
   try {
     const lowercaseEmail = await email.toLowerCase();
     let user = await BusinessOwnersModel.findOne({ email: lowercaseEmail });
-    let uername = await BusinessOwnersModel.findOne({username})
+    let isUsername = await BusinessOwnersModel.findOne({username})
 
     if (user)
       return res.status(400).json({
         message: "User already exist",
       });
 
-      if(username){
+      if(isUsername){
         return res.status(400).json({
           message: "Username already exist"
         })
