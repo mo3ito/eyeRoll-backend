@@ -7,6 +7,7 @@ const businessOwnersRegisteration = require("./routes/businessOwners/registerati
 const usersRegisteration  = require("./routes/users/registeration")
 const businessOwnersOnlineMenu = require("./routes/businessOwners/onlineMenu")
 const rollSetting = require("./routes/businessOwners/rolls")
+const searchInformation = require("./routes/searchInformation/searchInformation")
 require('dotenv').config();
 const {createServer} = require("http")
 const {Server} = require("socket.io")
@@ -43,5 +44,6 @@ app.use("/",businessOwnersRegisteration)
 app.use("/",businessOwnersOnlineMenu)
 app.use("/",usersRegisteration)
 app.use("/",rollSetting)
+app.use("/",searchInformation)
 app.use('/public', express.static('public'));
 
