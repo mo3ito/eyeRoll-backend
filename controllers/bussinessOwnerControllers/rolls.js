@@ -321,7 +321,9 @@ const getRoll = async (req, res) => {
       maxPercentageDiscount:selectedPercentage.maxPercentage,
       special_product_discount:rollOptionBusinessOwner.special_product_discount,
       gift:rollOptionBusinessOwner.gift,
-      number_Purchase_gift:rollOptionBusinessOwner.number_Purchase_gift
+      number_Purchase_gift:rollOptionBusinessOwner.number_Purchase_gift,
+      first_time: startDayTime,
+      last_time:endDayTime
     }
     res.status(200).json(informationRoll)
   } catch (error) {
