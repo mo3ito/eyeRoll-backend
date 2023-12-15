@@ -11,7 +11,7 @@ const io = new Server(server , {
 
 io.on("connection" , (socket)=>{
     console.log("A user connected");
-    console.log("seen", seenUser += 1 );
+    console.log("online menu seen", seenUser += 1 );
     console.log(socket.id);
 })
 

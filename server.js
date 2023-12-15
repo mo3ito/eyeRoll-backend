@@ -12,16 +12,23 @@ require('dotenv').config();
 const {createServer} = require("http")
 const {Server} = require("socket.io")
 const ServerPort = process.env.SERVER_PORT ? process.env.SERVERPORT : 5000;
-const socketPort = process.env.SOCKET_PORT ? process.env.SOCKET_PORT : 5001;
-const configureSocket = require("./socket/socket")
+const onlineMenuSocketPort = process.env.SOCKET_PORT ? process.env.SOCKET_PORT : 5001;
+const eyeRollSocketPort = process.env.EYE_ROLL_SERVER_PORT ? process.env.SERVERPORT : 5002;
+const configureOnlineMenuSocket = require("./socket/onlineMenuSocket")
+const configurePageEyeRollSocket = require("./socket/pageEyeRollSocket")
 
 mongoose.connect("mongodb://localhost:27017/discount")
 
 
-const server = createServer(app)
 
 
-const io = configureSocket(server)
+const onlineMenuSocketServer = createServer()
+const eyeRollSocketServer = createServer();
+
+
+
+const io = configureOnlineMenuSocket(onlineMenuSocketServer)
+const ioPageEyeRoll = configurePageEyeRollSocket(eyeRollSocketServer);
 
 
 
@@ -29,15 +36,15 @@ const io = configureSocket(server)
 app.use(express.json())
 app.use(bodyParser.json())
 app.use(cors())
-
-
-app.listen(ServerPort , ()=>console.log("server has run on port 5000"))
 app.get("/",(req , res)=>{
     res.send("hi I am working")
     
 })
 
-server.listen(socketPort , ()=> console.log("socket connected on port 5001"))
+app.listen(ServerPort , ()=>console.log("server has run on port 5000"))
+onlineMenuSocketServer.listen(onlineMenuSocketPort , ()=> console.log("online menu server socket connected on port 5001"))
+eyeRollSocketServer.listen(eyeRollSocketPort, () => console.log("eyeRoll page server socket connected on port 5002"));
+
 
 
 app.use("/",businessOwnersRegisteration)
