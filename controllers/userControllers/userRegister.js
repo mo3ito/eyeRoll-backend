@@ -96,7 +96,7 @@ const createToken = async (userInfo)=>{
             if(!validPassword) return res.status(400).json({message:"Invalid email or password"})
             if(!user.is_verified) return res.status(201).json({message:"You have not verified your email"})
 
-            const userInfos = { id: user._id,username : user.username , email:user.email,is_verified:user.is_verified , registration_date:user.registration_date }
+            const userInfos = { id: user._id,username : user.username , email:user.email,is_verified:user.is_verified , registration_date:user.registration_date , discounts_eyeRoll:user.discounts_eyeRoll}
               
 
             const token =await createToken(userInfos)
@@ -146,6 +146,7 @@ const createToken = async (userInfo)=>{
                 username,
                 email : user.email,
                 password: password ? hashedPassword : user.password,
+                discounts_eyeRoll:user.discounts_eyeRoll
               };
               
               const token = await createToken(userInfos)
@@ -224,7 +225,7 @@ const createToken = async (userInfo)=>{
             
             await user.save()
 
-            const userInfos = { id: user._id, username : user.username , email:user.email , is_verified:user.is_verified , registration_date:user.registration_date }
+            const userInfos = { id: user._id, username : user.username , email:user.email , is_verified:user.is_verified , registration_date:user.registration_date , discounts_eyeRoll:user.discounts_eyeRoll }
         
             const token = await createToken(userInfos)
         
@@ -285,36 +286,7 @@ const createToken = async (userInfo)=>{
             }
           };
 
-        //   const getDiscountEyeRoll = async (req , res) =>{
-        //     const userID = req.headers.authorization;
-        //     const { id , discount , endTime , startTime} = req.body
-
-        //     try {
-
-        //         if(!userID){
-        //             return res.status(400).json({
-        //                 message:"user id not found"
-        //             })
-        //         }
-
-        //         const discounts={id , discount , endTime , startTime}
-        //         const user = await UsersModel.findById(userID)
-        //         const userInfos = { id: user._id, username : user.username ,
-        //             email : user.email ,
-        //             is_verified : user.is_verified,
-        //             registration_date:user.registration_date,
-        //             discounts_eyeRoll:discounts
-        //          }
-
-        //          const newUserInfos = 
-
-                 
-
-
-        //     } catch (error) {
-                
-        //     }
-        //   }
+     
 
         const getDiscountEyeRoll = async (req, res) => {
             const userID = req.headers.authorization;
@@ -336,7 +308,7 @@ const createToken = async (userInfo)=>{
                 });
               }
           
-              // اضافه کردن اطلاعات تخفیف به فیلد discounts_eyeRoll
+           
               await UsersModel.findByIdAndUpdate(
                 userID,
                 {
@@ -344,7 +316,7 @@ const createToken = async (userInfo)=>{
                     discounts_eyeRoll: discountsInfo,
                   },
                 },
-                { new: true } // با این گزینه، مقدار جدید برگردانده می‌شود
+                { new: true } 
               );
           
               const updatedUser = await UsersModel.findById(userID);
@@ -367,7 +339,47 @@ const createToken = async (userInfo)=>{
               });
             }
           };
+
+
+
           
+          const removeExpireDisCountsEyeRoll = async(req , res)=>{
+
+            const userID = req.headers.authorization;
+            const {dicountId} = req.body
+
+            try {
+
+              if(!userID){
+                return res.status(400).json({
+                  message:"user id not found"
+                })
+              }
+
+              const user = await UsersModel.findById(userID)
+              console.log(user);
+              let discounts = await user.discounts_eyeRoll
+
+            const updatedDiscounts = await discounts.filter(discount=> discount.id !== dicountId )
+
+            const userInfos = {
+              id: user._id,
+              username: user.username,
+              email: user.email,
+              is_verified: user.is_verified,
+              registration_date: user.registration_date,
+              discounts_eyeRoll: updatedDiscounts,
+            };
+              
+            const token = await createToken(userInfos)
+            return res.status(200).json({userInfos,token});
+            } catch (error) {
+              console.error(error);
+              return res.status(500).json({
+                message: "Internal server error",
+              });
+            }
+          }
 
         module.exports = {
             registerUser,
@@ -379,7 +391,8 @@ const createToken = async (userInfo)=>{
             resendEmailVerification,
             updateInformation,
             isPassword,
-            getDiscountEyeRoll
+            getDiscountEyeRoll,
+            removeExpireDisCountsEyeRoll
         }
 
 
