@@ -28,6 +28,11 @@ const UserShema = new Schema({
         type : Date,
         default: Date.now 
       },
+      discounts_eyeRoll:{
+        type: Array,
+        default: [],
+
+      }
 })
 
 const Users = mongoose.model("users",UserShema)

@@ -285,6 +285,90 @@ const createToken = async (userInfo)=>{
             }
           };
 
+        //   const getDiscountEyeRoll = async (req , res) =>{
+        //     const userID = req.headers.authorization;
+        //     const { id , discount , endTime , startTime} = req.body
+
+        //     try {
+
+        //         if(!userID){
+        //             return res.status(400).json({
+        //                 message:"user id not found"
+        //             })
+        //         }
+
+        //         const discounts={id , discount , endTime , startTime}
+        //         const user = await UsersModel.findById(userID)
+        //         const userInfos = { id: user._id, username : user.username ,
+        //             email : user.email ,
+        //             is_verified : user.is_verified,
+        //             registration_date:user.registration_date,
+        //             discounts_eyeRoll:discounts
+        //          }
+
+        //          const newUserInfos = 
+
+                 
+
+
+        //     } catch (error) {
+                
+        //     }
+        //   }
+
+        const getDiscountEyeRoll = async (req, res) => {
+            const userID = req.headers.authorization;
+            const { id, discount, endTime, startTime , address , brandName , workPhone } = req.body;
+          
+            try {
+              if (!userID) {
+                return res.status(400).json({
+                  message: "user id not found",
+                });
+              }
+          
+              const discountsInfo = { id, discount, endTime, startTime , address , brandName , workPhone };
+              const user = await UsersModel.findById(userID);
+          
+              if (!user) {
+                return res.status(404).json({
+                  message: "User not found",
+                });
+              }
+          
+              // اضافه کردن اطلاعات تخفیف به فیلد discounts_eyeRoll
+              await UsersModel.findByIdAndUpdate(
+                userID,
+                {
+                  $push: {
+                    discounts_eyeRoll: discountsInfo,
+                  },
+                },
+                { new: true } // با این گزینه، مقدار جدید برگردانده می‌شود
+              );
+          
+              const updatedUser = await UsersModel.findById(userID);
+          
+              const userInfos = {
+                id: updatedUser._id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                is_verified: updatedUser.is_verified,
+                registration_date: updatedUser.registration_date,
+                discounts_eyeRoll: updatedUser.discounts_eyeRoll,
+              };
+              
+              const token = await createToken(userInfos)
+              return res.status(200).json({userInfos,token});
+            } catch (error) {
+              console.error(error);
+              return res.status(500).json({
+                message: "Internal server error",
+              });
+            }
+          };
+          
+
         module.exports = {
             registerUser,
             loginUser,
@@ -294,7 +378,8 @@ const createToken = async (userInfo)=>{
             getMe,
             resendEmailVerification,
             updateInformation,
-            isPassword
+            isPassword,
+            getDiscountEyeRoll
         }
 
 

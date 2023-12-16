@@ -317,6 +317,9 @@ const getRoll = async (req, res) => {
     }
   
     const informationRoll = {
+      brand_name:businessOwner.brand_name,
+      address:businessOwner.address,
+      work_phone:businessOwner.work_phone,
       minPercentageDiscount:selectedPercentage.minPercentage,
       maxPercentageDiscount:selectedPercentage.maxPercentage,
       special_product_discount:rollOptionBusinessOwner.special_product_discount,
