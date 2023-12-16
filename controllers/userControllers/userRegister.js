@@ -346,7 +346,9 @@ const createToken = async (userInfo)=>{
           const removeExpireDisCountsEyeRoll = async(req , res)=>{
 
             const userID = req.headers.authorization;
-            const {dicountId} = req.body
+            const {dicountIds} = await req.body
+
+            console.log( "discountId" , dicountIds);
 
             try {
 
@@ -360,7 +362,10 @@ const createToken = async (userInfo)=>{
               console.log(user);
               let discounts = await user.discounts_eyeRoll
 
-            const updatedDiscounts = await discounts.filter(discount=> discount.id !== dicountId )
+            const updatedDiscounts = discounts.filter(discount => !dicountIds.includes(discount.id));
+            
+            user.discounts_eyeRoll = updatedDiscounts;
+            await user.save();
 
             const userInfos = {
               id: user._id,
