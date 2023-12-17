@@ -282,8 +282,7 @@ const getRoll = async (req, res) => {
     const month = nowDay.getMonth() + 1;
     const day = nowDay.getDate();
     const requestData = new Date(year, month - 1, day)
-    
-  
+
     console.log(startDayTime);
     console.log(endDayTime);
     console.log(startDayPeakTime);
@@ -295,19 +294,19 @@ const getRoll = async (req, res) => {
     if (currentDate.isBetween(startDay, finishDay)) {
       const currentTime = currentDate.format("HH:mm");
       console.log(rollOptionBusinessOwner.min_percentage);
-      if ((currentTime >= startDayTime && currentTime <= endDayTime) && (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime)) {
+      if ((currentTime > startDayTime && currentTime < endDayTime) && (currentTime > startDayPeakTime && currentTime < endDayPeakTime)) {
         console.log("peak");
         selectedPercentage = {
           minPercentage: rollOptionBusinessOwner.min_percentage_peak,
           maxPercentage: rollOptionBusinessOwner.max_percentage_peak
         };
-      } else if (currentTime >= startDayTime && currentTime <= endDayTime) {
+      } else if (currentTime > startDayTime && currentTime < endDayTime) {
         console.log("normal");
         selectedPercentage = {
           minPercentage: rollOptionBusinessOwner.min_percentage,
           maxPercentage: rollOptionBusinessOwner.max_percentage
         };
-      } else if (currentTime >= startDayPeakTime && currentTime <= endDayPeakTime) {
+      } else if (currentTime > startDayPeakTime && currentTime < endDayPeakTime) {
         console.log("peak");
         selectedPercentage = {
           minPercentage: rollOptionBusinessOwner.min_percentage_peak,
