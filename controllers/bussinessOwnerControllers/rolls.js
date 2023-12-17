@@ -275,6 +275,14 @@ const getRoll = async (req, res) => {
     const endDayTime = rollOptionBusinessOwner.end_day_time
     const startDayPeakTime = rollOptionBusinessOwner.start_day_peak_time
     const endDayPeakTime = rollOptionBusinessOwner.end_day_peak_time
+
+
+    const nowDay = new Date()
+    const year = nowDay.getFullYear();
+    const month = nowDay.getMonth() + 1;
+    const day = nowDay.getDate();
+    const requestData = new Date(year, month - 1, day)
+    
   
     console.log(startDayTime);
     console.log(endDayTime);
@@ -317,6 +325,7 @@ const getRoll = async (req, res) => {
     }
   
     const informationRoll = {
+      businessOwnerId:businessOwner._id,
       brand_name:businessOwner.brand_name,
       address:businessOwner.address,
       work_phone:businessOwner.work_phone,
@@ -326,7 +335,8 @@ const getRoll = async (req, res) => {
       gift:rollOptionBusinessOwner.gift,
       number_Purchase_gift:rollOptionBusinessOwner.number_Purchase_gift,
       first_time: startDayTime,
-      last_time:endDayTime
+      last_time:endDayTime,
+      validDate:requestData
     }
     res.status(200).json(informationRoll)
   } catch (error) {

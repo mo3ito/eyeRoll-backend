@@ -290,7 +290,7 @@ const createToken = async (userInfo)=>{
 
         const getDiscountEyeRoll = async (req, res) => {
             const userID = req.headers.authorization;
-            const { id, discount, endTime, startTime , address , brandName , workPhone } = req.body;
+            const { id, discount, endTime, startTime , address , brandName , workPhone , validDate , businessOwnerId } = req.body;
           
             try {
               if (!userID) {
@@ -299,7 +299,7 @@ const createToken = async (userInfo)=>{
                 });
               }
           
-              const discountsInfo = { id, discount, endTime, startTime , address , brandName , workPhone };
+              const discountsInfo = { id, discount, endTime, startTime , address , brandName , workPhone , validDate , businessOwnerId };
               const user = await UsersModel.findById(userID);
           
               if (!user) {
