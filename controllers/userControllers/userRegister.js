@@ -386,48 +386,15 @@ const createToken = async (userInfo)=>{
             }
           }
 
-          const passwordRecoveryInformation = async (req , res)=>{
-            const userId = req.headers.authorization
-            const {email , username}=req.body
-
-            try {
-             const isEmail = await UsersModel.find({email , _id:userId})
-             const isUsername = await UsersModel.find({username , _id:userId})
-              if(!isEmail){
-               return res.status(400).json({
-                  message:"your email is not correct"
-                })
-              }
-
-              if(!isUsername){
-                return res.status(400).json({
-                   message:"your username is not correct"
-                 })
-               }
-
-              return res.status(200).json({
-                permission : true
-              })
- 
-            } catch (error) {
-              console.error(error);
-              return res.status(500).json({
-                message: "Internal server error",
-              });
-            }
-
-          }
-
+          
           const changePasswordForgot = async (req , res)=>{
-            const userId = req.headers.authorization;
-            const {new_password , repeat_new_password}=req.body
-
-
+          
+            const {new_password , repeat_new_password , username , email}=req.body
             try {
-              const user = await UsersModel.findById(userId)
+              const user = await UsersModel.findOne({username , email : email.toLowerCase()})
               if(!user){
                 return res.status(400).json({
-                   message: 'User not found'
+                   message: 'username or email is not correct'
                 });
               }
 
@@ -471,7 +438,6 @@ const createToken = async (userInfo)=>{
             isPassword,
             getDiscountEyeRoll,
             removeExpireDisCountsEyeRoll,
-            passwordRecoveryInformation,
             changePasswordForgot
         }
 
