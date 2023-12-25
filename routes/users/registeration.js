@@ -1,6 +1,8 @@
 const express = require("express")
 const router = express.Router();
-const {registerUser,loginUser,findeUser,getAllUser,verifyEmail , getMe , resendEmailVerification , updateInformation , isPassword , getDiscountEyeRoll , removeExpireDisCountsEyeRoll} = require("../../controllers/userControllers/userRegister")
+const {registerUser,loginUser,findeUser,getAllUser,verifyEmail , getMe , resendEmailVerification , updateInformation , isPassword , getDiscountEyeRoll , removeExpireDisCountsEyeRoll , passwordRecoveryInformation , changePasswordForgot } = require("../../controllers/userControllers/userRegister")
+
+
 
 
 router.post("/users/register",registerUser)
@@ -14,5 +16,7 @@ router.patch("/users/update-information" , updateInformation)
 router.post("/users/is-password",isPassword)
 router.put("/users/get-discount-eyeRoll",getDiscountEyeRoll)
 router.put("/users/remove-expire-discount-eyeRoll" , removeExpireDisCountsEyeRoll)
+router.get("/users/password-recovery-information" , passwordRecoveryInformation)
+router.put("/users/change-password-forgot",changePasswordForgot)
 
 module.exports = router;

@@ -53,7 +53,7 @@ const createToken = async (userInfo)=>{
               }
               if (password !== repeat_password) {
                 res.status(400).json({
-                    message :"the password dosnt match with repeat password"
+                    message :"the password doesn't match with repeat password"
                 })
               
               }
@@ -386,6 +386,79 @@ const createToken = async (userInfo)=>{
             }
           }
 
+          const passwordRecoveryInformation = async (req , res)=>{
+            const userId = req.headers.authorization
+            const {email , username}=req.body
+
+            try {
+             const isEmail = await UsersModel.find({email , _id:userId})
+             const isUsername = await UsersModel.find({username , _id:userId})
+              if(!isEmail){
+               return res.status(400).json({
+                  message:"your email is not correct"
+                })
+              }
+
+              if(!isUsername){
+                return res.status(400).json({
+                   message:"your username is not correct"
+                 })
+               }
+
+              return res.status(200).json({
+                permission : true
+              })
+ 
+            } catch (error) {
+              console.error(error);
+              return res.status(500).json({
+                message: "Internal server error",
+              });
+            }
+
+          }
+
+          const changePasswordForgot = async (req , res)=>{
+            const userId = req.headers.authorization;
+            const {new_password , repeat_new_password}=req.body
+
+
+            try {
+              const user = await UsersModel.findById(userId)
+              if(!user){
+                return res.status(400).json({
+                   message: 'User not found'
+                });
+              }
+
+              if(new_password !== repeat_new_password){
+                return res.status(400).json({
+                  message: "the password doesn't match with repeat password"
+                })
+              }
+
+              let hashedPassword;
+              if(new_password){
+                  const salt = await bcrypt.genSalt(10)
+                  hashedPassword = await bcrypt.hash(new_password, salt);
+                  user.password = hashedPassword;
+              }
+
+             await user.save()
+
+           return  res.status(200).json({
+              message : "your password set seccessfully"
+             })
+             
+            } catch (error) {
+              console.log(error);
+              return res.status(500).json({
+                message: "Internal server error",
+              });
+            }
+
+          }
+
         module.exports = {
             registerUser,
             loginUser,
@@ -397,7 +470,9 @@ const createToken = async (userInfo)=>{
             updateInformation,
             isPassword,
             getDiscountEyeRoll,
-            removeExpireDisCountsEyeRoll
+            removeExpireDisCountsEyeRoll,
+            passwordRecoveryInformation,
+            changePasswordForgot
         }
 
 
