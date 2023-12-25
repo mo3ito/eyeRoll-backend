@@ -83,7 +83,6 @@ const businessOwnerImage = async (req, res) => {
       is_complete_information: businessOwner.is_complete_information,
       is_businessOwner: businessOwner.is_businessOwner,
       registration_date: businessOwner.registration_date,
-      password: businessOwner.password,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
     };
@@ -150,7 +149,6 @@ const deleteBusinessOwnerProfileImage = async (req , res)=>{
       is_complete_information: businessOwner.is_complete_information,
       is_businessOwner: businessOwner.is_businessOwner,
       registration_date: businessOwner.registration_date,
-      password: businessOwner.password,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
     };
@@ -257,7 +255,6 @@ const registerUser = async (req, res) => {
       is_complete_information: user.is_complete_information,
       is_businessOwner: user.is_businessOwner,
       registration_date: user.registration_date,
-      password: user.password,
       postal_code: user.postal_code,
       work_phone: user.work_phone,
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
@@ -303,7 +300,6 @@ const loginUser = async (req, res) => {
       last_name: user.last_name,
       phone_number: user.phone_number,
       username: user.username,
-      password: user.password,
       email: user.email,
       is_verified: user.is_verified,
       country_name: user.country_name,
@@ -314,7 +310,6 @@ const loginUser = async (req, res) => {
       is_complete_information: user.is_complete_information,
       is_businessOwner: user.is_businessOwner,
       registration_date: user.registration_date,
-      password: user.password,
       postal_code: user.postal_code,
       work_phone: user.work_phone,
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
@@ -355,7 +350,6 @@ const updateInformation = async (req, res) => {
       brand_name,
       postal_code,
       work_phone,
-      password,
     } = req.body;
     if (name !== undefined) user.name = name;
     if (last_name !== undefined) user.last_name = last_name;
@@ -379,13 +373,6 @@ const updateInformation = async (req, res) => {
     if (brand_name !== undefined) user.brand_name = brand_name;
     if (postal_code !== undefined) user.postal_code = postal_code;
     if (work_phone !== undefined) user.work_phone = work_phone;
-
-    if (password && password.length >= 8) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      user.password = hashedPassword;
-    }
-
     if (
       country_name &&
       state_name &&
@@ -684,7 +671,6 @@ const workPlaceImage = async (req, res) => {
       is_complete_information: businessOwner.is_complete_information,
       is_businessOwner: businessOwner.is_businessOwner,
       registration_date: businessOwner.registration_date,
-      password: businessOwner.password,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
     };
@@ -750,7 +736,6 @@ const deleteWorkPlaceImage = async (req , res)=>{
       is_complete_information: businessOwner.is_complete_information,
       is_businessOwner: businessOwner.is_businessOwner,
       registration_date: businessOwner.registration_date,
-      password: businessOwner.password,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
     };
@@ -824,7 +809,6 @@ const logoImage = async (req, res) => {
       is_complete_information: businessOwner.is_complete_information,
       is_businessOwner: businessOwner.is_businessOwner,
       registration_date: businessOwner.registration_date,
-      password: businessOwner.password,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
     };
@@ -892,7 +876,6 @@ const deleteLogoImage = async (req , res)=>{
       is_complete_information: businessOwner.is_complete_information,
       is_businessOwner: businessOwner.is_businessOwner,
       registration_date: businessOwner.registration_date,
-      password: businessOwner.password,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
     };
@@ -947,6 +930,66 @@ const changePasswordForgot = async (req , res)=>{
 
 }
 
+const changePassword = async (req , res)=>{
+  const businessOwnerId = req.headers.authorization;
+  const {password , repeat_password} = req.body
+
+  try {
+    const businessOwner = await BusinessOwnersModel.findById(businessOwnerId)
+
+    if(!businessOwner){
+      return res.status(400).json({
+        message:"business owner not find"
+      })
+    }
+
+    if(password !== repeat_password){
+      return res.status(400).json({
+        message: "the password doesn't match with repeat password"
+      })
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt.toString());
+    businessOwner.password = hashedPassword;
+
+  await  businessOwner.save()
+
+  const businessOwnerInfos = {
+    id: businessOwner.id,
+    profile_image_path: businessOwner.profile_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` : "",
+    work_place_image_path:businessOwner.work_place_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` : "",
+    logo_image_path: businessOwner.logo_image_path ?`${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` : "",
+    name: businessOwner.name,
+    last_name: businessOwner.last_name,
+    phone_number: businessOwner.phone_number,
+    username: businessOwner.username,
+    email: businessOwner.email,
+    is_verified: businessOwner.is_verified,
+    country_name: businessOwner.country_name,
+    state_name: businessOwner.state_name,
+    city_name: businessOwner.city_name,
+    address: businessOwner.address,
+    brand_name: businessOwner.brand_name,
+    is_complete_information: businessOwner.is_complete_information,
+    is_businessOwner: businessOwner.is_businessOwner,
+    registration_date: businessOwner.registration_date,
+    postal_code: businessOwner.postal_code,
+    work_phone: businessOwner.work_phone,
+  };
+  
+
+
+  const token = await createToken(businessOwnerInfos);
+
+ await res.status(200).json({ businessOwnerInfos, token });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error.message);
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -967,6 +1010,7 @@ module.exports = {
   uploadLogoImage,
   deleteWorkPlaceImage,
   deleteLogoImage,
-  changePasswordForgot
+  changePasswordForgot,
+  changePassword
 
 };
