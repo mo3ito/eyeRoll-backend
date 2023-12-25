@@ -908,6 +908,45 @@ const deleteLogoImage = async (req , res)=>{
 
 }
 
+const changePasswordForgot = async (req , res)=>{
+          
+  const {new_password , repeat_new_password , username , email}=req.body
+  try {
+    const businessOwner = await BusinessOwnersModel.findOne({username , email : email.toLowerCase()})
+    if(!businessOwner){
+      return res.status(400).json({
+         message: 'username or email is not correct'
+      });
+    }
+
+    if(new_password !== repeat_new_password){
+      return res.status(400).json({
+        message: "the password doesn't match with repeat password"
+      })
+    }
+
+    let hashedPassword;
+    if(new_password){
+        const salt = await bcrypt.genSalt(10)
+        hashedPassword = await bcrypt.hash(new_password, salt);
+        businessOwner.password = hashedPassword;
+    }
+
+   await businessOwner.save()
+
+ return  res.status(200).json({
+    message : "your password set seccessfully"
+   })
+   
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -927,6 +966,7 @@ module.exports = {
   logoImage,
   uploadLogoImage,
   deleteWorkPlaceImage,
-  deleteLogoImage
+  deleteLogoImage,
+  changePasswordForgot
 
 };

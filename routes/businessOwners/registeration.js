@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router();
 const {registerUser,loginUser,findeUser,getAllBusinessOwner,verifyEmail , getMe , resendEmailVerification ,updateInformation , isPassword , businessOwnerImage ,
     uploadProfileImage , deleteBusinessOwnerProfileImage , validatorPassword , uploadWorkPlaceImage ,
-    workPlaceImage , logoImage, uploadLogoImage , deleteWorkPlaceImage , deleteLogoImage } = require("../../controllers/bussinessOwnerControllers/businessOwnerRegister")
+    workPlaceImage , logoImage, uploadLogoImage , deleteWorkPlaceImage , deleteLogoImage , changePasswordForgot } = require("../../controllers/bussinessOwnerControllers/businessOwnerRegister")
 
 
 router.post("/business-owner/register", registerUser)
@@ -21,6 +21,7 @@ router.post("/business-owner/upload-work-place-image",uploadWorkPlaceImage.singl
 router.post("/business-owner/upload-logo-image",uploadLogoImage.single("logoImage"),logoImage)
 router.delete("/business-owner/delete-work-place-image",deleteWorkPlaceImage)
 router.delete("/business-owner/delete-logo-image",deleteLogoImage)
+router.patch("/business-owner/change-password-forgot" , changePasswordForgot )
 
 
 module.exports = router;
