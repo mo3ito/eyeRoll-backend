@@ -1,22 +1,37 @@
-const {Server} = require("socket.io")
 
-const configureSocket = (server)=>{
-    let seenUser = 0
+const { Server } = require("socket.io");
 
-const io = new Server(server , {
-    cors:{
-        origin: "*",
-    }
-})
+const configurePageOnlineMenuSocket = (server) => {
+    let seenUser = 0;
 
-io.on("connection" , (socket)=>{
-    console.log("A user connected");
-    console.log("online menu seen", seenUser += 1 );
-    console.log(socket.id);
-})
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+        },
+    });
 
-return io;
+    io.on("connection", async (socket) => {
+        console.log("A user connected");
+        console.log("Seen users:", seenUser);
+        console.log(socket.id);
 
-}
+        // ارسال تعداد seenUser به فرانت‌اند هنگام اتصال جدید
+        io.emit("updateSeenUser", seenUser);
 
-module.exports = configureSocket;
+        // افزایش تعداد seenUser در هر نقره صفحه
+        socket.on("pageSeen", () => {
+            seenUser += 1;
+            // ارسال تعداد به‌روزرسانی شده به همه کلاینت‌ها
+            io.emit("updateSeenUser", seenUser);
+        });
+
+        // Cleanup
+        socket.on("disconnect", () => {
+            console.log("A user disconnected");
+        });
+    });
+
+    return io;
+};
+
+module.exports = configurePageOnlineMenuSocket;
