@@ -8,6 +8,7 @@ const usersRegisteration  = require("./routes/users/registeration")
 const businessOwnersOnlineMenu = require("./routes/businessOwners/onlineMenu")
 const rollSetting = require("./routes/businessOwners/rolls")
 const searchInformation = require("./routes/searchInformation/searchInformation")
+const usersSeenReports = require("./routes/reports/userSeenReports")
 require('dotenv').config();
 const {createServer} = require("http")
 const {Server} = require("socket.io")
@@ -15,7 +16,7 @@ const ServerPort = process.env.SERVER_PORT ? process.env.SERVERPORT : 5000;
 const onlineMenuSocketPort = process.env.SOCKET_PORT ? process.env.SOCKET_PORT : 5001;
 const eyeRollSocketPort = process.env.EYE_ROLL_SERVER_PORT ? process.env.SERVERPORT : 5002;
 const configurePageOnlineMenuSocket = require("./socket/onlineMenuSocket")
-const configurePageEyeRollSocket = require("./socket/pageEyeRollSocket")
+const {configurePageEyeRollSocket} = require("./socket/pageEyeRollSocket")
 
 mongoose.connect("mongodb://localhost:27017/discount")
 
@@ -52,5 +53,6 @@ app.use("/",businessOwnersOnlineMenu)
 app.use("/",usersRegisteration)
 app.use("/",rollSetting)
 app.use("/",searchInformation)
+app.use("/",usersSeenReports)
 app.use('/public', express.static('public'));
 

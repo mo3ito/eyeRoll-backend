@@ -1,63 +1,46 @@
-const {Server} = require("socket.io")
-
-const configurePageEyeRollSocket = (server)=>{
-    let seenUser = 0
-
-const io = new Server(server , {
-    cors:{
-        origin: "*",
-    }
-})
-
-io.on("connection" , (socket)=>{
-    console.log("A user connected");
-    console.log("eyeRoll seen", seenUser += 1 );
-    console.log(socket.id);
-})
-
-return io;
-
-}
-
-module.exports = configurePageEyeRollSocket;
+const { Server } = require("socket.io");
+const ReportsModel = require("../models/BusinessOwners/Reports");
 
 
-// const { Server } = require("socket.io");
 
-// const configurePageEyeRollSocket = (server) => {
-//     let seenUser = 0;
+const configurePageEyeRollSocket = async (server) => {
+  
+  const io = new Server(server, {
+    cors: {
+      origin: "*",
+    },
+  });
 
-//     const io = new Server(server, {
-//         cors: {
-//             origin: "*",
-//         },
-//     });
+    io.on("connection", async (socket) => {
+      
+    socket.on("disconnect", () => {
+      console.log("A user disconnected");
+    });
 
-//     io.on("connection", (socket) => {
-//         console.log("A user connected");
-//         console.log("eyeRoll seen", seenUser);
-//         console.log(socket.id);
-//         seenUser+=1
+    socket.on("join", async (dataFromClient) => {
+      console.log("Received data from client:", dataFromClient);
 
-//         // ارسال اطلاعات به فرانت‌اند هنگام اتصال جدید
-//         socket.emit("updateSeenUser", seenUser);
+      const { seenUser, seenDate, businessOwnerId } = dataFromClient;
+      let report = await ReportsModel.findOne({ businessOwnerId });
 
-//         // افزایش تعداد seenUser در هر نقره صفحه
-//         socket.on("pageSeen", () => {
-//             seenUser;
-//             // ارسال تعداد به‌روزرسانی شده به همه کلاینت‌ها
-//             io.emit("updateSeenUser", seenUser);
-//         });
+      if (!report) {
+        // اگر داکیومنت برای این businessOwnerId وجود نداشت، آن را ایجاد کنید
+        report = new ReportsModel({
+          businessOwnerId,
+          eyeRoll_all_seen_user: [],
+          online_menu_all_seen_user:[]
+        });
+      }
 
-//         // Cleanup
-//         socket.on("disconnect", () => {
-//             console.log("A user disconnected");
-//             // ارسال تعداد به‌روزرسانی شده به همه کلاینت‌ها بعد از دیسکانکت
-//             io.emit("updateSeenUser", seenUser);
-//         });
-//     });
+      // افزودن seen جدید به آرایه all_seen_user
+      report.eyeRoll_all_seen_user.push({ seenUser, seenDate });
+      await report.save();
+    });
+    
+  });
 
-//     return io;
-// };
+  return io;
+};
 
-// module.exports = configurePageEyeRollSocket;
+module.exports = { configurePageEyeRollSocket };
+
