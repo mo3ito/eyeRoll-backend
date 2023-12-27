@@ -31,6 +31,7 @@ const configurePageOnlineMenuSocket = (server) => {
         });
     });
 
+    
     return io;
 };
 
