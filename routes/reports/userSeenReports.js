@@ -3,7 +3,7 @@ const router = express.Router();
 const {seenPagesInformation} = require("../../controllers/reportsControllers/businessOwnerReports")
 
 
-router.get("/reports/seen-users",seenPagesInformation)
+router.post("/reports/seen-users",seenPagesInformation)
 
 
 
