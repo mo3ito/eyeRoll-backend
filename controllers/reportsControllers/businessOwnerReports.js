@@ -28,15 +28,30 @@ const seenPagesInformation = async (req, res) => {
           message:"there are no reports"
         })
       }
+
+      // const eyeRollSeen = null
+      // const onlineMenuSeen= null
       
-      constInfos = isReports.eyeRoll_all_seen_user.filter((item , index)=>{
+      const eyeRollSeenInfos = await isReports.eyeRoll_all_seen_user.filter((item , index)=>{
        return moment(item.seenDate).isSame(first_date, 'day')
       })
 
+      const onlineMenuSeenInfos = await isReports.online_menu_all_seen_user.filter(item=>{
+        return moment(item.seenDate).isSame(first_date , 'day')
+      })
 
-      console.log(constInfos);
 
-      return res.status(200).json(isReports);
+      const eyeRollSeen = await eyeRollSeenInfos.length
+      const onlineMenuSeen = await onlineMenuSeenInfos.length
+
+      const seen = {
+        eyeRollSeen,
+        onlineMenuSeen
+      }
+
+
+
+      return res.status(200).json(seen);
     } catch (error) {
       // انجام عملیات مرتبط با خطا
     }

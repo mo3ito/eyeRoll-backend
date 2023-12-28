@@ -15,7 +15,7 @@ const {Server} = require("socket.io")
 const ServerPort = process.env.SERVER_PORT ? process.env.SERVERPORT : 5000;
 const onlineMenuSocketPort = process.env.SOCKET_PORT ? process.env.SOCKET_PORT : 5001;
 const eyeRollSocketPort = process.env.EYE_ROLL_SERVER_PORT ? process.env.SERVERPORT : 5002;
-const configurePageOnlineMenuSocket = require("./socket/onlineMenuSocket")
+const {configurePageOnlineMenuSocket} = require("./socket/onlineMenuSocket")
 const {configurePageEyeRollSocket} = require("./socket/pageEyeRollSocket")
 
 mongoose.connect("mongodb://localhost:27017/discount")
@@ -28,7 +28,7 @@ const eyeRollSocketServer = createServer();
 
 
 
-const io = configurePageOnlineMenuSocket(onlineMenuSocketServer)
+const ioPageOnlineMenu = configurePageOnlineMenuSocket(onlineMenuSocketServer)
 const ioPageEyeRoll = configurePageEyeRollSocket(eyeRollSocketServer);
 
 
