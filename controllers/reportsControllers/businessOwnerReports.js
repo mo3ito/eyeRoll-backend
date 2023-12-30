@@ -123,9 +123,6 @@ const seenPagesInformation = async (req, res) => {
 
      let targetBusinessOwner = await AwaitingDiscountPaymentModel.findOne({businessOwnerId})
      
-
-  
-
      if (!targetBusinessOwner ) {
       targetBusinessOwner = await new AwaitingDiscountPaymentModel({
         businessOwnerId,
@@ -146,13 +143,12 @@ const seenPagesInformation = async (req, res) => {
       })
       }else{
         res.status(400).json({
-          message: "You have already registered a request to use the discount",
+          message: "You have already registered a request to use the discount, you can request again after 20 minutes",
         })
       }
      
     }
 
-  
     } catch (error) {
       console.error(error);
       res.status(500).json({
