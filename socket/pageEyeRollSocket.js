@@ -25,7 +25,7 @@ const configurePageEyeRollSocket = async (server) => {
 
       if (!report) {
         // اگر داکیومنت برای این businessOwnerId وجود نداشت، آن را ایجاد کنید
-        report = new ReportsModel({
+        report = await new ReportsModel({
           businessOwnerId,
           eyeRoll_all_seen_user: [],
           online_menu_all_seen_user:[]

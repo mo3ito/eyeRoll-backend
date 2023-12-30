@@ -1,5 +1,7 @@
 const ReportsModel = require("../../models/BusinessOwners/Reports")
 const moment = require('moment');
+const UserModel = require("../../models/Users/UsersRegister")
+const AwaitingDiscountPaymentModel = require("../../models/BusinessOwners/AwaitingDiscountPayment")
 
 const seenPagesInformation = async (req, res) => {
 
@@ -70,10 +72,6 @@ const seenPagesInformation = async (req, res) => {
         online_menu_seen: onlineMenuSeenInfos.length
       }
     }
-
-
-
-
     return res.status(200).json(numberSeen)
   
     } catch (error) {
@@ -81,5 +79,96 @@ const seenPagesInformation = async (req, res) => {
       res.status(500).json(error.message)
     }
   };
+
+
+
+
+
+
+
   
-  module.exports = { seenPagesInformation };
+  const requestForDiscount = async (req , res)=>{
+
+    const userId = req.headers.authorization
+    const {discountId , businessOwnerId , discount}=req.body
+
+    try {
+    
+      if(!userId){
+        return res.status(400).json({
+          message:"user id not found"
+        })
+      }
+
+      const user = await UserModel.findById(userId)
+
+      if(!user){
+        return res.status(400).json({
+          message:"user not found"
+        })
+      }
+
+      const targetDiscount = await user.discounts_eyeRoll.find(discount=> discount.id === discountId)
+      const discountInfo = {
+        discountId,
+        username: user.username,
+        discount
+       }
+
+      if(!targetDiscount){
+        return res.status(400).json({
+          message:"discount not found"
+        })
+      }
+
+     let targetBusinessOwner = await AwaitingDiscountPaymentModel.findOne({businessOwnerId})
+     
+
+  
+
+     if (!targetBusinessOwner ) {
+      targetBusinessOwner = await new AwaitingDiscountPaymentModel({
+        businessOwnerId,
+        awaiting_discounts: [discountInfo],
+      });
+      await targetBusinessOwner.save()
+     await res.status(200).json({
+        message: "Your discount request was registered on the seller's page",
+      })
+  
+    } else {
+      const isRequestRegistered = await targetBusinessOwner.awaiting_discounts.some(discount => discount.discountId === discountId)
+      if(!isRequestRegistered){
+        await targetBusinessOwner.awaiting_discounts.push(discountInfo);
+      await targetBusinessOwner.save();
+      await res.status(200).json({
+        message: "Your discount request was registered on the seller's page",
+      })
+      }else{
+        res.status(400).json({
+          message: "You have already registered a request to use the discount",
+        })
+      }
+     
+    }
+
+  
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Internal server error",
+      });
+    }
+    
+
+  }
+
+ 
+  
+
+
+
+
+
+
+  module.exports = { seenPagesInformation , requestForDiscount };
