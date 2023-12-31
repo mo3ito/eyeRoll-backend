@@ -159,6 +159,30 @@ const seenPagesInformation = async (req, res) => {
 
   }
 
+  
+
+  const getAllDiscountRequest = async (req , res)=>{
+
+    const businessOwnerId = req.headers.authorization;
+
+    try {
+      if(!businessOwnerId){
+       return res.status(400).json({
+        message: "business owner id not found"
+       })
+      }
+    const businessOwnerRequests = await AwaitingDiscountPaymentModel.findOne({businessOwnerId})
+    const allRequest = await businessOwnerRequests.awaiting_discounts.map(request=> request).reverse()
+    return res.status(200).json(allRequest)
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Internal server error",
+      });
+    }
+  }
+
  
   
 
@@ -167,4 +191,4 @@ const seenPagesInformation = async (req, res) => {
 
 
 
-  module.exports = { seenPagesInformation , requestForDiscount };
+  module.exports = { seenPagesInformation , requestForDiscount , getAllDiscountRequest };
