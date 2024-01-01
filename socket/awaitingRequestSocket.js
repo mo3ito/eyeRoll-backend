@@ -29,3 +29,45 @@ const configureAwaitingRequest = (server)=>{
 }
 
 module.exports = {configureAwaitingRequest}
+
+// const { Server } = require("socket.io");
+// const AwaitingDiscountPaymentModel = require("../models/BusinessOwners/AwaitingDiscountPayment");
+
+// const configureAwaitingRequest = (server) => {
+//   const io = new Server(server, {
+//     cors: {
+//       origin: "*",
+//     },
+//   });
+
+//   // Function to send data to all clients
+//   const emitDataToClients = async () => {
+//     try {
+//       const businessOwnerRequests = await AwaitingDiscountPaymentModel.find();
+//       const allRequest = businessOwnerRequests.map((data) => data.awaiting_discounts.reverse());
+//       console.log("Sending data to clients:", allRequest);
+//       io.emit("awaitingData", allRequest);
+//     } catch (error) {
+//       console.error("Error retrieving data:", error);
+//     }
+//   };
+
+//   io.on("connection", async (socket) => {
+//     // Emit data when a new client connects
+//     emitDataToClients();
+
+//     // Watch for changes in the AwaitingDiscountPaymentModel
+//     const changeStream = AwaitingDiscountPaymentModel.watch();
+//     changeStream.on("change", (change) => {
+//       console.log("Change in AwaitingDiscountPaymentModel detected:", change);
+//       // When there's a change, emit data to all clients
+//       emitDataToClients();
+//     });
+
+//     socket.on("disconnect", () => {
+//       console.log("A user disconnected");
+//     });
+//   });
+// };
+
+// module.exports = { configureAwaitingRequest };

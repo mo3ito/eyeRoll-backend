@@ -172,7 +172,7 @@ const seenPagesInformation = async (req, res) => {
        })
       }
     const businessOwnerRequests = await AwaitingDiscountPaymentModel.findOne({businessOwnerId})
-    const allRequest = await businessOwnerRequests.awaiting_discounts.map(request=> request).reverse()
+    const allRequest = await businessOwnerRequests.awaiting_discounts.reverse()
     return res.status(200).json(allRequest)
 
     } catch (error) {

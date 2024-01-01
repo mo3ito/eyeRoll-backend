@@ -245,7 +245,7 @@ const deleteProductImage = async (req , res)=>{
     const imagePath =  targetProduct.product_image_path;
     if(!imagePath){
       return res.status(400).json({
-        message: "No profile image to delete"
+        message: "This product does not have a image"
       });
     }
     await fs.promises.unlink(imagePath);
