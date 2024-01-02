@@ -3,6 +3,7 @@ const express = require ("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const app = express()
+const adminRegisteration = require("./routes/admins/registeration")
 const businessOwnersRegisteration = require("./routes/businessOwners/registeration")
 const usersRegisteration  = require("./routes/users/registeration")
 const businessOwnersOnlineMenu = require("./routes/businessOwners/onlineMenu")
@@ -53,7 +54,7 @@ awaitingRequestServer.listen(awaitingRequestPort , () => console.log("awaiting r
 
 
 
-
+app.use("/",adminRegisteration)
 app.use("/",businessOwnersRegisteration)
 app.use("/",businessOwnersOnlineMenu)
 app.use("/",usersRegisteration)
