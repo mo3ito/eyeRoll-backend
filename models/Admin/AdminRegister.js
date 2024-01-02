@@ -37,7 +37,10 @@ const AdminRegisterSchema = new Schema({
     type : Date,
     default: Date.now 
   },
-  
+  is_verified: {
+    type : Boolean,
+    default: true
+  },
 });
 
 const AdminRegister = mongoose.model("admins", AdminRegisterSchema);

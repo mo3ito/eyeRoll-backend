@@ -1,9 +1,10 @@
 const express = require("express")
 const router = express.Router()
-const {adminRegister} = require("../../controllers/adminControllers/adminRegister")
+const {adminRegister , loginAdmin} = require("../../controllers/adminControllers/adminRegister")
 
 
 router.post("/admin/register",adminRegister)
+router.post("/admin/login" , loginAdmin )
 
 
 

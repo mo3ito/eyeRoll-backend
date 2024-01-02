@@ -96,4 +96,46 @@ const createToken = async (adminInfo) => {
     }
   };
 
-  module.exports = {adminRegister}
+  const loginAdmin = async (req, res) => {
+    const { email, password } = req.body;
+  
+    try {
+      const lowercaseEmail = email.toLowerCase();
+      let admin = await AdminRegisterModel.findOne({ email: lowercaseEmail });
+  
+      if (!admin)
+        return res.status(400).json({ message: "Invalid email or password" });
+  
+      const validPassword = await bcrypt.compare(
+        password,
+        admin.password.toString()
+      );
+     
+      if (!validPassword)
+        return res.status(400).json({ message: "Invalid email or password" });
+      if (!admin.is_verified)
+        return res
+          .status(201)
+          .json({ message: "You have not verified your email" });
+  
+  const adminInfos = {
+        id: admin._id,
+        name:admin.name,
+        last_name: admin.last_name,
+        phone_number:admin.phone_number,
+        username:admin.username,
+        email: lowercaseEmail,
+        is_admin: admin.is_admin,
+        registration_date: admin.registration_date,
+      };
+  
+      const token = await createToken(adminInfos);
+  
+      res.status(200).json({ adminInfos, token });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json(error.message);
+    }
+  };
+
+  module.exports = {adminRegister , loginAdmin}
