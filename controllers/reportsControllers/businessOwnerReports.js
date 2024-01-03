@@ -90,7 +90,7 @@ const seenPagesInformation = async (req, res) => {
   const requestForDiscount = async (req , res)=>{
 
     const userId = req.headers.authorization
-    const {discountId , businessOwnerId , discount}=req.body
+    const {discountId , businessOwnerId , discount , expiration_time }=req.body
 
     try {
     
@@ -112,7 +112,8 @@ const seenPagesInformation = async (req, res) => {
       const discountInfo = {
         discountId,
         username: user.username,
-        discount
+        discount,
+        expiration_time
        }
 
       if(!targetDiscount){

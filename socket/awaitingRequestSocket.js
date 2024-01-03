@@ -30,6 +30,51 @@ const configureAwaitingRequest = (server)=>{
 
 module.exports = {configureAwaitingRequest}
 
+
+
+
+
+// const { Server } = require("socket.io");
+// const AwaitingDiscountPaymentModel = require("../models/BusinessOwners/AwaitingDiscountPayment");
+
+// const configureAwaitingRequest = (server) => {
+//   const io = new Server(server, {
+//     cors: {
+//       origin: "*",
+//     },
+//   });
+
+//   io.on("connection", (socket) => {
+//     console.log("A user connected");
+//     const changeStream = AwaitingDiscountPaymentModel.watch();
+//     changeStream.on("change", (change) => {
+//       console.log("Change occurred in AwaitingDiscountPaymentModel:", change);
+//       if (change.operationType === "insert" || change.operationType === "update" || change.operationType === "replace") {
+//         sendAwaitingData(socket);
+//       }
+//     });
+//     socket.on("getBusinessOwnerId", () => {
+//       sendAwaitingData(socket);
+//     });
+//     socket.on("disconnect", () => {
+//       console.log("A user disconnected");
+//     });
+//   });
+// };
+// const sendAwaitingData = async (socket) => {
+//   try {
+//     const allRequests = await AwaitingDiscountPaymentModel.find();
+//     const flattenedRequests = allRequests.flatMap(request => request.awaiting_discounts).reverse();
+//     console.log("Sending data to clients:", flattenedRequests);
+//     socket.emit("awaitingData", flattenedRequests);
+//   } catch (error) {
+//     console.error("Error retrieving and sending data:", error);
+//   }
+// };
+
+// module.exports = { configureAwaitingRequest };
+
+
 // const { Server } = require("socket.io");
 // const AwaitingDiscountPaymentModel = require("../models/BusinessOwners/AwaitingDiscountPayment");
 
