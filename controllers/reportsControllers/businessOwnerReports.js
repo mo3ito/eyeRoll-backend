@@ -160,6 +160,79 @@ const seenPagesInformation = async (req, res) => {
 
   }
 
+  // const removeExpireAwaitingRequest = async (req, res) => {
+  //   const businessOwnerId = req.headers.authorization;
+  
+  //   try {
+  //     if (!businessOwnerId) {
+  //       return res.status(400).json({
+  //         message: "business owner id not found",
+  //       });
+  //     }
+      
+  //     const currentTime = new Date();
+      
+  //     const allRequestForBusinessOwner = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
+  
+  //     const expireRequest = await allRequestForBusinessOwner.awaiting_discounts.filter(
+  //       (request) => new Date(request.expiration_time) <= currentTime
+  //     );
+  
+  //     allRequestForBusinessOwner.expire_requests = expireRequest;
+  //     await allRequestForBusinessOwner.save();
+  
+  //     return res.status(200).json({
+  //       expireRequest
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     return res.status(500).json({
+  //       message: "An error occurred while processing your request",
+  //     });
+  //   }
+  // };
+
+  const removeExpireAwaitingRequest = async (req, res) => {
+    const businessOwnerId = req.headers.authorization;
+  
+    try {
+      if (!businessOwnerId) {
+        return res.status(400).json({
+          message: "business owner id not found",
+        });
+      }
+  
+   
+  
+      let allRequestForBusinessOwner = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
+
+      const allRequests = await allRequestForBusinessOwner.awaiting_discounts.map((request) => {
+        return request
+      });
+
+      console.log(allRequests);
+      let deletedExpire = allRequests.filter(item => new Date(item.expiration_time) <= new Date());
+
+  
+      console.log("expireRequest", deletedExpire);
+      
+      allRequestForBusinessOwner.awaiting_discounts = deletedExpire
+      await allRequestForBusinessOwner.save();
+            return res.status(200).json({
+              deletedExpire
+      });
+  
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        message: "An error occurred while processing your request",
+      });
+    }
+  };
+  
+  
+  
+  
   
 
   const getAllDiscountRequest = async (req , res)=>{
@@ -192,4 +265,4 @@ const seenPagesInformation = async (req, res) => {
 
 
 
-  module.exports = { seenPagesInformation , requestForDiscount , getAllDiscountRequest };
+  module.exports = { seenPagesInformation , requestForDiscount , getAllDiscountRequest , removeExpireAwaitingRequest };
