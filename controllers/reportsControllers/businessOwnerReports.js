@@ -196,55 +196,55 @@ const seenPagesInformation = async (req, res) => {
 
 
 
-const removeExpireAwaitingRequest = async (req, res) => {
-  const businessOwnerId = req.headers.authorization;
+// const removeExpireAwaitingRequest = async (req, res) => {
+//   const businessOwnerId = req.headers.authorization;
 
-  try {
-    if (!businessOwnerId) {
-      return res.status(400).json({
-        message: "business owner id not found",
-      });
-    }
+//   try {
+//     if (!businessOwnerId) {
+//       return res.status(400).json({
+//         message: "business owner id not found",
+//       });
+//     }
 
-    const currentTime = moment();
+//     const currentTime = moment();
 
-    // یافتن تمام تخفیف‌های مربوط به کاربر
-    const allRequestForBusinessOwner = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
+//     // یافتن تمام تخفیف‌های مربوط به کاربر
+//     const allRequestForBusinessOwner = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
 
-    // حذف تخفیف‌هایی که تاریخ انقضای آن‌ها گذشته است از دیتابیس
-    const result = await AwaitingDiscountPaymentModel.updateOne(
-      { businessOwnerId },
-      {
-        $pull: {
-          "awaiting_discounts": {
-            "expiration_time": { $lt: currentTime.toISOString() }
-          }
-        }
-      }
-    );
+//     // حذف تخفیف‌هایی که تاریخ انقضای آن‌ها گذشته است از دیتابیس
+//     const result = await AwaitingDiscountPaymentModel.updateOne(
+//       { businessOwnerId },
+//       {
+//         $pull: {
+//           "awaiting_discounts": {
+//             "expiration_time": { $lt: currentTime.toISOString() }
+//           }
+//         }
+//       }
+//     );
 
-    // اگر تعدادی از تخفیف‌ها حذف شده باشند
-    if (result.nModified > 0) {
-      console.log("Expired Discounts Removed: ", result.nModified);
+//     // اگر تعدادی از تخفیف‌ها حذف شده باشند
+//     if (result.nModified > 0) {
+//       console.log("Expired Discounts Removed: ", result.nModified);
 
-      // ارسال تخفیف‌های باقیمانده به عنوان ریسپانس
-      return res.status(200).json({
-        remainingDiscounts: allRequestForBusinessOwner.awaiting_discounts,
-      });
-    } else {
-      // اگر هیچ تخفیفی حذف نشده باشد
-      console.log("No Expired Discounts Found");
-      return res.status(200).json({
-        message: "No expired discounts found",
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: "An error occurred while processing your request",
-    });
-  }
-};
+//       // ارسال تخفیف‌های باقیمانده به عنوان ریسپانس
+//       return res.status(200).json({
+//         remainingDiscounts: allRequestForBusinessOwner.awaiting_discounts,
+//       });
+//     } else {
+//       // اگر هیچ تخفیفی حذف نشده باشد
+//       console.log("No Expired Discounts Found");
+//       return res.status(200).json({
+//         message: "No expired discounts found",
+//       });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       message: "An error occurred while processing your request",
+//     });
+//   }
+// };
 
 
   // const removeExpireAwaitingRequest = async (req, res) => {
@@ -266,24 +266,29 @@ const removeExpireAwaitingRequest = async (req, res) => {
   
   //     // Filter items with expiration_time less than the current date
   //     const allRequests = await allRequestForBusinessOwner.awaiting_discounts.map((request) => {
-  //       // const expirationTime = new Date(request.expiration_time);
-  //       return request
+  //       return request;
+  //   });
+  //   const dateNow = moment()
+  
+  //   const validRequest = allRequests.filter(item => {
+  //     return item.awaiting_discounts.some(discount => {
+  //         return discount.expiration_time && moment(discount.expiration_time).isSameOrAfter(dateNow);
+  //     });
+  // })
+  
+
+  //   console.log("allRequests", allRequests);
+  //   console.log("validRequest", validRequest);
+    
+  //   allRequestForBusinessOwner.awaiting_discounts = validRequest
+  //   await allRequestForBusinessOwner.save()
+
+  //       return res.status(200).json({
+  //         validRequest
   //     });
 
-  //     console.log(allRequests);
-  //     // let deletedExpire = await allRequests.filter(item => new Date(item.expiration_time) <= new Date())
-  
-  //     // console.log("expireRequest", deletedExpire);
-      
-  //     // allRequestForBusinessOwner.awaiting_discounts = 
-  
-  //     // // Update the database with filtered items
-  //     // allRequestForBusinessOwner.awaiting_discounts = expireRequest;
-  //     // await allRequestForBusinessOwner.save();
-  
-  //     // return res.status(200).json({
-  //     //   expireRequest
-  //     // });
+    
+
   //   } catch (error) {
   //     console.error(error);
   //     return res.status(500).json({
@@ -291,42 +296,113 @@ const removeExpireAwaitingRequest = async (req, res) => {
   //     });
   //   }
   // };
+
+//   const removeExpireAwaitingRequest = async (req, res) => {
+//     const businessOwnerId = req.headers.authorization;
+  
+//     try {
+//         if (!businessOwnerId) {
+//             return res.status(400).json({
+//                 message: "business owner id not found",
+//             });
+//         }
+        
+//         let allRequestForBusinessOwner = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
+        
+       
+//         // Check if awaiting_discounts is empty
+//         if (!allRequestForBusinessOwner || !allRequestForBusinessOwner.awaiting_discounts || allRequestForBusinessOwner.awaiting_discounts.length === 0) {
+//             return res.status(200).json({
+//                 validRequest: [],
+//             });
+//         }
+
+//         console.log("allRequestForBusinessOwner" , allRequestForBusinessOwner);
+        
+//         // Filter items with expiration_time less than the current date
+//         const dateNow = moment();
+  
+//         // const validRequest = allRequestForBusinessOwner.awaiting_discounts.filter(discount => {
+//         //     return discount.expiration_time && moment(discount.expiration_time).isSameOrBefore(dateNow);
+//         // });
+
+//         const validRequest = allRequestForBusinessOwner.awaiting_discounts.filter(discount => {
+//           if (discount.expiration_time) {
+//               const discountExpiration = moment(discount.expiration_time);
+//               console.log("discountExpiration", discountExpiration.format());
+//               console.log("isBefore", discountExpiration.isBefore(dateNow));
+//               return discountExpiration.isBefore(dateNow);
+//           }
+//           return false;
+//       });
+  
+//         console.log("allRequests", allRequestForBusinessOwner.awaiting_discounts);
+//         console.log("validRequest", validRequest);
+  
+//         allRequestForBusinessOwner.awaiting_discounts = validRequest;
+//         await allRequestForBusinessOwner.save();
+  
+//         return res.status(200).json({
+//             validRequest,
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({
+//             message: "An error occurred while processing your request",
+//         });
+//     }
+// };
+
+const removeExpireAwaitingRequest = async (req, res) => {
+  const businessOwnerId = req.headers.authorization;
+
+  try {
+      if (!businessOwnerId) {
+          return res.status(400).json({
+              message: "business owner id not found",
+          });
+      }
+
+      let allRequestForBusinessOwner = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
+
+      if (!allRequestForBusinessOwner || !allRequestForBusinessOwner.awaiting_discounts || allRequestForBusinessOwner.awaiting_discounts.length === 0) {
+          return res.status(200).json({
+              validRequest: [],
+          });
+      }
+
+      const dateNow = moment();
+
+      // Filter items with expiration_time less than the current date
+      const validRequest = allRequestForBusinessOwner.awaiting_discounts.filter(discount => {
+          if (discount.expiration_time) {
+              const discountExpiration = moment(discount.expiration_time);
+              return discountExpiration.isSameOrAfter(dateNow);
+          }
+          return false;
+      });
+
+      // Save valid discounts in the database
+      // اینجا بسته به نحوه ذخیره داده‌ها در دیتابیس شما، کد را تغییر دهید
+      await AwaitingDiscountPaymentModel.findOneAndUpdate(
+          { businessOwnerId },
+          { awaiting_discounts: validRequest },
+          { new: true }
+      );
+
+      return res.status(200).json({
+          validRequest,
+      });
+
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+          message: "An error occurred while processing your request",
+      });
+  }
+};
   
   
-  
-  // const deleteAwaitingRequest = async (req , res)=>{
-
-  //   const businessOwnerId = req.headers.authorization;
-  //   const {awaiting_request_ids_for_delete} = await req.body
-
-  //   console.log(awaiting_request_ids_for_delete);
-
-  //   try {
-  //     if(!businessOwnerId){
-  //       return res.status(400).json({
-  //         message:"business owner not found"
-  //       })
-  //     }
-
-  //     const businessOwnerRequests = await AwaitingDiscountPaymentModel.findOne({businessOwnerId})
-
-  //     const deleteRequests = await businessOwnerRequests.awaiting_discounts.filter(item => item.discountId.includes(awaiting_request_ids_for_delete))
-
-  //     businessOwnerRequests.awaiting_discounts = deleteRequests
-  //    await businessOwnerRequests.save()
-  //    return res.status(200).json(deleteRequests)
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({
-  //       message: "Internal server error",
-  //     });
-  //   }
-    
-
-
-
-
-  // }
 
   const deleteAwaitingRequest = async (req, res) => {
     const businessOwnerId = req.headers.authorization;
@@ -342,8 +418,9 @@ const removeExpireAwaitingRequest = async (req, res) => {
       const businessOwnerRequests = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
       const remainingDiscounts = businessOwnerRequests.awaiting_discounts.filter(
         (item) => !awaiting_request_ids_for_delete.includes(item.discountId)
-      );
-  
+      );  
+
+      
       businessOwnerRequests.awaiting_discounts = remainingDiscounts;
       await businessOwnerRequests.save();
   
