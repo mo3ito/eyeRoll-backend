@@ -389,6 +389,7 @@ const removeExpireAwaitingRequest = async (req, res) => {
           { awaiting_discounts: validRequest },
           { new: true }
       );
+      
 
       return res.status(200).json({
           validRequest,
