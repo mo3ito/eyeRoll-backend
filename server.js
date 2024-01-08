@@ -21,7 +21,7 @@ const {configurePageOnlineMenuSocket} = require("./socket/onlineMenuSocket")
 const {configurePageEyeRollSocket} = require("./socket/pageEyeRollSocket")
 const {configureAwaitingRequest} = require("./socket/awaitingRequestSocket")
 
-mongoose.connect("mongodb://localhost:27017/discount")
+mongoose.connect("mongodb://localhost:27017/eyeRoll")
 
 
 

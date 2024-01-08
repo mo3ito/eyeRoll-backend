@@ -142,7 +142,7 @@ const seenPagesInformation = async (req, res) => {
         await targetBusinessOwner.awaiting_discounts.push(discountInfo);
       await targetBusinessOwner.save();
       await res.status(200).json({
-        message: "Your discount request was registered on the seller's page",
+        message: "Your discount request was registered on the seller's pages",
       })
       const sendRequestSocket = io("http://localhost:5003");
      await sendRequestSocket.emit("awaitingData", targetBusinessOwner.awaiting_discounts);
