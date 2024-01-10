@@ -14,6 +14,10 @@ const ReportsSchema = new Schema({
         type: Array,
         default: [],
     },
+    all_register_discount_taken:{
+        type: Array,
+        default: [],
+    }
 })
 
 const Reports = new mongoose.model("reports" ,ReportsSchema)

@@ -37,7 +37,8 @@ const seenPagesInformation = async (req, res) => {
 
      let numberSeen = {
        eye_roll_seen : null,
-       online_menu_seen : null
+       online_menu_seen : null,
+       discounts_taken:null
      }
 
      if(first_date && (last_date === null || last_date === undefined) ){
@@ -51,9 +52,15 @@ const seenPagesInformation = async (req, res) => {
         return onlineMenuSeenDate.isSame(first_date , 'day')
       })
 
+      const discountsTaken = await isReports.all_register_discount_taken.filter(item=>{
+       const discountsTakenDate = moment(item.seenDate)
+       return discountsTakenDate.isSame(first_date , 'day')
+      })
+
       numberSeen = {
         eye_roll_seen : eyeRollSeenInfos.length,
-        online_menu_seen: onlineMenuSeenInfos.length
+        online_menu_seen: onlineMenuSeenInfos.length,
+        discounts_taken: discountsTaken.length
        }
   
      }
@@ -69,10 +76,16 @@ const seenPagesInformation = async (req, res) => {
         const onlineMenuSeenDate = moment(item.seenDate);
         return onlineMenuSeenDate.isSameOrAfter(first_date, 'day') && onlineMenuSeenDate.isSameOrBefore(last_date, 'day');
       });
+
+      const discountsTaken = await isReports.all_register_discount_taken.filter(item=>{
+        const discountsTakenDate = moment(item.seenDate)
+        return discountsTakenDate.isSameOrAfter(first_date , 'day') && discountsTakenDate.isSameOrBefore(last_date, 'day')
+       })
     
       numberSeen = {
         eye_roll_seen : eyeRollSeenInfos.length,
-        online_menu_seen: onlineMenuSeenInfos.length
+        online_menu_seen: onlineMenuSeenInfos.length,
+        discounts_taken: discountsTaken.length
       }
     }
     return res.status(200).json(numberSeen)
@@ -465,6 +478,41 @@ const removeExpireAwaitingRequest = async (req, res) => {
     }
   }
 
+  const registrationDiscountTaken = async (req , res)=>{
+
+    const businessOwnerId = req.headers.authorization;
+
+    const {count , registerDate } = req.body
+
+    try {
+      if(!businessOwnerId){
+        return res.status(400).json({
+         message: "business owner id not found"
+        })
+       }
+
+       const allReportsBusinessOwner = await ReportsModel.findOne({businessOwnerId})
+
+       const seenInfo = {
+        seenUser: count,
+        seenDate: registerDate
+       }
+
+     await allReportsBusinessOwner.all_register_discount_taken.push(seenInfo)
+
+    await allReportsBusinessOwner.save()
+
+    return res.status(200).json({
+      message:"The discount registration request was successfully registered"
+    })
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        message: "Internal server error",
+      });
+    }
+
+  }
  
   
 
@@ -473,4 +521,4 @@ const removeExpireAwaitingRequest = async (req, res) => {
 
 
 
-  module.exports = { seenPagesInformation , requestForDiscount , getAllDiscountRequest , removeExpireAwaitingRequest , deleteAwaitingRequest };
+  module.exports = { seenPagesInformation , requestForDiscount , registrationDiscountTaken , getAllDiscountRequest , removeExpireAwaitingRequest , deleteAwaitingRequest };
