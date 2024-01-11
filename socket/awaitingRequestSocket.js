@@ -106,7 +106,8 @@ const configureAwaitingRequest = (server)=>{
             const receiver = await getBusinessOwner(businessOwnerId);
             console.log("businessOwnerId" , businessOwnerId);
             console.log("receiver" , receiver);
-            io.to(receiver.socketId).emit("awaitingData", result.awaiting_discounts);
+            let allRequest = await result.awaiting_discounts.reverse()
+            io.to(receiver.socketId).emit("awaitingData", allRequest);
             // io.emit("awaitingData", result.awaiting_discounts);
           } catch (error) {
             console.error("خطا در ارسال درخواست جدید:", error);
