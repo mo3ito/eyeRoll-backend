@@ -2,8 +2,8 @@ const ReportsModel = require("../../models/BusinessOwners/Reports")
 const moment = require('moment');
 const UserModel = require("../../models/Users/UsersRegister")
 const AwaitingDiscountPaymentModel = require("../../models/BusinessOwners/AwaitingDiscountPayment")
-const io = require("socket.io-client");
-const requestSocket = io("http://localhost:5003");
+// const io = require("socket.io-client");
+// const requestSocket = io("http://localhost:5003");
 
 
 const seenPagesInformation = async (req, res) => {
