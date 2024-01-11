@@ -50,11 +50,15 @@ const addNewBusinessOwner = async (businessOwnerId, socketId) => {
       console.log(`Business owner with businessOwnerId ${businessOwnerId} and socketId ${socketId} added successfully.`);
     } else {
       console.log(`Business owner with businessOwnerId ${businessOwnerId} already exists.`);
+      existingBusinessOwner.socketId = socketId
+      existingBusinessOwner.save()
+
     }
   } catch (error) {
     console.error("Error adding new business owner:", error);
   }
 };
+
 
 
   const removeBusinssOwner = async (socketId) => {
@@ -82,10 +86,8 @@ const configureAwaitingRequest = (server)=>{
       });
 
       io.on('connection', (socket) => {
-
         socket.on("newBusinessOwner",(businessOwnerId)=>{
           addNewBusinessOwner(businessOwnerId , socket.id)
-          
         })
 
      
@@ -105,6 +107,7 @@ const configureAwaitingRequest = (server)=>{
             console.log("businessOwnerId" , businessOwnerId);
             console.log("receiver" , receiver);
             io.to(receiver.socketId).emit("awaitingData", result.awaiting_discounts);
+            // io.emit("awaitingData", result.awaiting_discounts);
           } catch (error) {
             console.error("خطا در ارسال درخواست جدید:", error);
           }
@@ -121,5 +124,3 @@ const configureAwaitingRequest = (server)=>{
 }
 
 module.exports = {configureAwaitingRequest}
-
-
