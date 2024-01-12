@@ -134,7 +134,7 @@ const deleteBusinessOwnerProfileImage = async (req , res)=>{
       id: businessOwner.id,
       profile_image_path: businessOwner.profile_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.profile_image_path}` : "" ,
       work_place_image_path:businessOwner.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.work_place_image_path}` : "" ,
-      log_image_path: businessOwner.logo_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` : "" ,
+      logo_image_path: businessOwner.logo_image_path ? `${process.env.BASE_URL_SERVER}/${businessOwner.logo_image_path}` : "" ,
       name: businessOwner.name,
       last_name: businessOwner.last_name,
       phone_number: businessOwner.phone_number,
