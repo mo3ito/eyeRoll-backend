@@ -69,7 +69,6 @@ const configureAwaitingRequest = (server)=>{
 
         socket.on("sendNewRequest", async ({ businessOwnerId, newRequest }) => {
           try {
-            // ایجاد یک شیء جدید اگر وجود نداشته باشد
             const result = await AwaitingDiscountPaymentModel.findOneAndUpdate(
               { businessOwnerId },
               { $push: { awaiting_discounts: newRequest } },
