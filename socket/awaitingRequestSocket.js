@@ -1,39 +1,3 @@
-// const {Server} = require("socket.io")
-// const AwaitingDiscountPaymentModel = require("../models/BusinessOwners/AwaitingDiscountPayment")
-
-// const configureAwaitingRequest = (server)=>{
-
-//     const io = new Server(server, {
-//         cors: {
-//           origin: "*",
-//         },
-//       });
-
-//       io.on("connection", async (socket) => {
-//         console.log(socket.id);
-//         socket.on("getBusinessOwnerId", async (businessOwnerId) => {
-//           try {
-//             const businessOwnerRequests = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
-//             const allRequest = businessOwnerRequests ? businessOwnerRequests.awaiting_discounts.reverse() : [];
-//             console.log("Sending data to clients:", allRequest);
-//             socket.emit("awaitingData", allRequest);
-//           } catch (error) {
-//             console.error("Error retrieving data:", error);
-//           }
-//         });
-    
-//         socket.on("disconnect", () => {
-//           console.log("A user disconnected");
-//         });
-//       });
-
-// }
-
-// module.exports = {configureAwaitingRequest}
-
-
-
-
 const {Server} = require("socket.io")
 const AwaitingDiscountPaymentModel = require("../models/BusinessOwners/AwaitingDiscountPayment")
 const BusinessOwnersSocketIdModel = require("../models/BusinessOwners/BusinessOwnersSocketId")
@@ -58,8 +22,6 @@ const addNewBusinessOwner = async (businessOwnerId, socketId) => {
     console.error("Error adding new business owner:", error);
   }
 };
-
-
 
   const removeBusinssOwner = async (socketId) => {
     try {
@@ -90,7 +52,20 @@ const configureAwaitingRequest = (server)=>{
           addNewBusinessOwner(businessOwnerId , socket.id)
         })
 
-     
+        socket.on("sendAllRequest", async ({businessOwnerId})=>{
+          try {
+            console.log(businessOwnerId);
+            const result = await AwaitingDiscountPaymentModel.findOne({businessOwnerId})
+            const receiver = await getBusinessOwner(businessOwnerId);
+            console.log("result",result);
+            let allRequest = await result.awaiting_discounts.reverse()
+            io.to(receiver.socketId).emit("awaitingData", allRequest);
+          } catch (error) {
+            console.error("error", error);
+          }
+          
+
+        })
 
         socket.on("sendNewRequest", async ({ businessOwnerId, newRequest }) => {
           try {
@@ -108,9 +83,8 @@ const configureAwaitingRequest = (server)=>{
             console.log("receiver" , receiver);
             let allRequest = await result.awaiting_discounts.reverse()
             io.to(receiver.socketId).emit("awaitingData", allRequest);
-            // io.emit("awaitingData", result.awaiting_discounts);
           } catch (error) {
-            console.error("خطا در ارسال درخواست جدید:", error);
+            console.error("error", error);
           }
         });
         
