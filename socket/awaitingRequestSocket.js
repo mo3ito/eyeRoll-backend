@@ -1,7 +1,8 @@
 const {Server} = require("socket.io")
 const AwaitingDiscountPaymentModel = require("../models/BusinessOwners/AwaitingDiscountPayment")
 const BusinessOwnersSocketIdModel = require("../models/BusinessOwners/BusinessOwnersSocketId")
-
+const moment = require("moment")
+let intervalDeleteExpireDiscount;
   
 
 const addNewBusinessOwner = async (businessOwnerId, socketId) => {
@@ -29,6 +30,39 @@ const addNewBusinessOwner = async (businessOwnerId, socketId) => {
       console.log(`Business owner with socketId ${socketId} removed successfully.`);
     } catch (error) {
       console.error(`Error removing business owner with socketId ${socketId}:`, error);
+    }
+  };
+
+  const removeExpireAwaitingRequest = async (model, businessOwnerId, io, receiver) => {
+    try {
+      if (!model || !model.awaiting_discounts || model.awaiting_discounts.length === 0) {
+        let validRequest = [];
+        return validRequest;
+      }
+      
+      const dateNow = moment();
+  
+      const validRequest = model.awaiting_discounts.filter((discount) => {
+        if (discount.expiration_time) {
+          const discountExpiration = moment(discount.expiration_time);
+          return discountExpiration.isSameOrAfter(dateNow);
+        }
+        return false;
+      });
+  
+      await AwaitingDiscountPaymentModel.findOneAndUpdate(
+        { businessOwnerId },
+        { awaiting_discounts: validRequest },
+        { new: true }
+      );
+  
+      io.to(receiver.socketId).emit("awaitingData", validRequest);
+      
+      console.log("validRequest" , validRequest);
+
+    } catch (error) {
+      console.error(error);
+      return [];
     }
   };
 
@@ -60,6 +94,15 @@ const configureAwaitingRequest = (server)=>{
             console.log("result",result);
             let allRequest = await result.awaiting_discounts.reverse()
             io.to(receiver.socketId).emit("awaitingData", allRequest);
+
+            if (!intervalDeleteExpireDiscount) {
+              intervalDeleteExpireDiscount = setInterval(async () => {
+                const result = await AwaitingDiscountPaymentModel.findOne({ businessOwnerId });
+                const receiver = await getBusinessOwner(businessOwnerId);
+                await removeExpireAwaitingRequest(result, businessOwnerId, io, receiver);
+              }, 30000);
+            }
+
           } catch (error) {
             console.error("error", error);
           }
@@ -87,8 +130,6 @@ const configureAwaitingRequest = (server)=>{
           }
         });
         
-        
-       
         socket.on("disconnect", ()=>{
           removeBusinssOwner(socket.id)
         })
