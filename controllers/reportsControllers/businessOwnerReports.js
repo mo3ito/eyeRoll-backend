@@ -2,8 +2,7 @@ const ReportsModel = require("../../models/BusinessOwners/Reports")
 const moment = require('moment');
 const UserModel = require("../../models/Users/UsersRegister")
 const AwaitingDiscountPaymentModel = require("../../models/BusinessOwners/AwaitingDiscountPayment")
-// const io = require("socket.io-client");
-// const requestSocket = io("http://localhost:5003");
+
 
 
 const seenPagesInformation = async (req, res) => {
@@ -158,8 +157,6 @@ const seenPagesInformation = async (req, res) => {
       await res.status(200).json({
         message: "Your discount request was registered on the seller's page",
       })
-    //   const sendRequestSocket = io("http://localhost:5003");
-    //  await sendRequestSocket.emit("awaitingData", targetBusinessOwner.awaiting_discounts);
       }else{
         res.status(400).json({
           message: "You have already registered a request to use the discount, you can request again after 20 minutes",
