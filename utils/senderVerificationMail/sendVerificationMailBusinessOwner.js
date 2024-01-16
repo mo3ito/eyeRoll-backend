@@ -4,7 +4,7 @@ require('dotenv').config();
 const sendVerificationMailBusinessOwner = (user)=>{
     const transporter = createMailTransporter()
     const mailOptions = {
-        from: '"discount app 👻"', 
+        from: '"eyeRoll app 👻"', 
         to: user.email, 
         subject: "Verify your email...", 
         text: "Hello world?",
