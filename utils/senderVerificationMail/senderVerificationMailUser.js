@@ -4,12 +4,12 @@ require('dotenv').config();
 const sendVerificationMailUsers = (user)=>{
     const transporter = createMailTransporter()
     const mailOptions = {
-        from: '"discount app 👻"', // sender address
+        from: '"eyeRoll app 👻"', // sender address
         to: user.email, // list of receivers
         subject: "Verify your email...", // Subject line
         text: "Hello world?", // plain text body
         html: `<p>Hello ${user.username} verify your email by checking this link... </p>
-        <a href='${process.env.BASE_URL}/users-verify-email?token_email=${user.token_email}'>Verify your email</a>` ,// html body
+        <a style="background-color:#e879f9 ; color:black ; padding:8px ; border-radius:5px ; text-decoration:none" href='${process.env.BASE_URL}/users-verify-email?token_email=${user.token_email}'>Verify your email</a>` ,
     }
 
     transporter.sendMail(mailOptions , (err , info)=>{
