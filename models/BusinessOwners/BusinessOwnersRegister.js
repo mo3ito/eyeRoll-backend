@@ -92,7 +92,7 @@ const BusinessOwnersSchema = new Schema({
         type: "String",
         default:""
       },
-      approvedـbyـadmin:{
+      is_approvedـbyـadmin:{
         type:Boolean,
         default:false
       }

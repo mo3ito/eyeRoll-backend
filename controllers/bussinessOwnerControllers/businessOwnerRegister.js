@@ -85,7 +85,7 @@ const businessOwnerImage = async (req, res) => {
       registration_date: businessOwner.registration_date,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
-      approvedـbyـadmin:businessOwner.approvedـbyـadmin,
+      is_approvedـbyـadmin:businessOwner.is_approvedـbyـadmin,
     };
 
     const token = await createToken(userInfos);
@@ -152,7 +152,7 @@ const deleteBusinessOwnerProfileImage = async (req , res)=>{
       registration_date: businessOwner.registration_date,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
-      approvedـbyـadmin:businessOwner.approvedـbyـadmin,
+      is_approvedـbyـadmin:businessOwner.is_approvedـbyـadmin,
     };
 
     const token = await createToken(userInfos)
@@ -262,7 +262,7 @@ const registerUser = async (req, res) => {
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
       work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
       logo_image_path: user.logo_image_path ? `${process.env.BASE_URL_SERVER}/${user.logo_image_path}` : "",
-      approvedـbyـadmin:user.approvedـbyـadmin,
+      is_approvedـbyـadmin:user.is_approvedـbyـadmin,
 
     };
  
@@ -318,7 +318,7 @@ const loginUser = async (req, res) => {
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
       work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
       logo_image_path: user.logo_image_path ? `${process.env.BASE_URL_SERVER}/${user.logo_image_path}` : "",
-      approvedـbyـadmin:user.approvedـbyـadmin,
+      is_approvedـbyـadmin:user.is_approvedـbyـadmin,
     };
 
     const token = await createToken(userInfos);
@@ -418,7 +418,7 @@ const updateInformation = async (req, res) => {
       profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
       work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
       logo_image_path: user.logo_image_path ? `${process.env.BASE_URL_SERVER}/${user.logo_image_path}` : "",
-      approvedـbyـadmin:user.approvedـbyـadmin,
+      is_approvedـbyـadmin:user.is_approvedـbyـadmin,
     };
 
     const token = await createToken(userInfos);
@@ -515,7 +515,7 @@ const verifyEmail = async (req, res) => {
         profile_image_path: user.profile_image_path ? `${process.env.BASE_URL_SERVER}/${user.profile_image_path}` : "",
         work_place_image_path: user.work_place_image_path ? `${process.env.BASE_URL_SERVER}/${user.work_place_image_path}` : "",
         logo_image_path: user.logo_image_path ? `${process.env.BASE_URL_SERVER}/${user.logo_image_path}` : "",
-        approvedـbyـadmin:user.approvedـbyـadmin,
+        is_approvedـbyـadmin:user.is_approvedـbyـadmin,
       };
 
       const token = await createToken(userInfos);
@@ -679,7 +679,7 @@ const workPlaceImage = async (req, res) => {
       registration_date: businessOwner.registration_date,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
-      approvedـbyـadmin:businessOwner.approvedـbyـadmin,
+      is_approvedـbyـadmin:businessOwner.is_approvedـbyـadmin,
     };
 
     const token = await createToken(userInfos);
@@ -745,7 +745,7 @@ const deleteWorkPlaceImage = async (req , res)=>{
       registration_date: businessOwner.registration_date,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
-      approvedـbyـadmin:businessOwner.approvedـbyـadmin,
+      is_approvedـbyـadmin:businessOwner.is_approvedـbyـadmin,
     };
 
     const token = await createToken(userInfos)
@@ -819,7 +819,7 @@ const logoImage = async (req, res) => {
       registration_date: businessOwner.registration_date,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
-      approvedـbyـadmin:businessOwner.approvedـbyـadmin,
+      is_approvedـbyـadmin:businessOwner.is_approvedـbyـadmin,
     };
 
    
@@ -887,7 +887,7 @@ const deleteLogoImage = async (req , res)=>{
       registration_date: businessOwner.registration_date,
       postal_code: businessOwner.postal_code,
       work_phone: businessOwner.work_phone,
-      approvedـbyـadmin:businessOwner.approvedـbyـadmin,
+      is_approvedـbyـadmin:businessOwner.is_approvedـbyـadmin,
     };
 
     const token = await createToken(userInfos)
@@ -986,7 +986,7 @@ const changePassword = async (req , res)=>{
     registration_date: businessOwner.registration_date,
     postal_code: businessOwner.postal_code,
     work_phone: businessOwner.work_phone,
-    approvedـbyـadmin:businessOwner.approvedـbyـadmin
+    is_approvedـbyـadmin:businessOwner.is_approvedـbyـadmin
   };
   
 

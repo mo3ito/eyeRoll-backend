@@ -38,6 +38,14 @@ const getAllAlgoritm = async (req, res) => {
       });
     }
 
+    const businessOwner = await BusinessOwnersModel.findById(businessOwnerId)
+
+    if(!businessOwner.is_approvedـbyـadmin){
+      return res.status(400).json({
+        message:"The information provided by the admin has not been confirmed yet"
+      })
+    }
+
     let existingSetting = await RollOptionModel.findOne({
       businessOwner_id: businessOwnerId,
     });
@@ -115,8 +123,7 @@ const getAllRollsList = async (req , res) =>{
 
 const rollAdjustedSend = async (req, res) => {
   const businessOwnerId = await req.headers.authorization;
-  const businessOwner = await BusinessOwnersModel.findById(businessOwnerId);
-
+  
   if(!businessOwnerId){
     return res.status(400).json({
       message : "businessOwnerId not found"
