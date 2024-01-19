@@ -91,6 +91,10 @@ const BusinessOwnersSchema = new Schema({
       work_phone:{
         type: "String",
         default:""
+      },
+      approvedـbyـadmin:{
+        type:Boolean,
+        default:false
       }
     
 })
