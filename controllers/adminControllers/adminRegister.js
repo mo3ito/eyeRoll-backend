@@ -6,6 +6,7 @@ const crypto = require("crypto");
 require("dotenv").config();
 const keyJwt = process.env.KEY_JWT;
 
+
 const createToken = async (adminInfo) => {
     const token = await jwt.sign(adminInfo, keyJwt, { expiresIn: "3d" });
     return token;
@@ -19,6 +20,7 @@ const createToken = async (adminInfo) => {
       username,
       password,
       email,
+      admin_key
     } = req.body;
   
     try {
@@ -34,6 +36,14 @@ const createToken = async (adminInfo) => {
         if(isAdmin){
           return res.status(400).json({
             message: "Username already exist"
+          })
+        }
+
+        const isValidAdminKey = await bcrypt.compare(admin_key , process.env.KEY_ADMIN)
+
+        if(!isValidAdminKey){
+          return res.status(400).json({
+            message: "Your admin key is not valid"
           })
         }
   
@@ -96,8 +106,19 @@ const createToken = async (adminInfo) => {
     }
   };
 
+
+
+
   const loginAdmin = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password , admin_key } = req.body;
+
+    const isValidAdminKey = await bcrypt.compare(admin_key , process.env.KEY_ADMIN)
+
+    if(!isValidAdminKey){
+      return res.status(400).json({
+        message: "Your admin key is not valid"
+      })
+    }
   
     try {
       const lowercaseEmail = email.toLowerCase();
