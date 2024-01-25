@@ -124,8 +124,10 @@ const createToken = async (adminInfo) => {
       const lowercaseEmail = email.toLowerCase();
       let admin = await AdminRegisterModel.findOne({ email: lowercaseEmail });
   
-      if (!admin)
+      if (!admin){
         return res.status(400).json({ message: "Invalid email or password" });
+      }
+        
   
       const validPassword = await bcrypt.compare(
         password,
