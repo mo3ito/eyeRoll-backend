@@ -60,11 +60,57 @@ try {
         return res.status(200).json([])
       }
 
+
 } catch (error) {
     console.error(error);
     res.status(500).json(error.message)
 }
 }
 
+const confirmRegistrationRequests = async (req , res)=>{
 
-module.exports = {registerationRequests}
+    const adminId = req.headers.authorization;
+
+    const {businessOwnerId} = req.body;
+
+    try {
+        if(!adminId){
+            return res.status(400).json({
+                message:"admin id is not find"
+            })
+        }
+    
+        const admin = await AdminRegisterModel.findById(adminId)
+    
+        if(!admin.is_admin){
+            return res.status(400).json({
+                message:"admin does not find"
+            })
+        }
+
+       const businessOwner = await BusinessOwnersModel.findById(businessOwnerId)
+
+       if(businessOwner.is_approvedـbyـadmin){
+        return res.status(400).json({
+            message: "This business owner has already been approved by admin"
+          })
+       }
+
+       businessOwner.is_approvedـbyـadmin = true
+
+      await businessOwner.save()
+
+      return res.status(200).json({
+        message: "The registration request has been successfully approved"
+      })
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(error.message)
+    }
+    
+
+}
+
+
+module.exports = {registerationRequests , confirmRegistrationRequests}
