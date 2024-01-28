@@ -1,5 +1,6 @@
 const AdminRegisterModel = require("../../models/Admin/AdminRegister")
 const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersRegister");
+const moment = require('moment');
 require("dotenv").config();
 
 
@@ -28,10 +29,33 @@ try {
         is_businessOwner: true,
         is_verified: true,
         is_complete_information: true
-      }).select("name last_name username phone_number email country_name state_name city_name address brand_name postal_code work_phone registration_date")
+      }).select("_id name last_name username phone_number email country_name state_name city_name address brand_name postal_code work_phone registration_date")
 
-      if(allRequestBusinessOwner){
-        return res.status(200).json(allRequestBusinessOwner)
+   
+
+      const formattedRequests = allRequestBusinessOwner.map(request => {
+        const formattedDate = moment(request.registration_date).format("YYYY-MM-DD");
+    
+        return {
+          _id: request._id,
+          name: request.name,
+          last_name: request.last_name,
+          username: request.username,
+          phone_number: request.phone_number,
+          email: request.email,
+          country_name: request.country_name,
+          state_name: request.state_name,
+          city_name: request.city_name,
+          address: request.address,
+          brand_name: request.brand_name,
+          postal_code: request.postal_code,
+          work_phone: request.work_phone,
+          registration_date: formattedDate
+        };
+      });
+
+      if(formattedRequests){
+        return res.status(200).json(formattedRequests)
       }else{
         return res.status(200).json([])
       }
