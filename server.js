@@ -10,6 +10,7 @@ const businessOwnersOnlineMenu = require("./routes/businessOwners/onlineMenu")
 const rollSetting = require("./routes/businessOwners/rolls")
 const searchInformation = require("./routes/searchInformation/searchInformation")
 const usersSeenReports = require("./routes/reports/userSeenReports")
+const registerationRequests = require("./routes/admins/requests")
 require('dotenv').config();
 const {createServer} = require("http")
 const {Server} = require("socket.io")
@@ -61,5 +62,6 @@ app.use("/",usersRegisteration)
 app.use("/",rollSetting)
 app.use("/",searchInformation)
 app.use("/",usersSeenReports)
+app.use("/",registerationRequests)
 app.use('/public', express.static('public'));
 
