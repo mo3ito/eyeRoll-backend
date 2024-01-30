@@ -14,7 +14,7 @@ const sendVerificationMailUsers = (user)=>{
 
     transporter.sendMail(mailOptions , (err , info)=>{
         if(err){
-            console.error(err)
+            console.error("err",err)
         }else{
             console.log("verification email sent");
         }
