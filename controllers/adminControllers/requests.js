@@ -108,7 +108,7 @@ const confirmRegistrationRequests = async (req, res) => {
   }
 };
 
-const reportsRequest = async (req , res)=>{
+const memberReportsRequest = async (req , res)=>{
 
   const adminId = req.headers.authorization;
 
@@ -126,7 +126,7 @@ const reportsRequest = async (req , res)=>{
       })
     }
 
-    const reportsMembers = {
+    let reportsMembers = {
       all_user: null,
       all_businessOwner: null
     }
@@ -151,4 +151,4 @@ const reportsRequest = async (req , res)=>{
 
 }
 
-module.exports = { registerationRequests, confirmRegistrationRequests };
+module.exports = { registerationRequests, confirmRegistrationRequests , memberReportsRequest };
