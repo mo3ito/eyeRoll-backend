@@ -1,5 +1,6 @@
 const AdminRegisterModel = require("../../models/Admin/AdminRegister");
 const BusinessOwnersModel = require("../../models/BusinessOwners/BusinessOwnersRegister");
+const UserModel = require("../../models/Users/UsersRegister")
 const moment = require("moment");
 require("dotenv").config();
 
@@ -106,5 +107,48 @@ const confirmRegistrationRequests = async (req, res) => {
     res.status(500).json(error.message);
   }
 };
+
+const reportsRequest = async (req , res)=>{
+
+  const adminId = req.headers.authorization;
+
+
+  try {
+    if(!adminId){
+      return res.status(400).json({
+        message:"admin id is not find"
+      })
+    }
+    const isAdmin = await AdminRegisterModel.findById(adminId)
+    if(!isAdmin){
+      return res.status(400).json({
+        message:"admin is not find"
+      })
+    }
+
+    const reportsMembers = {
+      all_user: null,
+      all_businessOwner: null
+    }
+
+    const businessOwners= await BusinessOwnersModel.count()
+    const users = await UserModel.count()
+    
+
+    reportsMembers = {
+      all_user: users,
+      all_businessOwner: businessOwners
+    }
+
+    return res.status(200).json(reportsMembers)
+
+
+  } catch (error) {
+    console.error(error)
+    res.status(500).json(error.message);
+  }
+
+
+}
 
 module.exports = { registerationRequests, confirmRegistrationRequests };
