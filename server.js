@@ -15,45 +15,25 @@ require('dotenv').config();
 const {createServer} = require("http")
 const {Server} = require("socket.io")
 const ServerPort = process.env.SERVER_PORT ? process.env.SERVERPORT : 5000;
-const onlineMenuSocketPort = process.env.ONLINE_MENU_SOCKET_SERVER_PORT ? process.env.ONLINE_MENU_SOCKET_SERVER_PORT : 5001;
-const eyeRollSocketPort = process.env.EYEROLL_SOCKET_SERVER_PORT ? process.env.EYEROLL_SOCKET_SERVER_PORT : 5002;
-const awaitingRequestPort = process.env.AWAITING_REQUEST_SOCKET_SERVER_PORT ?  process.env.AWAITING_REQUEST_SOCKET_SERVER_PORT : 5003;
-const {configurePageOnlineMenuSocket} = require("./socket/onlineMenuSocket")
-const {configurePageEyeRollSocket} = require("./socket/pageEyeRollSocket")
-const {configureAwaitingRequest} = require("./socket/awaitingRequestSocket")
+const {configureSocketRequests} = require("./socket/requestSocket")
 
 mongoose.connect("mongodb://localhost:27017/eyeRoll")
-
-
-
-
-const onlineMenuSocketServer = createServer()
-const eyeRollSocketServer = createServer();
-const awaitingRequestServer = createServer()
-
-
-
-const ioPageOnlineMenu = configurePageOnlineMenuSocket(onlineMenuSocketServer)
-const ioPageEyeRoll = configurePageEyeRollSocket(eyeRollSocketServer);
-const ioAwaitingRequest = configureAwaitingRequest(awaitingRequestServer)
-
-
-
-
 app.use(express.json())
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+    origin:'*'
+}))
+
 app.get("/",(req , res)=>{
     res.send("hi I am working")
     
 })
 
-app.listen(ServerPort , ()=>console.log("server has run on port 5000"))
-onlineMenuSocketServer.listen(onlineMenuSocketPort , ()=> console.log("online menu server socket connected on port 5001"))
-eyeRollSocketServer.listen(eyeRollSocketPort, () => console.log("eyeRoll page server socket connected on port 5002"));
-awaitingRequestServer.listen(awaitingRequestPort , () => console.log("awaiting request page server socket connected on port 5003") )
+const socketServer = createServer(app)
 
 
+socketServer.listen(ServerPort , ()=>console.log("server has run on port 5000"))
+const ioConfigureSocketRequests = configureSocketRequests(socketServer)
 
 app.use("/",adminRegisteration)
 app.use("/",businessOwnersRegisteration)
