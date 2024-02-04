@@ -26,7 +26,6 @@ app.use(cors({
 
 app.get("/",(req , res)=>{
     res.send("hi I am working")
-    
 })
 
 const socketServer = createServer(app)
