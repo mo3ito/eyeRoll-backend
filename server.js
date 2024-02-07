@@ -17,7 +17,7 @@ const {Server} = require("socket.io")
 const ServerPort = process.env.SERVER_PORT ? process.env.SERVERPORT : 5000;
 const {configureSocketRequests} = require("./socket/requestSocket")
 
-mongoose.connect("mongodb://localhost:27017/eyeRoll")
+mongoose.connect(process.env.MONGO_URL)
 app.use(express.json())
 app.use(bodyParser.json())
 app.use(cors({
@@ -31,7 +31,7 @@ app.get("/",(req , res)=>{
 const socketServer = createServer(app)
 
 
-socketServer.listen(ServerPort , ()=>console.log("server has run on port 5000"))
+socketServer.listen(process.env.SERVER_PORT , ()=>console.log("server has run on port 5000"))
 const ioConfigureSocketRequests = configureSocketRequests(socketServer)
 
 app.use("/",adminRegisteration)

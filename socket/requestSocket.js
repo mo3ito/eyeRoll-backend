@@ -99,7 +99,7 @@ const configureSocketRequests = (server) => {
     cors: {
       origin: "*",
     },
-    path: "/socket.io",
+    path: process.env.SOCKET_URL,
   });
 
   io.on("connection", (socket) => {
